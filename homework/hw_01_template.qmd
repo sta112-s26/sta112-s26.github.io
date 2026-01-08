@@ -1,0 +1,71 @@
+---
+---
+---
+title: "Homework 1"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(nycflights13)
+library(tidyverse)
+```
+
+### Question 1
+
+```{r}
+
+```
+
+Type your answer to question 1 here...
+
+### Question 2
+
+```{r}
+
+```
+
+Type your answer to question 2 here...
+
+### Question 3
+
+```{r}
+
+```
+
+Type your answer to question 3 here...
+
+### Question 4
+
+```{r}
+
+```
+
+Type your answer to question 4 here...
+
+### Question 5
+
+```{r}
+
+```
+
+
+### Question 6
+
+
+Type your answer to question 6 here...
+
+### Question 7
+
+
+Type your answer to question 7 here...
+
+
+### Question 8
+
+
+Type your answer to question 8 here...

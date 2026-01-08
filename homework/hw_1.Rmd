@@ -1,0 +1,163 @@
+---
+title: "Homework 1"
+output: 
+  rmdformats::robobook:
+    css: "homework.css"
+    highlight: pygments
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(nycflights13)
+library(tidyverse)
+```
+
+**Due:** Friday, January 23, 11:59pm on Canvas
+
+**Instructions:** 
+
+* As in the class activity from Friday, a template Quarto file will be provided, with set-up instructions below.
+* When you are done with the assignment, render the Quarto file containing all your code and responses. Submit the rendered HTML file on Canvas.
+* Remember to acknowledge any collaborators, and to cite outside sources
+
+**Code guidelines:**
+
+* If a question requires code, and code is not provided, you will not receive full credit
+
+## Setup
+
+1. Open RStudio, and install the `nycflights13` package, which provides data on flights from New York airports, which you will explore in this assignment. (See the class activity from the first week for examples installing R packages). You only need to install packages once, so the installation code should be run in the console, not included in your Quarto document.
+2. Download the Quarto template file for this assignment: [hw_01_template.qmd](https://sta112-s26.github.io/homework/hw_01_template.qmd). Save it to your computer, and change the file name to `hw_01_your_name.qmd`
+3. Open `hw_01_your_name.qmd` in RStudio. Change the `author` in YAML to your name.
+4. Fill in answers to questions 1 -- 8. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
+5. When you are done, render and submit your HTML file on Canvas (Assignments -> Homework 1).
+
+# Part 0: Survey
+
+In this class, we are beginning with data wrangling and exploratory data analysis, and we will soon begin to discuss modeling with linear regression. As we get into modeling, we will also discuss the important skill of *statistical communication*: communicating the results of a statistical analysis to a target audience.
+
+To help me judge where everyone is at with statistical communication at the beginning of the semester, please fill out this brief survey:
+
+Make sure to select *Dr. Evans STA 112* for your class section!
+
+
+
+# Practice with exploratory data analysis
+
+In this section, we'll practice exploratory data analysis in R, using data on flights departing from New York City's three major airports. These questions can be answered by adapting code from the first week of class.
+
+Once you have loaded the `nycflights13` package, the data are contained in the `flights` dataset. Remember that you can use `?` to get help about functions and datasets in R, so `?flights` will tell you more about the flights data.
+
+### Some helpful resources
+
+* If you're not sure how to make a particular plot, a good resource is the `ggplot2` webpage ([https://ggplot2.tidyverse.org/index.html](https://ggplot2.tidyverse.org/index.html)). At the search bar in the top, you can search for the type of plot you would like to make. 
+* The `ggplot2` cheat sheet ([click here](https://rstudio.github.io/cheatsheets/html/data-visualization.html)) is also useful. (What's the difference between `ggplot` and `ggplot2`? `ggplot` is the name of the function we use to make plots, `ggplot2` is the package which provides that function. `ggplot2` is one of several packages included in the tidyverse).
+* For help with Quarto documents, see the [Quarto tutorial](https://quarto.org/docs/get-started/hello/rstudio.html)
+
+### Questions
+
+The questions in this section follow the general EDA steps discussed in [lecture 2](https://sta112-s26.github.io/slides/lecture_02.pdf). We'll begin exploratory data analysis by summarizing the data. 
+
+:::{.question}
+#### Question 1
+
+Summarize the `flights` data. Describe:
+
+* Who (or which organization) originally collected the data?
+* What does a row in the data represent?
+* How many rows and columns are in the data?
+* What information do the variables record?
+* Are there any missing data?
+:::
+
+Now let's look at the distribution of some of the variables. For quantitative variables, we can visualize the distribution with a histogram. 
+
+:::{.question}
+#### Question 2
+
+Create a histogram for the distribution of departure delay, and describe the distribution.
+:::
+
+For categorical variables, we can visualize the distribution through a bar chart.
+
+:::{.question}
+#### Question 3
+
+Create a bar chart showing the number of flights departing from each of the three New York airports (EWR, LGA, and JFK). Which airport had the most flights? *Hint: the code for making a bar chart with `ggplot` is very similar to the code for making a histogram in Question 2. Just change the variable being plotted, and replace `geom_histogram` with something else.*
+:::
+
+Now let's look at the relationship between airport and departure delay.
+
+:::{.question}
+#### Question 4
+
+Create a plot showing the distribution of departure delay for each airport. For each airport, also report the mean departure delay and the standard deviation of departure delays. How does the distribution of departure delay differ across the three New York airports (EWR, LGA, and JFK)? *Hint: you can answer this question by adapting code from Friday's class activity.*
+:::
+
+Finally, let's visualize the relationship between departure delay from New York, and arrival delay at the flight's destination. 
+
+:::{.question}
+#### Question 5
+
+Below is a scatterplot showing arrival delay vs. departure delay. I have:
+
+* made the color and shape of each point depend on the New York airport it departed from
+* changed the axis labels
+* added a title
+* changed the legend label (to "Origin airport")
+* changed the plot theme (e.g., notice the background is white, not gray)
+* changed the opacity of the points
+* changed the colors used to represent each airport
+
+Recreate this plot as closely as possible. (Note that because the data is large, the `ggplot` function may take longer than usual to run.) You will need to look up how to make some of these changes. *Hint: google searches for things like "ggplot change opacity" often produce good results. We will also cover some of this material next week.*
+:::
+
+```{r, fig.width = 6, fig.height = 4}
+flights %>%
+  drop_na() %>%
+  ggplot(aes(x = dep_delay, y = arr_delay, 
+             color = origin, shape=origin)) +
+  geom_point(alpha = 0.7) +
+  labs(x = "Departure delay (minutes)", 
+       y = "Arrival delay (minutes)",
+       color = "Origin airport",
+       shape = "Origin airport",
+       title = "Arrival delay vs. departure delay in NYC airports") +
+  theme_bw() +
+  scale_color_manual(values = c("#999999", "#E69F00", "#56B4E9"))
+```
+
+# Reproducibility and ethics
+
+On the first day of class, we considered whether the analysis in the FiveThiryEight article on NBA attendance was *reproducible*. Throughout this course, we will emphasize reproducible analyses, and one of the reasons you are using Quarto for your homework assignments is to support reproducibility.
+
+In this portion of the assignment, I want you to think more about the importance of reproducibility, and how it is related to being a responsible and ethical statistician or data scientist.
+
+First, **read the following material** from *Modern Data Science with R* (3rd edition, freely available at the links below):
+
+* [Section 8.8](https://mdsr-book.github.io/mdsr3e/08-ethics.html#sec-reproducibility)
+* [Appendix D.1 - D.2](https://mdsr-book.github.io/mdsr3e/D-reproducible.html)
+
+Then answer the following questions.
+
+:::{.question}
+#### Question 6
+
+Why is reproducibility important when performing data analyses?
+:::
+
+:::{.question}
+#### Question 7
+
+What practices can you engage in to help make your work reproducible?
+:::
+
+:::{.question}
+#### Question 8
+
+When discussing the FiveThirtyEight article on NBA attendance, we said that reproducing the analysis would be challenging, in part because the data were not made publicly available.
+
+Making data publicly available helps reproducibility. However, reproducibility is not the only ethical consideration when analyzing data! Describe a scenario in which, for other reasons, data should *not* be made publicly available.
+:::
+

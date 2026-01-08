@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Welcome to STA 112</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ciaran Evans" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Welcome to STA 112
+]
+.author[
+### Ciaran Evans
+]
+
+---
+
+
+### Welcome!
+
+.center[
+&lt;img src="environmental-data-science-r4ds-general.png" alt="drawing" width="500"/&gt;
+]
+
+.large[
+- Dr. Ciaran Evans
+- Manchester 329
+- Course website: [https://sta112-s26.github.io/](https://sta112-s26.github.io/)
+]
+
+.footnote[
+Illustration: Updated from Grolemund &amp; Wickham's classis R4DS schematic, envisioned by Dr. Julia Lowndes for her 2019 useR! keynote talk and illustrated by Allison Horst.
+]
+
+---
+
+### Agenda
+
+.large[
+* Activity: getting to know each other, and how do fans impact NBA games?
+* Plan for week 1
+* Syllabus highlights
+]
+
+---
+
+### Class activity
+
+.center[
+&lt;img src="nba-virtual-fans.jpg" width="300"&gt;
+]
+
+.large[
+* Work in small groups to answer the activity questions (handout)
+* We'll reconvene to discuss in 15--20 minutes
+* I will collect your work at the end of class (part of class participation grade)
+]
+
+.footnote[
+Image: NBA.com
+]
+
+---
+
+### Research question
+
+.large[
+What specific question were the researchers trying to answer?
+]
+
+---
+
+### Research question
+
+.large[
+What specific question were the researchers trying to answer?
+]
+
+.large[
+* Do home teams perform better when they have more fans present?
+]
+
+---
+
+### Data
+
+.large[
+To answer their research question, the authors gathered data on NBA games. Where did the data come from? Were there any issues with the data?
+]
+
+---
+
+### Data
+
+.large[
+To answer their research question, the authors gathered data on NBA games. Where did the data come from? Were there any issues with the data?
+]
+
+.large[
+* Results and attendances downloaded from [Basketball-Reference.com](https://www.basketball-reference.com/)
+* Attendance data also collected from NBA and local news
+]
+
+---
+
+### Data
+
+.large[
+To answer their research question, the authors gathered data on NBA games. Where did the data come from? Were there any issues with the data?
+]
+
+.large[
+* Results and attendances downloaded from [Basketball-Reference.com](https://www.basketball-reference.com/)
+* Attendance data also collected from NBA and local news
+]
+
+.large[
+.question[
+Issue: reported attendance sometimes inaccurate!
+]
+]
+
+---
+
+### Methods
+
+.large[
+What statistics and data science tools did the researchers use to come to their conclusions?
+]
+
+---
+
+### Methods
+
+.large[
+What statistics and data science tools did the researchers use to come to their conclusions?
+]
+
+.large[
+* Linear regression model
+    - Includes other potential factors that could influence outcome of game
+* Hypothesis tests for strength of the relationship
+]
+
+---
+
+### Conclusions
+
+.large[
+What did the researchers conclude about their research question?
+]
+
+---
+
+### Conclusions
+
+.large[
+What did the researchers conclude about their research question?
+]
+
+.large[
+* An increase of 1,000 home fans is associated with an increase of 1.4 points in the home team's margin of victory, after controlling for other factors
+* So, home teams tend to perform better when they have more fans
+* Is there anything you would do differently?
+]
+
+---
+
+### Reproducibility
+
+.large[
+.question[
+Could you reproduce their results?
+]
+]
+
+---
+
+### Reproducibility
+
+.large[
+.question[
+Could you reproduce their results?
+]
+]
+
+.large[
+Possibly, but it would be hard.
+* Data doesn't seem to be available (we would have to collect it ourselves)
+* Code for analysis not available
+]
+
+---
+
+### Components of (good) data analysis
+
+.center[
+&lt;img src="playing_whole_game.jpeg" width="400"&gt;
+]
+
+.large[
+* Defining a clear research question
+* Collecting data that can answer your question
+* Data preparation: exploring, cleaning, transforming
+* Investigating question with figures, tables, models
+* Communicating results
+* Sharing data and code to make work reproducible
+]
+
+.footnote[
+Source: Albert Y. Kim &amp; Johanna Hardin (2021) “Playing the Whole Game”: A Data Collection and Analysis Exercise With Google Calendar, Journal of Statistics and Data Science Education, 29:sup1, S51-S60, DOI: 10.1080/10691898.2020.1799728
+]
+
+---
+
+### Plan for Week 1
+
+.large[
+* Download R and RStudio today or tomorrow
+    - Instructions on course website
+    - Please contact me if you have problems!
+* Bring laptop to class from now on
+* HW 1 released, due next Friday
+]
+
+---
+
+### Expectations
+
+.large[
+* Complete any assigned reading ahead of class
+* Bring laptop each day
+* Submit class activities (graded for effort, not completeness or correctness)
+]
+
+---
+
+### Course components
+
+.large[
+* Class participation (graded for effort)
+* HW assignments (roughly one per week)
+* Exams (2 midterms, 1 final)
+* Project
+]
+
+---
+
+### AI policy
+
+.large[
+* I will *never* use AI to grade your work; all feedback you receive will be directly from me and the TA
+* Collaboration with other students, and AI assistance, is permitted on homework
+    * Assistance does *not* mean uploading the assignment to ChatGPT and copying the answers
+    * You must cite collaborators and external resources
+* See syllabus for further details
+]
+
+---
+
+### For next time
+
+.large[
+* Make sure R and RStudio are installed
+* Instructions are provided on the course website
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
