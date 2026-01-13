@@ -1,0 +1,132 @@
+---
+title: "Activity: Exploring penguins data"
+format: html
+editor: source
+---
+
+**Instructions:** 
+
+* Work with a neighbor to answer the following questions 
+* Unlike other class activities, you do **not** need to submit this one
+
+This activity will introduce you to working with data in RStudio. We'll explore some data on penguins in Antarctica. Work through the questions below, and then we'll discuss together as a group. If you get stuck, some questions have a solution available, which you can view by clicking the `Solution` button.
+
+## Downloading the data
+
+There are two main ways we will access data in R in this course:
+
+* Through a package which loads it directly
+
+* By importing a data file (e.g., a .csv or .txt file)
+
+**Packages:** Many features of R are available through modular collections of code called *packages*. Packages can contain functions, documentation, and datasets. Packages are downloaded to your computer with `install.packages("package_name")`, and loaded into your R session with `library(package_name)`.
+
+For this activity, the data is available through the `palmerpenguins` package.
+
+1. In the console, run the following code. Remember: to run code in the console, type it in and hit enter, or copy and paste and hit enter.
+
+```{r, eval=F}
+install.packages("palmerpenguins")
+library(palmerpenguins)
+```
+
+2. The dataset loaded by palmerpenguins is called `penguins`. In the console, run
+
+```{r, eval=F}
+?penguins
+```
+
+How many rows are in the data? What does each row represent?
+
+<SCRIPT>
+function ShowAndHide(divid) {
+    var x = document.getElementById(divid);
+    if (x.style.display == 'none') {
+        x.style.display = 'block';
+    } else {
+        x.style.display = 'none';
+    }
+}
+</SCRIPT>
+
+<BUTTON ONCLICK="ShowAndHide('q2_solution')">Solution</BUTTON>
+
+<DIV ID="q2_solution" STYLE="display:none">
+There are 344 rows in the data. Each row represents one penguin observed near Palmer Station, Antarctica. The different columns contain different measurements (species, body mass, etc.) 
+</DIV>
+
+
+3. Now let's look at our data. To do so, we'll need to install the `tidyverse` package, which has tools for data wrangling and visualization that we will use throughout the semester. By adapting the code from Exercise 1, install and load the `tidyverse` package. Then run 
+
+```{r, eval=F}
+glimpse(penguins)
+```
+
+What information about the data does this provide?
+
+<BUTTON ONCLICK="ShowAndHide('q3_solution')">Solution</BUTTON>
+
+<DIV ID="q3_solution" STYLE="display:none">
+`glimpse` shows the number of rows and columns in the data, each column name, and the first few entries for each column. 
+</DIV>
+
+
+4. It is hard to learn a lot about data from just the data table. Instead, let's make a plot! We'll start by looking at the distribution of bill length, which is a quantitative numeric variable, so we can look at the distribution with a histogram. Run
+
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = bill_length_mm)) +
+  geom_histogram()
+```
+
+Describe the distribution of bill length in the penguins.
+
+**Code explanation:** What is this code doing? The `|>`, called the *pipe*, means "take this, THEN do that". So, `penguins |> ggplot(...)` means "take penguins, THEN make a plot". The `ggplot()` function provides lots of plot options. To make a histogram, we use `geom_histogram()`. We will cover more data wrangling and ggplot in Week 2.
+
+5. We can also look at the relationships between variables. We'll look at bill length and bill depth. Run
+
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point()
+```
+
+Describe the relationship between bill length and bill depth.
+
+6. From Exercises 4 and 5, it looks like there could be different groups in the data. Perhaps different species of penguin?
+Fill in the `...` in the following code so that the color and shape depend on species:
+
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = bill_length_mm, 
+             y = bill_depth_mm, 
+             color = ...,
+             shape = ...)) +
+  geom_point()
+```
+
+
+*Hint*: remember that you can find information on the variables in the dataset by running `?penguins`.
+
+<BUTTON ONCLICK="ShowAndHide('q6_solution')">Solution</BUTTON>
+
+<DIV ID="q6_solution" STYLE="display:none">
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = bill_length_mm, 
+             y = bill_depth_mm, 
+             color = species,
+             shape = species)) +
+  geom_point()
+```
+</DIV>
+
+7. Now suppose that I give you a penguin with bill length 50mm and bill depth 15mm. What species would you guess it is? (This is an example of a *prediction* question, one important use for statistical models.)
+
+**If you're finished early:** try to customize the plots! Search online to see if you can figure out how to change:
+
+* the axis labels
+* the theme
+* the colors of the points
+
+Hint 1: googling "ggplot plot labels" is a good place to start. Similar searches would be useful for the theme and colors.
