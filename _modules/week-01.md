@@ -14,6 +14,6 @@ January 14
   : [Slides](https://sta112-s26.github.io/slides/lecture_02.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_02.html)
 
 January 16
-: Activity -- beginning R
+: Activity -- beginning R 
 
 : **HW 1 released**{: .label .label-yellow }
