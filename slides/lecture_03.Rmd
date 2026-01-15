@@ -1,0 +1,44 @@
+---
+title: Activity -- Penguin data
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+## Agenda and announcements
+
+.large[
+Announcements / reminders:
+
+* HW 1 released on course website, due next Friday on Canvas
+
+Today:
+
+* Class activity
+]
+
+---
+
+## Activity: Continuing with penguins
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_03.html](https://sta112-s26.github.io/class_activities/ca_03.html)
+
+* Welcome to work in groups
+* Submit on Canvas when done
+* You may leave if done early, or start HW 1 in class
+* Goal for today is to experience more code. We will start digging in to details next week
+]
+
+.center[
+<img src="penguin_art.png" width="400">
+]
+
+.footnote[
+Artwork by @allison_horst
+]

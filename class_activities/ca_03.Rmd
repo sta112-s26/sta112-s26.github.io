@@ -1,0 +1,158 @@
+---
+title: "Class activity: Exploring the penguins data"
+output: 
+  tufte::tufte_html:
+    css: "lab.css"
+    tufte_variant: "envisioned"
+    highlight: pygments
+link-citations: yes
+---
+
+**Learning goals:** By the end of this class activity, you will be able to
+
+* Open, edit, and render a Quarto document
+* Manipulate data frames in R
+* Summarize and plot data
+
+**Instructions:** 
+
+* Spend the remainder of the class period on this activity
+* You are welcome to work with a neighbor, but everyone must submit their own file to Canvas
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+# Download the Quarto template
+
+```{marginfigure}
+Quarto is a super versatile tool! Many of my class materials are built with Quarto. `.qmd` is the file extension for Quarto documents.
+```
+
+Quarto allows you to create data analysis documents which combine text, code, and figures. Quarto will be our primary tool for writing up homework assignments and projects in this class. For this activity, I have provided a template Quarto document (`ca_03_template.qmd`) for you to fill in:
+
+**Step 1:** Download the template file: [ca_03_template.qmd](https://sta112-f25.github.io/class_activities/ca_03_template.qmd). Save it somewhere on your computer that you can find it easily (e.g., a folder on your desktop).
+
+**Step 2:** Rename the file to `ca_03_your_name.qmd` (so, for example, I would call it `ca_03_ciaran_evans.qmd`).
+
+**Step 3:** Open `ca_03_your_name.qmd` in RStudio.
+
+**Step 4:** Click the `Render` button at the top of the document. The rendered document is an HTML file that you can share (when you are finished with the activity, you will submit an HTML file on Canvas). You will re-render your Quarto file as you complete the activity.
+
+# Components of a Quarto document
+
+## The YAML
+At the very top the document, there is a section bordered by `---`. This is called the YAML, and it contains information about how to display our document. 
+
+**Step 5:** In the YAML, change `author` from `Your Name` to your actual name (keep the quotes). For example, I would do
+```
+author: "Ciaran Evans"
+```
+Now render the document again; your name is now displayed at the top.
+
+## Code chunks
+
+Quarto is great because we can include code directly in the document. This makes it *reproducible*, because the file contains all the code we used for a data analysis. We include R code in special blocks called *chunks*. These look like
+![](rmarkdown_new_code_chunk.png)
+
+In this activity, you will use one chunk for each question. You can see that I have included them for you in the template. You will fill them in as you go through the activity.
+
+There is also a chunk at the beginning that looks like this:
+![](rmarkdown_setup_chunk_libraries.png)
+We will call this the *setup* chunk. This is where we will do things like import data and load packages. For this activity, you will need the `palmerpenguins` and `tidyverse` packages, so they have been included in the setup.
+
+**Step 6:** Click the `Run` button ![](rmarkdown_chunk_run_button.png) on the right of the setup chunk. The `Run` button runs code so you can experiment with data before rendering the Quarto document.
+
+## Text
+
+Text you write outside of code chunks is displayed normally in the rendered HTML document. For example, `Type your answer to question 1 here...` is displayed under Exercise 1.
+
+The `##` is used to denote a *header*. For example, `## Exercise 1` is displayed as
+![](exercise_1_img.png)
+after you render. The number of `#` controls how big the header is (more `#` --> smaller).
+
+You're now ready to start working with the data! 
+
+# Continuing penguin EDA
+
+In the activity, you will continue to work with the `penguins` data from day 2. We will use R to conduct further exploratory data analysis on the penguins. In the process, you will learn more about working with data in R.
+
+```{marginfigure}
+Recall the pipe `|>` from Wednesday. `|>` means "take this, THEN do that". So `penguins |> count(species)` means "take penguins, THEN count the number of rows for each species".
+```
+
+1. On Wednesday, we saw that there are 344 penguins in the dataset. But how many penguins of each species are there? The `count()` function counts the number of observations in each group. In the code chunk for Exercise 1 in your Quarto document, type the following code:
+
+```{r, eval=F}
+penguins |>
+  count(species)
+```
+
+Now hit the `Run` button for that chunk. How many penguins of each species are there? Type your answer in the Quarto document, then render. The rendered file should display your code and answer for Exercise 1.
+
+2. How many penguins are there on each island? Modify the code in Exercise 1, and put it in the code chunk for Exercise 2, then type your answer below in Quarto.
+
+3. On Wednesday, we looked at the distribution of bill lengths in the dataset. Today, let's look at body mass. Modify code from Wednesday to create a histogram of body mass for the penguins; add this code to the chunk for Exercise 3 and run that chunk. A plot should appear in your Quarto file, and will also be displayed when you render. Finally, describe the distribution of body mass, based on the histogram.
+
+4. It can also be helpful to calculate summary statistics for distributions. Add the following code to your activity report, and run:
+
+```{r, eval=F}
+penguins |>
+  summarize(mean_mass = mean(body_mass_g))
+```
+
+However, we don't get a number when we run this code. What result do you get?
+
+:::{.question}
+*What's going on here?*
+
+`summarize` is used to calculated summary statistics for a data set, and `mean` is a function for calculating the mean. In `summarize`, we specify which statistics to calculate, and on which columns.
+:::
+
+```{marginfigure}
+Remember, you can learn more about a topic in R with `?`. Run `?NA` in the console to learn more about missing values.
+```
+
+5. `NA` in R means `Not Available` and results from missing values in the data. Typically, if data contain `NA`s, then a summary of that data (e.g., the mean) will also contain `NA`s. There are a wide variety of methods for handling missing data, but for now we will just ignore these rows when computing the summary statistics. Add the following code to your file, and run
+
+```{r, eval=F}
+penguins |>
+  summarize(mean_mass = mean(body_mass_g, na.rm=TRUE))
+```
+
+What is the mean body mass?
+
+:::{.question}
+*What's going on here?*
+
+`na.rm` is an argument in the `mean` function that specifies how we want to handle missing values. By setting `na.rm=TRUE`, we are telling the `mean` function to *ignore* the missing values in `body_mass_g`.
+:::
+
+
+6. As we saw on Wednesday, the different species can have pretty different characteristics! So maybe it doesn't make sense to group all three species together into one histogram or summary statistic. Add and run the following code for Exercise 6:
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = body_mass_g)) +
+  geom_histogram() +
+  facet_wrap(~species)
+```
+How does the distribution of body mass differ between species?
+
+:::{.question}
+*What's going on here?*
+
+`ggplot` builds plots layer by layer; the `+` means "add another layer". We've already seen `geom_histogram` used to create histograms. Now we're adding a *faceting* layer, which splits the plot by `species`. We'll learn more about `ggplot` and layers next week.
+:::
+
+7. If we're going to look at the distribution of body mass separately for each species, we should also calculate summary statistics separately for each species. Add and run the following code:
+
+```{r, eval=F}
+penguins |>
+  group_by(species) |>
+  summarize(mean_mass = mean(body_mass_g, na.rm=TRUE))
+```
+
+Report the mean for each species.
+
+:::{.question}
+*What's going on here?*
+
+`summarize` calculates summary statistics for a dataset. `group_by` is often used before `summarize`, and it means "group the data by the values of a column". So, the code above means "take penguins, group the penguins by their species, and within each group calculate the mean body mass".
+:::

@@ -59,6 +59,8 @@ Once you have loaded the `nycflights13` package, the data are contained in the `
 
 The questions in this section follow the general EDA steps discussed in [lecture 2](https://sta112-s26.github.io/slides/lecture_02.pdf). We'll begin exploratory data analysis by summarizing the data. 
 
+Recall that running `?flights` in the console will provide you information about the flights dataset, and `View(flights)` will allow you to see the data table itself.
+
 :::{.question}
 #### Question 1
 
