@@ -1,0 +1,567 @@
+---
+title: "STA 112 Codebook"
+output: 
+  rmdformats::robobook:
+    css: "homework.css"
+    highlight: pygments
+link-citations: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include=F}
+library(tidyverse)
+```
+
+
+**Use:** The purpose of this codebook is to summarize key code that we use in R to visualize and explore data, fit models, assess assumptions, and test hypotheses.
+
+Many tasks in R, such as visualizing data, can be done in multiple different ways. Throughout this codebook I will tend to use the `tidyverse` for visualizing and cleaning data, but be aware that other options exist.
+
+# Installing packages
+
+Many functions and datasets we want to use in R are provided in *packages*. An important package for STA 112 will be the `tidyverse` package, which is really a collection of R packages with a common philosophy on how to work with data.
+
+To install `tidyverse`, run the following code in your R console (*not* in a Quarto or R Markdown document!):
+
+```r
+install.packages("tidyverse")
+```
+
+To install other packages, simply replace the name `tidyverse` with the name of the package you want to install. Note that packages only ever need to be installed *once*. After a package is successfully installed, you won't need to install it again unless you update R on your computer.
+
+## Loading packages 
+
+Installing a package downloads it to your computer, but doesn't make it immediately available to your R session. If you want to use the `tidyverse` package, you will need to *load* it by running the following code:
+
+```r
+library(tidyverse)
+```
+
+(The code is similar for other packages, just replace the name `tidyverse`). You will need to include `library(...)` calls in the setup chunk of your Quarto or R Markdown documents.
+
+# Reading data into R
+
+For your projects, you will need to download data from the internet and load it into R. Most sites will allow you to download data as a CSV file. So, we need to know how to load a CSV file into R!
+
+In R, we can use the `read_csv` function in the `readr` package from the `tidyverse`. Your code will look something like this:
+
+```{r, eval=F}
+library(tidyverse)
+
+my_data <- read_csv("...")
+```
+
+where you will fill in the `...` with the path to your CSV file. 
+
+*What is a file path?* The file path is the location of the file on your computer. It includes the directory (Downloads, Desktop, Documents, etc.) in which the file is saved, and the name of the file. For example, suppose I download a CSV file called `cool_data.csv`. This file was probably saved to my downloads, so I would read it in like this:
+
+* On Mac:
+
+```{r, eval=F}
+my_data <- read_csv("~/Downloads/cool_data.csv")
+```
+
+* On Windows it might look something like this:
+
+```{r, eval=F}
+my_data <- read_csv("C:/Users/YourUser/Downloads/cool_data.csv")
+```
+
+If you moved the file somewhere else (such as your Desktop), then the file path will change! For example, if I moved the CSV to the Desktop:
+
+* On Mac:
+
+```{r, eval=F}
+my_data <- read_csv("~/Desktop/cool_data.csv")
+```
+
+* On Windows it might look something like this:
+
+```{r, eval=F}
+my_data <- read_csv("C:/Users/YourUser/Desktop/cool_data.csv")
+```
+
+## What if I downloaded an Excel file?
+
+Data in an Excel file will likely have a `.xlsx` file extension (rather than a `.csv`). You can either save the Excel file as a CSV, or you can do the following:
+
+* Install the `readxl` package
+* Replace `read_csv` with `read_excel` in the code above
+
+# Datasets used in this codebook
+
+This codebook will reference several different datasets for different examples. Here is a brief description of each dataset.
+
+## Penguins data
+
+The `penguins` dataset in the `palmerpenguins` package contains measurements for 344 penguins from Palmer Archipelago, in Antarctica. Variables include `species`, `island`, `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, `body_mass_g`, `sex`, and `year`.
+
+To load the `penguins` data, run the following in R (you may need to install the `palmerpenguins` package):
+
+```{r, eval=F}
+library(palmerpenguins)
+```
+
+More information about the penguins can be obtained by running the following in your R console:
+
+```{r, eval=F}
+?penguins
+```
+
+
+# Exploratory data analysis (EDA)
+
+In class, you learned tools for *exploratory data analysis* (EDA), in which we explore features of the data such as the available variables and their relationships. Exploratory data analysis is an important step before we do any model fitting or hypothesis testing, because it gets us familiar with the data and any unusual features. It is hard to fit a sensible model when we don't know what the data look like!
+
+This section of the codebook includes examples of summarizing the data, identifying missing values, and univariate and multivariate EDA. The data used for this section is the `penguins` dataset, from the `palmerpenguins` package. To load the `penguins` data, run the following in R (you may need to install the `palmerpenguins` package):
+
+```r
+library(palmerpenguins)
+```
+
+We can then look at the description of the `penguins` data provided by the package:
+
+```r
+?penguins
+```
+
+(this only works for datasets included in packages).
+
+```{r, include=F}
+library(palmerpenguins)
+library(tidyverse)
+```
+
+## Data size and variables
+
+To peak at the data, we can use the `glimpse` function to see the variables and the size:
+
+```{r}
+glimpse(penguins)
+```
+
+From this summary, we can see there are 344 rows (each row is one penguin), 8 columns, and we see the first few values in each column. Another way to explore the raw data in RStudio is to run
+
+```r
+View(penguins)
+```
+
+in your console (*not* in Quarto or R Markdown!).
+
+Other functions can also be used to calculate the number of rows, the number of columns, and both the number of rows and number of columns:
+
+```{r}
+nrow(penguins) # number of rows
+ncol(penguins) # number of columns
+dim(penguins) # dimensions of the data
+```
+
+## Missing data
+
+Sometimes, our data contains missing values. These are often recorded as `NA` in R (for "not available"). You can see when we glimpsed the `penguins` data above that there were several missing values (`NA`s), and there are probably more in the rest of the data that wasn't displayed.
+
+### Identifying missing values
+
+The following code can be used to identify the number of missing values in columns of a dataset. For example, suppose I wish to find missing values in the `penguins` dataset:
+
+```{r}
+colSums(is.na(penguins))
+```
+
+This tells me there are no missing values in species, island, or year; there are 2 missing values (they may or may not be the same rows) in bill length, bill depth, flipper length, and body mass; and there are 11 missing values in sex.
+
+If a column has too many missing values, we may wish to exclude that column from our analysis!
+
+### Removing missing values
+
+To remove missing rows which contain missing values, we can use the `drop_na` function. The following code creates a *new* dataset (called `penguins_new`) without those missing values:
+
+```{r}
+penguins_new <- penguins |>
+  drop_na()
+```
+
+How many rows did we remove (i.e., how many rows had missing values in any of the columns)? We can compare the dimensions of `penguins_new` to `penguins`:
+
+```{r}
+dim(penguins_new)
+```
+
+Since `penguins_new` has 333 rows, we have removed 11 rows due to missing values.
+
+### Removing missing values from specific columns
+
+What if we only want to remove rows with `NA`s in the `flipper_length_mm` column? We can specify that column in the `drop_na` function:
+
+```{r}
+penguins_new <- penguins |>
+  drop_na(flipper_length_mm)
+
+dim(penguins_new)
+```
+
+So, there were 2 rows with missing flipper length values.
+
+## A note on pipes (`|>`)
+
+Throughout this codebook (and throughout my own code too!), I use the pipe operator `|>`. The pipe just means "take THIS, then do THAT". So,
+
+```r
+penguins |>
+  drop_na(flipper_length_mm)
+```
+
+means "take `penguins`, then `drop_na` (remove missing values)". Pipes can be chained together into a longer sequence of steps, too:
+
+```{r}
+penguins |>
+  drop_na(flipper_length_mm) |>
+  dim()
+```
+
+I like pipes because I think they often make code cleaner and more readable, but you don't have to use them. You can collapse the pipe into a nested series of functions (evaluated from the inside out):
+
+```{r}
+dim(drop_na(penguins, flipper_length_mm))
+```
+
+Or you can save the intermediate steps:
+
+```{r}
+penguins_new <- drop_na(penguins, flipper_length_mm)
+dim(penguins_new)
+```
+
+
+## Types of variables
+
+Here we will deal mainly with *categorical* and *quantitative* variables. 
+
+* **Categorical** variables are variables which take on one of several fixed values. These values generally do not have a numeric interpretation.
+    * Examples: gender, favorite food, brand of laptop
+    * *Binary* categorical variables have exactly 2 possible values
+* **Quantitative** variables are variables which take on a numeric value, and which have a numeric interpretation.
+    * Examples: number of pets, height, weight, age
+    * *Discrete* quantitative variables only take on discrete values (e.g., number of pets)
+    * *Continuous* quantitative variables can take on an entire range of values (e.g., height is continuous if we allow heights like 60.323 inches)
+
+## An overview of `ggplot` for making plots
+
+The `ggplot2` package, which is part of `tidyverse`, is a very valuable tool for visualizing data. The `ggplot2` packages provides the `ggplot` function, which is my default for making plots. For example, here is code to create a scatterplot:
+
+```{r}
+penguins |>
+  ggplot(aes(x = bill_depth_mm, 
+             y = bill_length_mm, 
+             color = species)) +
+  geom_point() +
+  labs(x = 'Bill depth (mm)', 
+       y = 'Bill length (mm)',
+       color = 'Species',
+       title = "Penguin bill length vs. bill depth") +
+  theme_bw()
+```
+
+Notice that `ggplot` is warning us that we had some missing values in the data. If we remove those missing values, the warning will go away.
+
+### `ggplot` layers
+
+The idea behind `ggplot` is to build the figure in layers. We start off by specifying the data that we want to use (`penguins`), and the variables that we want to plot (`bill_depth_mm`, `bill_length_mm`, and `species`). These variables are mapped to the *aesthetics* of the plot: features like the x-axis (`x = bill_depth_mm`), the y-axis (`y = bill_length_mm`), and the color of the points (`color = species`). We specify the aesthetics in the `aes`. Other aesthetics include `shape`, `fill`, `alpha`, etc. 
+
+Running the first few lines sets up the plot for us to fill in:
+
+```{r}
+penguins |>
+  ggplot(aes(x = bill_depth_mm, 
+             y = bill_length_mm, 
+             color = species))
+```
+
+Next, we need to decide how to represent the observations in our plot. Here we have two quantitative variables, so a scatterplot is reasonable. We therefore add another layer to our plot, representing each observation as a point (notice that we add layers together with the `+` sign):
+
+```{r}
+penguins |>
+  ggplot(aes(x = bill_depth_mm, 
+             y = bill_length_mm, 
+             color = species)) +
+  geom_point()
+```
+
+The way we represent our data (in this case, points) is with geometric objects, or *geoms*. If we want points, we use `geom_point`. Other geoms include `geom_histogram` (histograms), `geom_bar` (bar charts), `geom_boxplot` (boxplots), among many others. The sections below give an overview of some of the most important plots.
+
+Finally, we want to make our plot look nice. This involves changing the axis labels and the legend, adding a title, and changing the theme. We include axis labels in the `labs` layer, and we change the theme in the `theme` layer. Possible themes include `theme_bw`, `theme_minimal`, `theme_classic`, `theme_light`, and many others. I typically use `theme_bw`, but you may choose whichver theme you prefer.
+
+```{r}
+penguins |>
+  ggplot(aes(x = bill_depth_mm, 
+             y = bill_length_mm, 
+             color = species)) +
+  geom_point() +
+  labs(x = 'Bill depth (mm)', 
+       y = 'Bill length (mm)',
+       color = 'Species',
+       title = "Penguin bill length vs. bill depth") +
+  theme_bw()
+```
+
+## Univariate exploratory data analysis
+
+Here we discuss how to summarize, visualize, and describe the distributions of categorical and quantitative variables.
+
+### Categorical variables
+
+#### Summarize
+
+The number of observations in each group can be summarized in a **frequency table**:
+
+```{r}
+penguins |>
+  count(species)
+```
+
+#### Visualize
+
+The same information can be visualized with **bar charts**, which display the number of observations in each group as the height of the bar:
+
+
+```{r}
+penguins |>
+  ggplot(aes(x = species)) +
+  geom_bar() +
+  labs(x = "Species") +
+  theme_bw()
+```
+
+Other visualization options include pie charts.
+
+#### Describe
+
+* Which category has the most number of observations? The least?
+* Are observations spread relatively evenly across categories, or do one or two categories have the majority of the observations?
+
+### Quantitative variables
+
+#### Summarize
+
+Many summary statistics can be calculated for quantitative variables. We often calculate the mean or median to summarize the center of the distribution, and the standard deviation or IQR to summarize the spread of the distribution. If the data are highly skewed, the median and IQR are often more appropriate measures of center and spread.
+
+Note that if NAs (missing values) are present in the data, then we need to remove them before calculating summary statistics. This can be done by removing all rows with NAs (`drop_na()`), or by ignoring NAs when we calculate the summary statistics (`na.rm=TRUE`).
+
+```{r}
+penguins |>
+  summarize(mean_mass = mean(body_mass_g, na.rm=TRUE),
+            median_mass = median(body_mass_g, na.rm=TRUE),
+            sd_mass = sd(body_mass_g, na.rm=TRUE),
+            iqr_mass = IQR(body_mass_g, na.rm=TRUE))
+```
+
+#### Visualize
+
+A good choice for visualize the distribution of a quantitative variable is with a **histogram**. A histogram divides the range of the data into evenly spaced bins, and then displays the number of observations which fall into each bin. Since the number of bins affects how the histogram looks, it is good practice to experiment with several different numbers of bins. This can be specified with the `bins` argument in `geom_histogram`.
+
+```{r, message=F, warning=F}
+penguins |>
+  ggplot(aes(x = body_mass_g)) +
+  geom_histogram(bins = 20) +
+  labs(x = "Body mass (g)") +
+  theme_bw()
+```
+
+Another common option for visualization is the **boxplot**. A boxplot doesn't show the whole distribution, but rather a summary of it. In particular, it displays the median, first and third quartiles, the smallest and largest non-outlier values, and any outliers.
+
+```{r, message=F, warning=F}
+penguins |>
+  ggplot(aes(y = body_mass_g)) +
+  geom_boxplot() +
+  labs(y = "Body mass (g)") +
+  theme_bw()
+```
+
+Other tools include density plots (`geom_density`) and violin plots (`geom_violin`).
+
+#### Describe
+
+* Shape (symmetric vs. skewed, number of modes, location of modes)
+* Center (usually mean or median)
+* Spread (usually standard deviation or IQR)
+* Any unusual features?
+* Any potential outliers?
+
+## Bivariate exploratory data analysis
+
+What if we want to look at the relationship between two variables? 
+
+### Two categorical variables
+
+#### Summarize
+
+We can count the number of observations in each group:
+
+```{r}
+penguins |>
+  count(species, island)
+```
+
+Sometimes, it is nice to display the result as a two-way table, where categories for one variable are in the rows, and categories for the second variable are in the columns:
+
+```{r}
+penguins |>
+  count(species, island) |>
+  spread(island, n)
+```
+
+(Note that here, NA means that this combination of values did not appear in the dataset. So, e.g., there were no Chinstrap penguins from Biscoe island).
+
+#### Visualize
+
+A common way to visualize the relationship between two categorical variables is with a **stacked bar graph**:
+
+```{r}
+penguins |>
+  ggplot(aes(x = species, fill = island)) +
+  geom_bar() +
+  labs(x = "Species",
+       fill = "Island") +
+  theme_bw()
+```
+
+Other options include mosaic plots.
+
+#### Describe
+
+* Which combination of categories has the most observations? The least?
+* Are there any combinations which do not appear in the data?
+* Is the distribution for the second variable the same for each level of the first variable? (E.g., in the `penguins` example above, there appears to be a relationship between species and island, because the distribution of penguins in each island is different for the three species. Adelie penguins are found on all three islands, whereas Chinstrap and Gentoo penguins are only on one).
+
+### Two quantitative variables
+
+#### Visualize
+
+To visualize the relationship between two quantitative variables, we can use a **scatterplot**:
+
+```{r, message=F, warning=F}
+penguins |>
+  ggplot(aes(x = flipper_length_mm, 
+             y = body_mass_g)) +
+  geom_point() +
+  labs(x = "Flipper length (mm)",
+       y = "Body mass (g)") +
+  theme_bw()
+```
+
+#### Summarize
+
+If the relationship looks *linear*, we can calculate the sample correlation coefficient, $r$, to summarize the strength of the linear relationship.  Recall that $r$ takes values between -1 and 1, with $r = -1$ a very strong negative relationship, $r = 0$ no relationship, and $r = 1$ a very strong positive relationship.
+
+When calculating the correlation, we have to handle NAs, if missing values are present in the data. This can be done either by removing all rows with NAs before hand (`drop_na()`), or by ignoring NAs when computing correlation (`use = "complete.obs"`).
+
+```{r}
+penguins |>
+  summarize(r = cor(flipper_length_mm, 
+                    body_mass_g, 
+                    use="complete.obs"))
+```
+
+#### Describe
+
+* does there appear to be a relationship?
+* if so, does the relationship appear to be positive or negative?
+* what is the general shape of the relationship? Does it look linear?
+* if the relationship looks linear, report the sample correlation coefficient
+
+### One categorical, one quantitative
+
+#### Visualize
+
+There are several options for visualizing the relationship between a categorical and a quantitative variable. A common choice is to make a **boxplot** for each level of the categorical variable:
+
+```{r, warning=F}
+penguins |>
+  ggplot(aes(x = species, y = body_mass_g)) +
+  geom_boxplot() +
+  labs(x = "Species", y = "Body mass (g)") +
+  theme_bw()
+```
+
+While boxplots are just summaries of a distribution, they are very handy for comparing across groups.
+
+Another option, if the number of categories isn't too large, is to create a **histogram** faceted by the categorical variable:
+
+```{r, warning=F}
+penguins |>
+  ggplot(aes(x = body_mass_g)) +
+  geom_histogram(bins = 20) +
+  facet_wrap(~species) +
+  labs(x = "Body mass (g)") +
+  theme_bw()
+```
+
+#### Summarize
+
+To summarize the relationship, we can calculate summary statistics for the quantitative variable at each level of the categorical variable. The `group_by` function is very helpful here.
+
+```{r}
+penguins |>
+  group_by(species) |>
+  summarize(mean_mass = mean(body_mass_g, na.rm=TRUE),
+            median_mass = median(body_mass_g, na.rm=TRUE))
+```
+
+#### Describe
+
+Is the distribution of the quantitative variable different across levels of the categorical variable? If so, how? (e.g., differences in shape, center, spread)
+
+## More than two variables
+
+With more than two variables, you can get a lot of combinations. Here are just a couple examples. Using additional aesthetics and faceting is helpful for visualization. Using grouping is helpful for summary statistics.
+
+### Quantitative, quantitative, categorical
+
+```{r, message=F, warning=F}
+penguins |>
+  ggplot(aes(x = bill_depth_mm, 
+             y = body_mass_g, 
+             color = species)) +
+  geom_point() +
+  labs(x = "Bill depth (mm)",
+       y = "Body mass (g)",
+       color = "Species") +
+  theme_bw()
+
+penguins |>
+  group_by(species) |>
+  summarize(r = cor(bill_depth_mm, 
+                    body_mass_g, 
+                    use="complete.obs"))
+```
+
+### Quantitative, categorical, categorical
+
+```{r, message=F, warning=F}
+penguins |>
+  ggplot(aes(x = island, 
+             y = body_mass_g)) +
+  geom_boxplot() +
+  facet_wrap(~species) +
+  labs(x = "Island", 
+       y = "Body mass (g)") +
+  theme_bw()
+
+penguins |>
+  ggplot(aes(x = body_mass_g)) +
+  geom_histogram(bins=15) +
+  facet_grid(island~species) +
+  labs(x = "Body mass (g)") +
+  theme_bw()
+
+penguins |>
+  group_by(species, island) |>
+  summarize(mean_mass = mean(body_mass_g, na.rm=TRUE),
+            median_mass = median(body_mass_g, na.rm=TRUE))
+```
+
+
+<div id="license">
+<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work was created by Ciaran Evans and is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>. Last updated 2025 August 12.
+</div>

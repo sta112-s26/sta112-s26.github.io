@@ -30,7 +30,7 @@ library(tidyverse)
 1. Open RStudio, and install the `nycflights13` package, which provides data on flights from New York airports, which you will explore in this assignment. (See the class activity from the first week for examples installing R packages). You only need to install packages once, so the installation code should be run in the console, not included in your Quarto document.
 2. Download the Quarto template file for this assignment: [hw_01_template.qmd](https://sta112-s26.github.io/homework/hw_01_template.qmd). Save it to your computer, and change the file name to `hw_01_your_name.qmd`
 3. Open `hw_01_your_name.qmd` in RStudio. Change the `author` in YAML to your name.
-4. Fill in answers to questions 1 -- 8. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
+4. Fill in answers to questions 1 -- 9. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
 5. When you are done, render and submit your HTML file on Canvas (Assignments -> Homework 1).
 
 # Part 0: Survey
@@ -39,7 +39,9 @@ In this class, we are beginning with data wrangling and exploratory data analysi
 
 To help me judge where everyone is at with statistical communication at the beginning of the semester, please fill out this brief survey:
 
-Make sure to select *Dr. Evans STA 112* for your class section!
+[https://forms.gle/3Bao9iMM9mUtq2Nq8](https://forms.gle/3Bao9iMM9mUtq2Nq8)
+
+Make sure to select the correct class section!
 
 
 
@@ -47,10 +49,14 @@ Make sure to select *Dr. Evans STA 112* for your class section!
 
 In this section, we'll practice exploratory data analysis in R, using data on flights departing from New York City's three major airports. These questions can be answered by adapting code from the first week of class.
 
-Once you have loaded the `nycflights13` package, the data are contained in the `flights` dataset. Remember that you can use `?` to get help about functions and datasets in R, so `?flights` will tell you more about the flights data.
+Once you have loaded the `nycflights13` package, the data are contained in the `flights` dataset. 
+
+* Remember that you can use `?` to get help about functions and datasets in R, so `?flights` will tell you more about the flights data. 
+* To see the full data itself in R, run `View(flights)` in the console
 
 ### Some helpful resources
 
+* The [course codebook](https://sta112-s26.github.io/resources/codebook.html) provides an overview of exploratory data analysis in R, with code and examples
 * If you're not sure how to make a particular plot, a good resource is the `ggplot2` webpage ([https://ggplot2.tidyverse.org/index.html](https://ggplot2.tidyverse.org/index.html)). At the search bar in the top, you can search for the type of plot you would like to make. 
 * The `ggplot2` cheat sheet ([click here](https://rstudio.github.io/cheatsheets/html/data-visualization.html)) is also useful. (What's the difference between `ggplot` and `ggplot2`? `ggplot` is the name of the function we use to make plots, `ggplot2` is the package which provides that function. `ggplot2` is one of several packages included in the tidyverse).
 * For help with Quarto documents, see the [Quarto tutorial](https://quarto.org/docs/get-started/hello/rstudio.html)
@@ -70,13 +76,26 @@ Summarize the `flights` data. Describe:
 * What does a row in the data represent?
 * How many rows and columns are in the data?
 * What information do the variables record?
-* Are there any missing data?
+:::
+
+It is also important to know whether there is any missing data in the dataset. Missing data occurs when one or more of the variables in the data is not recorded for a row. To check for missing data with the `flights` dataset, we can use the following code:
+
+```{r, eval=F}
+colSums(is.na(flights))
+```
+
+This will return the number of missing values for each column of the data. If there are 0 missing values for a column, then there is no missing data in that column.
+
+:::{.question}
+#### Question 2
+
+Use the code to look for missing values in the `flights` dataset. Which columns have missing values?
 :::
 
 Now let's look at the distribution of some of the variables. For quantitative variables, we can visualize the distribution with a histogram. 
 
 :::{.question}
-#### Question 2
+#### Question 3
 
 Create a histogram for the distribution of departure delay, and describe the distribution.
 :::
@@ -84,15 +103,15 @@ Create a histogram for the distribution of departure delay, and describe the dis
 For categorical variables, we can visualize the distribution through a bar chart.
 
 :::{.question}
-#### Question 3
+#### Question 4
 
-Create a bar chart showing the number of flights departing from each of the three New York airports (EWR, LGA, and JFK). Which airport had the most flights? *Hint: the code for making a bar chart with `ggplot` is very similar to the code for making a histogram in Question 2. Just change the variable being plotted, and replace `geom_histogram` with something else.*
+Create a bar chart showing the number of flights departing from each of the three New York airports (EWR, LGA, and JFK). Which airport had the most flights? *Hint: the code for making a bar chart with `ggplot` is very similar to the code for making a histogram in Question 3. Just change the variable being plotted, and replace `geom_histogram` with something else.*
 :::
 
 Now let's look at the relationship between airport and departure delay.
 
 :::{.question}
-#### Question 4
+#### Question 5
 
 Create a plot showing the distribution of departure delay for each airport. For each airport, also report the mean departure delay and the standard deviation of departure delays. How does the distribution of departure delay differ across the three New York airports (EWR, LGA, and JFK)? *Hint: you can answer this question by adapting code from Friday's class activity.*
 :::
@@ -100,7 +119,7 @@ Create a plot showing the distribution of departure delay for each airport. For 
 Finally, let's visualize the relationship between departure delay from New York, and arrival delay at the flight's destination. 
 
 :::{.question}
-#### Question 5
+#### Question 6
 
 Below is a scatterplot showing arrival delay vs. departure delay. I have:
 
@@ -144,19 +163,19 @@ First, **read the following material** from *Modern Data Science with R* (3rd ed
 Then answer the following questions.
 
 :::{.question}
-#### Question 6
+#### Question 7
 
 Why is reproducibility important when performing data analyses?
 :::
 
 :::{.question}
-#### Question 7
+#### Question 8
 
 What practices can you engage in to help make your work reproducible?
 :::
 
 :::{.question}
-#### Question 8
+#### Question 9
 
 When discussing the FiveThirtyEight article on NBA attendance, we said that reproducing the analysis would be challenging, in part because the data were not made publicly available.
 

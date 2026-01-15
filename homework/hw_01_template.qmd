@@ -53,11 +53,15 @@ Type your answer to question 4 here...
 
 ```
 
+Type your answer to question 5 here...
+
 
 ### Question 6
 
 
-Type your answer to question 6 here...
+```{r}
+
+```
 
 ### Question 7
 
@@ -66,6 +70,12 @@ Type your answer to question 7 here...
 
 
 ### Question 8
+
+
+Type your answer to question 8 here...
+
+
+### Question 9
 
 
 Type your answer to question 8 here...
