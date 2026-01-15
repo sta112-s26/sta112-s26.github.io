@@ -13,7 +13,7 @@ description: A listing of all the course staff members.
 {{ staffer }}
 {% endfor %}
 
-## Instructor
+## TA
 
 {% assign tas = site.staffers | where: 'role', 'TA' %}
 {% for staffer in tas %}
