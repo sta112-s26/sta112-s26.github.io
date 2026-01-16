@@ -62,9 +62,12 @@ If you have any questions about the course (or statistics in general!), please d
 
 Keep in mind that debugging software issues can take time, so make sure to start the assignments early in case you run into problems.
 
-**Office hours:** Drop-in office hours will be held in Manchester 329 at the following times: (TBA)
+**Office hours:** Drop-in office hours will be held in Manchester 329 at the following times:
 
-**Study sessions:** There will also be TA-led study sessions at the following times: (TBA)
+* Wednesday 2  - 3 pm
+* Thursday 2 - 3 pm
+
+**Study sessions:** There will also be study sessions on Mondays, 7 - 9pm in Manchester 020
 
 **Math and stats center:** You can also book tutoring appointments at the [Math and Stats Center](https://mathandstatscenter.wfu.edu/tutoring/)
 

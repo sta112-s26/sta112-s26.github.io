@@ -80,7 +80,7 @@ Summarize the `flights` data. Describe:
 
 It is also important to know whether there is any missing data in the dataset. Missing data occurs when one or more of the variables in the data is not recorded for a row. To check for missing data with the `flights` dataset, we can use the following code:
 
-```{r, eval=F}
+```{r, echo=T, eval=F}
 colSums(is.na(flights))
 ```
 
