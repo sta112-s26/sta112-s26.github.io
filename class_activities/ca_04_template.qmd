@@ -1,0 +1,37 @@
+---
+---
+---
+title: "Class activity"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(palmerpenguins)
+library(tidyverse)
+```
+
+### Exercise 1
+
+```{r}
+
+```
+
+### Exercise 2
+
+```{r}
+
+```
+
+### Exercise 3
+
+```{r}
+
+```
+
+Type your answer to question 3 here...
+

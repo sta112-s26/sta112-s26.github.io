@@ -7,6 +7,7 @@ January 19
 
 January 21
 : Data visualization
+  : [Slides](https://sta112-s26.github.io/slides/lecture_04.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_04.html)
 
 January 23
 : Intro to regression

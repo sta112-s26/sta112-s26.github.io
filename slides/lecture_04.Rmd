@@ -1,0 +1,691 @@
+---
+title: Data visualization
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+### Agenda
+
+.large[
+* Today: data visualization with `ggplot`
+  * Formalize what we've seen in class activities
+* HW 1 due Friday
+  * I'm available in office hours or by email if you have any questions
+]
+    
+---
+
+### Data for today
+
+.center[
+<img src="penguin_art.png" width="700">
+]
+
+.footnote[
+Artwork by @allison_horst
+]
+
+---
+
+### Data visualization with ggplot2
+
+.large[
+* `ggplot2`: the R package
+* `ggplot`: the function (from `ggplot2`) used to make plots
+* `gg` stands for "Grammar of Graphics"
+]
+
+.center[
+<img src="ggplot2_masterpiece.png" width = "500px">
+]
+
+.footnote[
+Artwork by @allison_horst
+]
+
+---
+
+### Grammar of Graphics
+
+.large[
+Build visualizations in layers:
+]
+
+.center[
+<img src="grammar-of-graphics.png" width = "700px">
+]
+
+---
+
+### Plot to make
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=12, fig.height=5}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=3) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+---
+
+### Layer 1: the data
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+.large[
+**Data:** Which data do I want to plot?
+]
+
+---
+
+### Layer 1: the data
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+.large[
+**Data:** Which data do I want to plot?
+]
+
+```{r, eval=F}
+penguins
+```
+
+---
+
+### Layer 2: Aesthetics
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+.large[
+**Aes**thetics: mapping features of the plot to variables in the data
+
+.question[
+Which variables from the data do I want to plot?
+]
+]
+
+---
+
+### Layer 2: Aesthetics
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+.large[
+**Aes**thetics: mapping features of the plot to variables in the data
+
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = body_mass_g,
+             y = flipper_length_mm,
+             color = species,
+             shape = species))
+```
+]
+
+---
+
+### Layer 3: Geometric objects
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+.large[
+**Geom**etric objects: objects we use to visualize the data
+
+.question[
+What objects do we use to represent the penguins on this plot?
+]
+]
+
+---
+
+### Layer 3: Geometric objects
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+.large[
+**Geom**etric objects: objects we use to visualize the data
+
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = body_mass_g,
+             y = flipper_length_mm,
+             color = species,
+             shape = species)) +
+  geom_point()
+```
+]
+
+---
+
+### Layer 3: Geometric objects
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+
+.large[
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = body_mass_g,
+             y = flipper_length_mm,
+             color = species,
+             shape = species)) +
+  geom_point()
+```
+
+Other geometric objects include `geom_histogram`, `geom_boxplot`, `geom_bar`, `geom_smooth`, and `geom_line`
+]
+
+---
+
+### What we have so far
+
+```{r, warning=F, message=F, fig.align='center', fig.width=7, fig.height=5}
+penguins |>
+  ggplot(aes(x = body_mass_g,
+             y = flipper_length_mm,
+             color = species,
+             shape = species)) +
+  geom_point()
+```
+
+---
+
+### What we have so far
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=6.5, fig.height=4.5}
+penguins |>
+  ggplot(aes(x = body_mass_g,
+             y = flipper_length_mm,
+             color = species,
+             shape = species)) +
+  geom_point()
+```
+
+.large[
+Still need to:
+  * Divide the plot by island (Biscoe, Dream, and Torgersen)
+  * Add labels and a title
+  * Change the background
+]
+
+---
+
+### Layer 4: Faceting
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+.large[
+**Facets:** split visualization by the value of another variable
+
+```{r, eval=F}
+penguins |>
+  ggplot(aes(x = body_mass_g,
+             y = flipper_length_mm,
+             color = species,
+             shape = species)) +
+  geom_point() +
+  facet_wrap(~island)
+```
+]
+
+---
+
+### Making the plot look nice: labels and theme
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=10, fig.height=3}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point(size=2) +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+```{r}
+penguins |>
+  ggplot(aes(x = body_mass_g, 
+             y = flipper_length_mm, 
+             color = species,
+             shape = species)) +
+  geom_point() +
+  facet_wrap(~island) +
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)",
+       color = "Species",
+       shape = "Species",
+       title = "Flipper length vs. body mass") +
+  theme_bw()
+```
+
+---
+
+### Concept check
+
+.large[
+.question[
+Which code created this plot?
+]
+]
+
+.pull-left[
+```{r, echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+penguins |>
+  ggplot(aes(x = island, y = body_mass_g)) +
+  geom_boxplot() +
+  labs(x = "Island", y = "Body mass (g)") +
+  theme(text = element_text(size = 20))
+```
+]
+
+.pull-right[
+
+.abox[ 
+```
+(A)  penguins |>
+       ggplot(aes(x = island, 
+                  y = body_mass_g)) +
+       geom_boxplot()
+```
+]
+
+.bbox[
+```
+(B)  penguins |>
+       ggplot(aes(x = island, 
+                  y = body_mass_g)) +
+       geom_boxplot() +
+       labs(x = "Island", 
+            y = "Body mass (g)")
+```
+]
+
+.cbox[
+```
+(C) penguins |>
+      geom_boxplot()
+```
+]
+
+.dbox[
+
+```
+(D) penguins |>
+      ggplot(aes(x = island, 
+                 y = body_mass_g)) +
+      geom_histogram() +
+      labs(x = "Island", 
+           y = "Body mass (g)")
+```
+
+]
+]
+
+---
+
+### Concept check
+
+.large[
+.question[
+Which code created this plot?
+]
+]
+
+.pull-left[
+```{r, echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+penguins |>
+  ggplot(aes(x = island, y = body_mass_g)) +
+  geom_boxplot() +
+  labs(x = "Island", y = "Body mass (g)") +
+  theme(text = element_text(size = 20))
+```
+
+**Answer:** (B)
+]
+
+.pull-right[
+
+.abox[ 
+```
+(A)  penguins |>
+       ggplot(aes(x = island, 
+                  y = body_mass_g)) +
+       geom_boxplot()
+```
+]
+
+.bbox[
+```
+(B)  penguins |>
+       ggplot(aes(x = island, 
+                  y = body_mass_g)) +
+       geom_boxplot() +
+       labs(x = "Island", 
+            y = "Body mass (g)")
+```
+]
+
+.cbox[
+```
+(C) penguins |>
+      geom_boxplot()
+```
+]
+
+.dbox[
+
+```
+(D) penguins |>
+      ggplot(aes(x = island, 
+                 y = body_mass_g)) +
+      geom_histogram() +
+      labs(x = "Island", 
+           y = "Body mass (g)")
+```
+
+]
+]
+
+
+
+---
+
+### Concept check
+
+.large[
+.question[
+Which code created this plot?
+]
+]
+
+.pull-left[
+```{r, echo=F, fig.width=6, fig.height=4, fig.align='center'}
+penguins |>
+  ggplot(aes(x = species, fill = island)) +
+  geom_bar() +
+  theme(text = element_text(size = 20))
+```
+]
+
+.pull-right[
+
+.abox[ 
+```
+(A)  penguins |>
+       ggplot(aes(x = species))
+```
+]
+
+.bbox[
+```
+(B)  penguins |>
+       ggplot(aes(x = species, 
+                  fill = island)) +
+       geom_point()
+```
+]
+
+.cbox[
+```
+(C)  penguins |>
+       ggplot(aes(x = species, 
+                  fill = island)) +
+       geom_bar()
+```
+]
+
+.dbox[
+
+```
+(D)  penguins |>
+       ggplot(aes(x = species)) +
+       geom_bar()
+```
+
+]
+]
+
+---
+
+### Concept check
+
+.large[
+.question[
+Which code created this plot?
+]
+]
+
+.pull-left[
+```{r, echo=F, fig.width=6, fig.height=4, fig.align='center'}
+penguins |>
+  ggplot(aes(x = species, fill = island)) +
+  geom_bar() +
+  theme(text = element_text(size = 20))
+```
+]
+
+.pull-right[
+
+.abox[ 
+```
+(A)  penguins |>
+       ggplot(aes(x = species))
+```
+]
+
+.bbox[
+```
+(B)  penguins |>
+       ggplot(aes(x = species, 
+                  fill = island)) +
+       geom_point()
+```
+]
+
+.cbox[
+```
+(C)  penguins |>
+       ggplot(aes(x = species, 
+                  fill = island)) +
+       geom_bar()
+```
+]
+
+.dbox[
+
+```
+(D)  penguins |>
+       ggplot(aes(x = species)) +
+       geom_bar()
+```
+
+]
+]
+
+**Answer:** (C)
+
+---
+
+### Class Activity
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_04.html](https://sta112-f25.github.io/class_activities/ca_04.html)
+
+* Welcome to work in groups
+* Submit HTML on Canvas when finished
+* Can work on HW 1 if done early
+]
+

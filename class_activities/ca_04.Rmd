@@ -1,0 +1,150 @@
+---
+title: "Class activity: digging in to ggplot"
+output: 
+  tufte::tufte_html:
+    css: "lab.css"
+    tufte_variant: "envisioned"
+    highlight: pygments
+link-citations: yes
+---
+
+In this activity, you will practice using `ggplot` to create and customize visualizations. You will use the `penguins` data from last week and today's class. Work in groups to answer the questions below. Solutions are provided for the first two questions, in case you get stuck.
+
+**Instructions:** 
+
+* Spend the remainder of the class period on this activity
+* You are welcome to work with a neighbor, but everyone must submit their own file to Canvas
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+## Setup
+
+**Template file:** [ca_04_template.qmd](https://sta112-s26.github.io/class_activities/ca_04_template.qmd)
+
+* Rename the file to `ca_04_your_name.qmd` (so, for example, I would call it `ca_04_ciaran_evans.qmd`)
+* In the YAML, change `author` from `Your Name` to your actual name (keep the quotes)
+
+The `penguins` data comes from the `palmerpenguins` package, and `ggplot` is included in the `tidyverse` package. You will need to load these packages (with `library`) to run the code today. If you use the Quarto template, those packages are included in the setup chunk, so you just need to run the setup chunk first.
+
+## Questions
+
+1. Fill in the following code to create the scatterplot below (each `...` needs to be filled in).
+
+```r
+penguins |>
+  ggplot(aes(x = bill_length_mm, 
+             y = flipper_length_mm, 
+             color = island,
+             shape = island)) +
+  geom_point() +
+  facet_wrap(~sex) +
+  labs(x = "...",
+       y = "...",
+       color = "...",
+       shape = "...") +
+  theme_...()
+```
+
+<SCRIPT>
+function ShowAndHide(divid) {
+    var x = document.getElementById(divid);
+    if (x.style.display == 'none') {
+        x.style.display = 'block';
+    } else {
+        x.style.display = 'none';
+    }
+}
+</SCRIPT>
+
+<BUTTON ONCLICK="ShowAndHide('q1_solution')">Solution</BUTTON>
+
+<DIV ID="q1_solution" STYLE="display:none">
+```r
+penguins |>
+  ggplot(aes(x = bill_length_mm, 
+             y = flipper_length_mm, 
+             color = island,
+             shape = island)) +
+  geom_point() +
+  facet_wrap(~sex) +
+  labs(x = "Bill length (mm)",
+       y = "Flipper length (mm)",
+       color = "Island",
+       shape = "Island") +
+  theme_bw()
+```
+</DIV>
+
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=8, fig.height=4}
+library(tidyverse)
+library(palmerpenguins)
+penguins |>
+  ggplot(aes(x = bill_length_mm, 
+             y = flipper_length_mm, 
+             color = island,
+             shape = island)) +
+  geom_point() +
+  facet_wrap(~sex) +
+  labs(x = "Bill length (mm)",
+       y = "Flipper length (mm)",
+       color = "Island",
+       shape = "Island") +
+  theme_bw()
+```
+
+2. Fill in the following code to create the boxplots below (each `...` needs to be filled in):
+
+```r
+penguins |>
+  ggplot(aes(x = ..., 
+             y = ...)) +
+  geom_...() +
+  labs(x = "...", 
+       y = "...", 
+       title = "...") +
+  theme_classic()
+```
+
+<BUTTON ONCLICK="ShowAndHide('q2_solution')">Solution</BUTTON>
+
+<DIV ID="q2_solution" STYLE="display:none">
+```r
+penguins |>
+  ggplot(aes(x = flipper_length_mm, 
+             y = island)) +
+  geom_boxplot() +
+  labs(x = "Flipper length (mm)", 
+       y = "Island", 
+       title = "Distribution of flipper length by island") +
+  theme_classic()
+```
+</DIV>
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=8, fig.height=4}
+penguins |>
+  ggplot(aes(x = flipper_length_mm, 
+             y = island)) +
+  geom_boxplot() +
+  labs(x = "Flipper length (mm)", 
+       y = "Island", 
+       title = "Distribution of flipper length by island") +
+  theme_classic()
+```
+
+3. Recreate this scatterplot using the `penguins` data. You may find the `ggplot2` cheatsheet [(click here)](https://raw.githubusercontent.com/rstudio/cheatsheets/master/data-visualization.pdf) helpful. Do you think all the aesthetics used in the plot are useful?
+
+```{r, echo=F, warning=F, message=F, fig.align='center', fig.width=8, fig.height=3}
+penguins |>
+  ggplot(aes(x = flipper_length_mm, 
+             y = body_mass_g,
+             color = sex,
+             shape = sex,
+             size = bill_length_mm)) +
+  geom_point() +
+  facet_wrap(~species) +
+  labs(x = "Flipper length (mm)", 
+       y = "Body mass (g)",
+       color = "Sex", 
+       shape = "Sex",
+       size = "Bill length (mm)") +
+  theme_light()
+```
