@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Intro to Regression</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Intro to Regression
+]
+
+---
+
+
+### Modeling
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+* Given a value of GDP per capita, what would I predict for life expectancy?
+* What is the relationship between GDP per capita and life expectancy?
+]
+
+---
+
+### General model
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.center[
+`\(\text{life expectancy} \overset{?}{=} f(\text{GDP per capita})\)`
+]
+]
+
+.large[
+.question[
+Do all of the observations fall exactly on the curve?
+]
+]
+
+---
+
+### General model
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.center[
+`\(\text{life expectancy} = f(\text{GDP per capita}) + \varepsilon\)`
+]
+]
+
+.large[
+* `\(f\)` = average life expectancy, given GDP per capita
+* `\(\varepsilon\)` = random error term (how observations vary around `\(f\)`)
+]
+
+---
+
+### Regression
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.center[
+`\(\text{life expectancy} = f(\text{GDP per capita}) + \varepsilon\)`
+]
+]
+
+.large[
+* But, we don't actually know what `\(f\)` is!
+* Regression: estimate `\(f\)`
+]
+
+---
+
+### Goals of regression
+
+.large[
+In general, write
+
+.center[
+`\(y = f(x) + \varepsilon\)`
+]
+]
+
+.large[
+* `\(x\)` = predictor, aka independent or explanatory variable
+* `\(y\)` = response, aka dependent variable
+]
+
+---
+
+### Goals of regression
+
+.large[
+.center[
+`\(y = f(x) + \varepsilon\)`
+]
+]
+
+.large[
+How do we estimate `\(f\)`? Depends on our goal.
+
+* **Prediction:** given a value of `\(x\)`, what is our "best guess" for the value of `\(y\)`?
+    * don't care about the form of `\(f\)`, just want to get good predictions
+    ]
+
+.large[
+* **Interpretation/association:** What is the relationship between `\(x\)` and `\(y\)`?
+    * want to get form of `\(f\)` right
+    ]
+
+.large[
+* **Causal inference:** If I change `\(x\)`, how does `\(y\)` change?
+    * need study design that allows for causal conclusions (e.g., randomized experiment)
+]
+    
+---
+
+### Prediction, interpretation/association, or causal inference?
+
+.large[
+**Scenario:** A beer company is conducting a social media marketing campaign, and wants to identify individuals who are likely to buy their beer based on Facebook and Instagram activity. The company doesn't care about understanding the relationship, they just want to accurately target likely customers.
+
+.abox[
+(A) Prediction
+]
+
+.bbox[
+(B) Interpretation/association
+]
+
+.cbox[
+(C) Causal inference
+]
+]
+
+---
+
+### Prediction, interpretation/association, or causal inference?
+
+.large[
+**Scenario:** A beer company is conducting a social media marketing campaign, and wants to identify individuals who are likely to buy their beer based on Facebook and Instagram activity. The company doesn't care about understanding the relationship, they just want to accurately target likely customers.
+
+.abox[
+(A) Prediction
+]
+
+.bbox[
+(B) Interpretation/association
+]
+
+.cbox[
+(C) Causal inference
+]
+]
+
+.large[
+**Answer:** Prediction
+]
+
+---
+
+### Prediction, interpretation/association, or causal inference?
+
+.large[
+**Scenario:** The beer company advertises on several different platforms: Facebook, Instagram, YouTube, and on several popular podcasts. They want to know whether the amount they spend on each platform is associated with an increase in sales.
+
+.abox[
+(A) Prediction
+]
+
+.bbox[
+(B) Interpretation/association
+]
+
+.cbox[
+(C) Causal inference
+]
+]
+
+---
+
+### Prediction, interpretation/association, or causal inference?
+
+.large[
+**Scenario:** The beer company advertises on several different platforms: Facebook, Instagram, YouTube, and on several popular podcasts. They want to know whether the amount they spend on each platform is associated with an increase in sales.
+
+.abox[
+(A) Prediction
+]
+
+.bbox[
+(B) Interpretation/association
+]
+
+.cbox[
+(C) Causal inference
+]
+]
+
+.large[
+**Answer:** Interpretation/association
+]
+
+---
+
+### Prediction, interpretation/association, or causal inference?
+
+.large[
+**Scenario:** The beer company wants to target social media influencers who can help sell their beer. Unfortunately, no one in the company knows any influencers. So they decide to identify influencers by finding Instagram posts with pictures of beer. To do so, the company trains a neural network which takes an Instagram image as input, and outputs either "contains beer" or "does not contain beer". They don't care how the neural network works, they just want to identify images of beer.
+
+.abox[
+(A) Prediction
+]
+
+.bbox[
+(B) Interpretation/association
+]
+
+.cbox[
+(C) Causal inference
+]
+]
+
+---
+
+### Prediction, interpretation/association, or causal inference?
+
+.large[
+**Scenario:** The beer company wants to target social media influencers who can help sell their beer. Unfortunately, no one in the company knows any influencers. So they decide to identify influencers by finding Instagram posts with pictures of beer. To do so, the company trains a neural network which takes an Instagram image as input, and outputs either "contains beer" or "does not contain beer". They don't care how the neural network works, they just want to identify images of beer.
+
+.abox[
+(A) Prediction
+]
+
+.bbox[
+(B) Interpretation/association
+]
+
+.cbox[
+(C) Causal inference
+]
+]
+
+.large[
+**Answer:** Prediction
+]
+
+---
+
+### Prediction, interpretation/association, or causal inference?
+
+.large[
+**Scenario:** The beer company made their Facebook ads with Comic Sans, but it turns out that Comic Sans isn't cool anymore. The company considers switching their advertising font to Papyrus, but they want to know whether changing the font will lead to more sales.
+
+.abox[
+(A) Prediction
+]
+
+.bbox[
+(B) Interpretation/association
+]
+
+.cbox[
+(C) Causal inference
+]
+]
+
+---
+
+### Prediction, interpretation/association, or causal inference?
+
+.large[
+**Scenario:** The beer company made their Facebook ads with Comic Sans, but it turns out that Comic Sans isn't cool anymore. The company considers switching their advertising font to Papyrus, but they want to know whether changing the font will lead to more sales.
+
+.abox[
+(A) Prediction
+]
+
+.bbox[
+(B) Interpretation/association
+]
+
+.cbox[
+(C) Causal inference
+]
+]
+
+.large[
+**Answer:** Causal inference
+]
+
+---
+
+### Some regression methods
+
+.large[
+.center[
+`\(y = f(x) + \varepsilon\)`
+]
+]
+
+.large[
+* Models often used for prediction (fewer assumptions about `\(f\)`):
+  * tree-based methods
+  * local regression
+  * neural networks
+  * `\(+\)` others
+* Models often used for interpretation/association (more assumptions about `\(f\)`):
+  * linear regression
+  * generalized linear models
+  * penalized regression
+  * `\(+\)` others
+]
+    
+---
+
+### Linear regression
+
+.large[
+What is the relationship between body mass and bill length for Gentoo penguins?
+]
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+How would you describe this relationship?
+]
+]
+
+---
+
+### Linear regression
+
+.large[
+.question[
+When the relationship appears linear, let's use a line!
+]
+]
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.center[
+`\(\text{bill length} = f(\text{body mass}) + \varepsilon\)`
+]
+]
+
+.large[
+`\(\widehat{f}\)` (blue line) is our *estimate* of `\(f\)`
+]
+
+---
+
+### Simple linear regression
+
+.large[
+One predictor (body mass), one response (bill length):
+
+.center[
+`\(\text{bill length} = f(\text{body mass}) + \varepsilon\)`
+]
+]
+
+.large[
+Linear regression: `\(f(\text{body mass}) = \beta_0 + \beta_1 \ \text{body mass}\)`
+
+* `\(\beta_0\)`: intercept of line
+* `\(\beta_1\)`: slope of line
+
+.question[
+Do we know `\(\beta_0\)` and `\(\beta_1\)`?
+]
+]
+
+---
+
+### Simple linear regression
+
+.large[
+One predictor (body mass), one response (bill length):
+
+.center[
+`\(\text{bill length} = f(\text{body mass}) + \varepsilon\)`
+]
+]
+
+.large[
+Linear regression: `\(f(\text{body mass}) = \beta_0 + \beta_1 \ \text{body mass}\)`
+
+* `\(\beta_0\)`: intercept of line
+* `\(\beta_1\)`: slope of line
+
+.question[
+Do we know `\(\beta_0\)` and `\(\beta_1\)`?
+]
+]
+
+.large[
+No! We only have a sample of data, so we *estimate* the relationship:
+
+.center[
+`\(\widehat{\text{bill length}} = \widehat{\beta}_0 + \widehat{\beta}_1 \ \text{body mass}\)`
+]
+]
+
+---
+
+
+### Notation
+
+.large[
+.center[
+Assumed truth: `\(y = \beta_0 + \beta_1 x + \varepsilon\)`
+
+Estimate from sample: `\(\widehat{y} = \widehat{\beta}_0 + \widehat{\beta}_1 x\)`
+]
+]
+
+&lt;br&gt;
+
+.large[
+* `\(y\)` = quantitative response variable
+* `\(x\)` = quantitative predictor 
+* `\(\beta_0\)` = intercept of true regression line
+* `\(\beta_1\)` = slope of true regression line
+* `\(\widehat{\beta}_0\)` = intercept of estimated regression line
+* `\(\widehat{\beta}_1\)` = slope of estimated regression line
+* `\(\widehat{y}\)` = estimated response
+]
+
+---
+
+### Notation
+
+.large[
+.center[
+Assumed truth: `\(y = \beta_0 + \beta_1 x + \varepsilon\)`
+
+Estimate from sample: `\(\widehat{y} = \widehat{\beta}_0 + \widehat{\beta}_1 x\)`
+]
+]
+
+&lt;br&gt;
+
+.large[
+* `\(y\)` = quantitative response variable 
+* `\(x\)` = quantitative predictor
+* `\(\beta_0\)` = intercept of true regression line **(parameter)**
+* `\(\beta_1\)` = slope of true regression line **(parameter)**
+* `\(\widehat{\beta}_0\)` = intercept of estimated regression line **(parameter estimate)**
+* `\(\widehat{\beta}_1\)` = slope of estimated regression line **(parameter estimate)**
+* `\(\widehat{y}\)` = estimated response
+]
+
+---
+
+## Estimated regression line
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.center[
+`\(\widehat{\text{bill length}} = 26.74 + 0.004 \ \text{body mass}\)`
+]
+]
+
+.large[
+* `\(\widehat{\beta}_0 = 26.74\)`
+* `\(\widehat{\beta}_1 = 0.004\)`
+]
+
+---
+
+### Estimated regression line
+
+.large[
+.center[
+`\(\widehat{\text{bill length}} = 26.74 + 0.004 \ \text{body mass}\)`
+]
+
+Suppose a Gentoo penguin has mass 5000g. What is the predicted bill length?
+]
+
+---
+
+### Estimated regression line
+
+.large[
+.center[
+`\(\widehat{\text{bill length}} = 26.74 + 0.004 \ \text{body mass}\)`
+]
+
+Suppose a Gentoo penguin has mass 5000g. What is the predicted bill length?
+
+
+**Answer:**  
+
+`$$26.74 + 0.004 \cdot 5000 = 46.74$$`
+
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the activity (handout) with a neighbor, then we will discuss as a class.
+]
+
+---
+
+### Class activity
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+Is linear regression an appropriate choice?
+]
+]
+
+---
+
+### Class activity
+
+&lt;img src="lecture_05_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+Is linear regression an appropriate choice?
+]
+]
+
+.large[
+Yes! The relationship looks approximately linear.
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+`\(\widehat{\text{wing length}} = 8.755 + 1.313 \ \text{weight}\)`
+]
+]
+
+.large[
+`\(\widehat{\beta}_0 =\)`
+
+`\(\widehat{\beta}_1=\)`
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+`\(\widehat{\text{wing length}} = 8.755 + 1.313 \ \text{weight}\)`
+]
+]
+
+.large[
+`\(\widehat{\beta}_0 = 8.755\)`
+
+`\(\widehat{\beta}_1=\)`
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+`\(\widehat{\text{wing length}} = 8.755 + 1.313 \ \text{weight}\)`
+]
+]
+
+.large[
+`\(\widehat{\beta}_0 = 8.755\)`
+
+`\(\widehat{\beta}_1= 1.313\)`
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+`\(\widehat{\text{wing length}} = 8.755 + 1.313 \ \text{weight}\)`
+]
+]
+
+.large[
+* Estimated wing length when weight = 15g: 
+* Estimated wing length when weight = 16g:
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+`\(\widehat{\text{wing length}} = 8.755 + 1.313 \ \text{weight}\)`
+]
+]
+
+.large[
+* Estimated wing length when weight = 15g: 28.45 mm
+* Estimated wing length when weight = 16g: 
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+`\(\widehat{\text{wing length}} = 8.755 + 1.313 \ \text{weight}\)`
+]
+]
+
+.large[
+* Estimated wing length when weight = 15g: 28.45 mm
+* Estimated wing length when weight = 16g: 29.763 mm
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+`\(\widehat{\text{wing length}} = 8.755 + 1.313 \ \text{weight}\)`
+]
+]
+
+.large[
+* Estimated wing length when weight = 15g: 28.45 mm
+* Estimated wing length when weight = 16g: 29.763 mm
+]
+
+
+.large[
+Change in estimated wing length when weight increases by 1g:
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+`\(\widehat{\text{wing length}} = 8.755 + 1.313 \ \text{weight}\)`
+]
+]
+
+.large[
+* Estimated wing length when weight = 15g: 28.45 mm
+* Estimated wing length when weight = 16g: 29.763 mm
+]
+
+.large[
+Change in estimated wing length when weight increases by 1g: 1.313 mm 
+  * = `\(\widehat{\beta}_1\)`
+]
+
+---
+
+### Next time
+
+.large[
+* How we fit a regression line
+* Reading: Section 1.1 in textbook
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
