@@ -6,6 +6,31 @@ editor: source
 
 **Instructions:** 
 
+* Work on this activity during class
+* You are welcome to work with a classmate, but everyone must submit their own file to Canvas
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+### Setup
+
+**Template file:** [ca_06_template.qmd](https://sta112-s26.github.io/class_activities/ca_06_template.qmd)
+
+* Rename the file to `ca_06_your_name.qmd` (so, for example, I would call it `ca_06_ciaran_evans.qmd`)
+* In the YAML, change `author` from `Your Name` to your actual name (keep the quotes)
+
+The `GrinnellHouses` data is contained in the `Stat2Data` package. This is the R package which contains the datasets from our textbook. We first need to install the `Stat2Data` package. Run the following in your console (*not* in a qmd file):
+
+```{r, eval=F}
+install.packages("Stat2Data")
+```
+
+Now load the required packages into your R session:
+
+```{r, eval=F}
+library(Stat2Data)
+library(tidyverse)
+data("GrinnellHouses")
+```
+
 # Recap: regression
 
 **Regression** models the relationship between predictor $x$ and response $y$. A general regression model looks like
@@ -262,6 +287,7 @@ Let's begin by exploring the data and considering different regression lines. Th
 
 ```{r, message=F, warning=F}
 library(Stat2Data)
+library(tidyverse)
 data("GrinnellHouses")
 
 # change values here!

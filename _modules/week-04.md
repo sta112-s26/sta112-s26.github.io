@@ -3,16 +3,16 @@ title: Regression assumptions and diagnostics
 ---
 
 February 2
-: Assumptions and diagnostics
+: Outliers and influential points
 
 February 4
-: Diagnostics and transformations
+: Assumptions and diagnostics
 
 : Reading for Friday's class
   : Textbook 1.4
 
 February 6
-: Transformations
+: Diagnostics and transformations
 
 : Reading for Monday's class
   : Textbook 2.1

@@ -3,7 +3,7 @@ title: Inference for regression models
 ---
 
 February 9
-: Project Part 2 work time
+: Transformations
 
 February 11
 : Inference for regression slope

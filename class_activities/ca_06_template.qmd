@@ -1,0 +1,61 @@
+---
+---
+---
+title: "Class activity"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(Stat2Data)
+library(tidyverse)
+data("GrinnellHouses")
+```
+
+### Question 1
+
+```{r}
+
+```
+
+### Question 2
+
+```{r}
+
+```
+
+### Question 3
+
+```{r}
+
+```
+
+### Question 4
+
+```{r}
+
+```
+
+### Question 5
+
+```{r}
+
+```
+
+### Question 6
+
+```{r}
+
+```
+
+### Question 7
+
+```{r}
+
+```
+
+
