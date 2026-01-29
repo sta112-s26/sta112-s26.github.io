@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Prediction and correlation</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Prediction and correlation
+]
+
+---
+
+
+### Agenda
+
+.large[
+* Today: 
+    * Statistical communication exercise
+    * prediction and correlation
+* Other:
+    * Project Part 1 released, due next Friday
+    * Don't wait too late to try loading data into R!
+        * See me if you have any issues
+]
+
+---
+
+### Statistical communication exercise
+
+.large[
+You are a statistical consultant, and a client reaches out to you to ask about some data they have collected. You fit a linear model, and the client has a question for you.
+
+Spend ~5 minutes, individually, writing a brief email to the client to answer their question. Then we will discuss as a class.
+]
+
+---
+
+### Last time: SSE
+
+.large[
+.center[
+`\(SSE = \sum_{i=1}^n (y_i - \widehat{y}_i)^2\)`
+]
+]
+
+![](lecture_07_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
+.pull-left[
+.large[
+SSE: `\(3.41 \times 10^{12}\)`
+]
+]
+
+.pull-right[
+.large[
+SSE: `\(1.74 \times 10^{12}\)`
+]
+]
+
+.large[
+These numbers are very large!
+]
+
+---
+
+### Last time: SSE
+
+.large[
+.center[
+`\(SSE = \sum_{i=1}^n (y_i - \widehat{y}_i)^2\)`
+]
+]
+
+.large[
+* Depends on the scale of the response variable
+* Depends on the *number* of observations
+* Depends on the strength of the relationship
+]
+
+
+---
+
+### Alternative: RMSE
+
+.pull-left[
+.large[
+.center[
+`\(SSE = \sum_{i=1}^n (y_i - \widehat{y}_i)^2\)`
+]
+
+* Depends on the scale of the response variable
+* Depends on the *number* of observations
+* Depends on the strength of the relationship
+]
+]
+
+.pull-right[
+.large[
+.center[
+`\(RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^n (y_i - \widehat{y}_i)^2}\)`
+]
+
+* Depends on the scale of the response variable
+* Depends on the strength of the relationship
+* Does *not* depend on the number of observations
+]
+]
+
+---
+
+### Root mean square error (RMSE)
+
+.large[
+.center[
+`\(RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^n (y_i - \widehat{y}_i)^2}\)`
+]
+]
+
+![](lecture_07_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+.pull-left[
+.large[
+RMSE: `\(73121\)`
+]
+]
+
+.pull-right[
+.large[
+RMSE: `\(52745\)`
+]
+]
+
+---
+
+### Root mean square error (RMSE)
+
+![](lecture_07_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+
+.large[
+.question[
+* Both SSE and RMSE are useful for summarizing our ability to make predictions
+* Both depend on the scale of the response variable
+
+Is there a measure of the strength of a linear relationship that does *not* depend on scale?
+]
+]
+
+---
+
+### Correlation
+
+![](lecture_07_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+.pull-left[
+.large[
+Correlation: 0.41
+]
+]
+
+.pull-right[
+.large[
+Correlation: 0.75
+]
+]
+
+.large[
+.question[
+What is the possible range of values for a correlation?
+]
+]
+
+---
+
+### Correlation
+
+.large[
+Observe points `\((x_1, y_1),...,(x_n, y_n)\)`
+
+&lt;img src="lecture_07_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+`$$r = \dfrac{\sum \limits_{i=1}^n (x_i - \overline{x})(y_i - \overline{y})}{\sqrt{\sum \limits_{i=1}^n (x_i - \overline{x})^2} \sqrt{\sum \limits_{i=1}^n (y_i - \overline{y})^2}}$$`
+]
+
+---
+
+### Correlation
+
+.pull-left[
+&lt;img src="lecture_07_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+What would you estimate as the correlation for this data?
+]
+]
+]
+
+.pull-right[
+.large[
+.abox[
+(A) 0.2
+]
+
+.bbox[
+(B) -0.2
+]
+
+.cbox[
+(C) 0.6
+]
+
+.dbox[
+(D) 0.9
+]
+]
+]
+
+---
+
+### Correlation
+
+.pull-left[
+&lt;img src="lecture_07_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+What would you estimate as the correlation for this data?
+]
+]
+]
+
+.pull-right[
+.large[
+.abox[
+(A) 0
+]
+
+.bbox[
+(B) -0.28
+]
+
+.cbox[
+(C) 0.28
+]
+
+.dbox[
+(D) -0.6
+]
+]
+]
+
+
+---
+
+### Correlation
+
+.large[
+.question[
+Which of these plots shows the highest correlation?
+]
+]
+
+&lt;img src="lecture_07_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Prediction and correlation
+
+* SSE:
+    * depends on strength of the relationship
+    * depends on number of observations
+    * depends on scale of the response
+* RMSE:
+    * depends on strength of the relationship
+    * depends on scale of the response
+* Correlation:
+    * depends on strength of the relationship
+    * values always between [-1, 1]
+    * measures strength of a **linear** relationship -- may not be suitable for nonlinear relationships
+    * influenced by outliers and extreme points
+    
+---
+
+### Correlation?
+
+
+.question[
+What is going on in this plot? Do you think this correlation is meaningful?
+]
+
+&lt;img src="spurious_correlation_2.png", width = "600"&gt;
+
+
+r = 0.989
+
+---
+
+### Activity: spurious correlations
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_07.html](https://sta112-s26.github.io/class_activities/ca_07.html)
+]
+
+.large[
+* Play around with spurious correlations!
+* No need to submit anything for this activity
+]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

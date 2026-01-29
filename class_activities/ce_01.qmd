@@ -1,0 +1,26 @@
+---
+title: "Communication exercise 1"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Name:**
+
+**Instructions:** Complete the following activity individually, then we will discuss as a class.
+
+## Activity
+
+**Context:** You are a statistical consultant, and a client reaches out to you to ask about some data they have collected. The client has data on the amount of time kids spend on their cell phones during school and their score on a critical thinking exam. 50% of kids spend between 2 to 4 hours per day on their phones, and exam scores range between 18% and 99%.
+
+You fit a linear regression model with phone time as the explanatory variable, and exam score as the response.
+
+
+**Client's email:**
+
+> I asked you to predict the exam score for a student who used a phone 2 hours a day. I know this student got 87% and you said the residual is 3.1. What does that mean?
+
+**Your task:** Write a short email to your client below, answering their question.
+
+

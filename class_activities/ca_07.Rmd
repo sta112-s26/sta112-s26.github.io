@@ -1,0 +1,27 @@
+---
+title: "Class Activity: spurious correlations"
+output: 
+  tufte::tufte_html:
+    css: "lab.css"
+    tufte_variant: "envisioned"
+    highlight: pygments
+link-citations: yes
+---
+
+In this activity, you will explore some spurious correlations!
+
+**Instructions:** 
+
+* No need to submit anything here!
+
+## Spurious correlations
+
+The [Spurious Correlations](https://www.tylervigen.com/spurious-correlations) website contains many different examples of variables which are *correlated*, but for which no real relationship exists (hence the term *spurious* in the name).
+
+The website also allows you to [discover](https://www.tylervigen.com/spurious/discover) your own spurious correlations.
+
+Experiment with finding different spurious correlations of your own. See how high you can make the correlation coefficient $r$! 
+
+And remember: it is highly unlikely that any of the correlations you see are "real" -- that is, there is no reason to expect any of these variables to be directly related, and any correlations observed are likely due to chance.
+
+
