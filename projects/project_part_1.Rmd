@@ -1,0 +1,220 @@
+---
+title: "Project Part 1"
+output: 
+  rmdformats::robobook:
+    css: "homework.css"
+    highlight: pygments
+link-citations: yes
+---
+
+**Due:** Friday, February 6, 11:59pm on Canvas
+
+**Submission:** A template file is provided, with a rough outline: [project_part_1_template.qmd](https://sta112-s26.github.io/projects/project_part_1_template.qmd)
+
+Once you have completed the report, submit *both* your rendered HTML file and the Quarto file to Canvas.
+
+# Overview
+
+In this project, you will use exploratory data analysis and regression to investigate several research questions. You will then write a data analysis report that communicates the results of your analysis and draws a conclusion about the research questions. 
+
+This project will be broken into several different parts. In Part 1, you will do exploratory data analysis. This involves getting familiar with the data, making plots and calculating summary statistics, and communicating this information to someone reading your analysis.
+
+# Content and Outline
+
+Your written report for Part I will contain three section: Data Summary, Univariate EDA, and Multivariate EDA. Headings for these three sections are included in the template file.
+
+There is no minimum or maximum length required. However, your analysis should be thorough, with your report addressing all research questions, and containing all the elements described in the grading rubric below.
+
+## Data Summary
+
+Write a paragraph that describes details of the data:
+
+* What does a row in the data represent? 
+* How many rows and columns are there? 
+* What information do the variables record? 
+* Are there any missing data?
+
+(Make sure to write your summary as a paragraph, not a list, in your report).
+
+## Univariate EDA
+
+Choose **3** variables that are relevant to the research questions. For each variable: make a plot, calculate any appropriate summary statistics, and discuss the distribution in 2--3 sentences. Make sure to add a title and good labels to each plot. Plots and summary statistics depend on the type of variable.
+
+I have summarized how to do univariate EDA below. The [course codebook](https://sta112-s26.github.io/resources/codebook.html) also has more information and examples.
+
+**Quantitative variables:** Use a histogram to visualize the distribution of a quantitative variable. Calculate summary statistics (either the mean and standard deviation, or the median and IQR). Describe the distribution based on the plot and summary statistics, making sure to discuss:
+
+* Shape (symmetric vs. skewed, number of modes, location of modes)
+* Center (usually mean or median)
+* Spread (usually standard deviation or IQR)
+* Any unusual features?
+* Any potential outliers?
+
+**Categorical variables:** Use a bar chart to visualize the distribution of a categorical variable. When describing the distribution:
+
+* Which category has the most observations? The least?
+* Are observations spread relatively evenly across categories, or do one or two categories have the majority of the observations?
+
+(Make sure to write your summary in sentences, not a list, in your report).
+
+## Multivariate EDA
+
+Using the three variables from Univariate EDA, create one or more plots that allow you to address the research questions. You may be able to address both questions with a single plot, or you may need to make a separate plot for each question. Calculate any appropriate summary statistics. Use the plot(s) and summary statistics to address the research questions in a 1--2 paragraphs.
+
+An overview of multivariate EDA is below. See the [course codebook](https://sta112-s26.github.io/resources/codebook.html) for examples and more information.
+
+**Two quantitative variables:** Visualize the relationship with a scatterplot, and summarize with the correlation if the relationship appears roughly linear. When describing the relationship, reference the scatterplot and correlation, and discuss the following:
+
+* does there appear to be a relationship?
+* if so, does the relationship appear to be positive or negative?
+* what is the general shape of the relationship? Does it look linear?
+* if the relationship looks linear, report the sample correlation coefficient
+
+**One categorical variable, one quantitative variable:** Visualize the relationship with a boxplot or histogram for each level of the categorical variable. Calculate summary statistics for the quantitative variable at each level of the categorical variable (e.g., mean body mass for each penguin species). When describing the relationship, reference the plot and summary statistics, and discuss:
+
+* Is the distribution of the quantitative variable different across levels of the categorical variable? 
+* If so, how? (e.g., differences in shape, center, spread)
+
+**Two categorical variables:** Visualize with a stacked bar chart, and describe the plot:
+
+* Which combination of categories has the most observations? The least?
+* Are there any combinations which do not appear in the data?
+* Is the distribution for the second variable the same for each level of the first variable?
+
+**Two quantitative variables, one categorical:** Visualize with a scatterplot, and color and shape the points according to the categorical variable. Calculate correlation between the quantitative variables for each level of the categorical variable. Describe the plot and summary statistics:
+
+* Does the relationship between the two quantitative variables differ for different levels of the categorical variable? If so, how?
+
+# Data
+
+The [College Scorecard](https://collegescorecard.ed.gov/), compiled by the US Department of Education, is meant to be a tool for college applicants to compare different institutions. In this project, you will work with data from the scorecard to advise a high school senior on choosing a college. (We will use data that are several years old, so may be slightly out of date, but we will hope that the same general trends are still true today).
+
+## Research questions
+
+For this project, suppose you have been approached by a high school senior applying to college. They are looking through the college scorecard data, and they have some questions for you about the value of different schools. 
+
+1. Do students who graduate from more expensive schools earn more money after graduation?
+
+2. Is the relationship between school cost and graduate earnings the same for public and private schools?
+
+You will investigate each of these research questions in your analysis, and explain your results in your report.
+
+## Variables
+
+The dataset provided for this project contains the following columns:
+
+* `INSTNM`: school name
+* `STABBR`: state in which the school is located
+* `CONTROL`: whether the school is public or private
+* `SATVRMID`: midpoint of SAT critical reading scores of students attending the school
+* `SATMTMID`: midpoint of SAT math scores
+* `SATWRMID`: midpoint of SAT writing scores
+* `ACTCMMID`: midpoint of the ACT cumulative scores
+* `ACTENMID`: midpoint of ACT English scores
+* `ACTMTMID`: midpoint of ACT math scores
+* `ACTWRMID`: midpoint of ACT writing scores
+* `UGDS`: number of undergraduate students at the school
+* `NPT4`: average cost to attend the school
+* `PCTFLOAN`: fraction of undergraduates receiving a federal student loan
+* `MD_EARN_WNE_P10`: median salary of students 10 years after graduation
+* `GRAD_DEBT_MDN_SUPP`: median debt of graduated students
+* `RPY_3YR_RT_SUPP`: proportion of students who are actively repaying their loans 3 years after graduation
+* `RPY_3YR_70`: whether the proportion of students actively repaying their loans 3 years after graduation is > 70% (1 = yes, 0 = no)
+
+## Downloading the data
+
+The data for this project is stored in a CSV file, and can be imported into R with the `read_csv` function in the `readr` package. The following code imports the data and saves it as a data frame called `scorecard`:
+
+```r
+scorecard <- read_csv("https://sta112-s26.github.io/projects/scorecard.csv")
+```
+
+# Appearance and style
+
+### Writing
+
+The report should be written like an article or research paper: in full sentences and paragraphs, with headings for each section. You should not write your report with question numbers or as a list of bullet points. Scientific articles are generally written in third person, though "we" can also be acceptable ("we can see from Figure 1...") in some disciplines.
+
+### Code
+
+As with previous assignments, you will write the document in Quarto. However, in full reports, the only output that should be visible from code chunks are figures and tables. If a code chunk does not produce a figure or table, you can hide it from the rendered document with `include=F`:
+
+````
+```{r, include=F}`r ''`
+
+```
+````
+
+If a code chunk produces a figure or table, only the figure or table should be visible in the rendered document. You can hide the chunk but display the output with `echo=F, message=F, warning=F`:
+
+````
+```{r, echo=F, message=F, warning=F}`r ''`
+
+```
+````
+
+### Figures
+
+Figures should have labeled axes, and should be clear and easy to read. Figures should also be captioned and numbered; to caption a figure, use `fig.cap = "..."` in the chunk options. For example (scroll to the right on the code to see it all),
+
+````
+```{r, echo=F, message=F, warning=F, fig.cap="Figure 1: Bill depth vs. bill length for penguins near Palmer Station, Antarctica."}`r ''`
+penguins |>
+  ggplot(aes(x = bill_length_mm, 
+             y = bill_depth_mm)) +
+  geom_point() +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)") +
+  theme_bw()
+```
+````
+
+is displayed as
+
+```{r include=F}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+```{r, echo=F, message=F, warning=F, fig.cap="Figure 1: Bill depth vs. bill length for penguins near Palmer Station, Antarctica."}
+penguins |>
+  ggplot(aes(x = bill_length_mm, 
+             y = bill_depth_mm)) +
+  geom_point() +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)") +
+  theme_bw()
+```
+
+Captions should provide enough information to understand what is being plotted, but interpretation can be left to the main text. Refer to figures by their number in the text. Make sure that any figures you include are discussed in the text.
+
+
+# Checklist
+
+* Change name in Quarto YAML
+* Three sections: Data Summary, Univariate EDA, Multivariate EDA
+* Data Summary:
+  * What does a row in the data represent? 
+  * How many rows and columns are there? 
+  * What information do the variables record? 
+  * Are there any missing data?
+* Univariate EDA:
+  * Pick three variables *relevant to research questions*
+  * Plot, appropriate summary statistics, and describe distribution for each variable
+  * See above for details on appropriate plots and summary statistics, and what to discuss when describing a distribution
+* Multivariate EDA:
+  * One or more plots that examine the relationships between the three variables from univariate EDA
+  * Plots allow you to address *both* research questions
+  * Discuss plots in context of research questions; see above for more details
+* Writing:
+  * Each section written as a paragraph, with full sentences
+  * No bullet points or lists
+* Code:
+  * Code is included in the Quarto document, but *not* displayed in the rendered HTML
+  * The only R output shown in the report is figures and tables
+* Figures:
+  * Include meaningful caption and axis labels (see above for details on including a caption)
+  * Each figure included in the report is discussed in your writing, and referred to by its figure number
+* Submission:
+  * Submit *both* the rendered HMTL and the .qmd file to Canvas
+  * Deadline is Friday, February 6, 11:59pm on Canvas

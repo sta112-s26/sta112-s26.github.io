@@ -1,0 +1,129 @@
+---
+title: "Homework 2"
+output: 
+  rmdformats::robobook:
+    css: "homework.css"
+    highlight: pygments
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T, eval=F)
+```
+
+**Due:** Friday, February 6, 11:59pm on Canvas
+
+**Instructions:** 
+
+* A template Quarto file will be provided, with set-up instructions below.
+* When you are done with the assignment, render the Quarto file containing all your code and responses. Submit the rendered HTML file on Canvas.
+* Remember to acknowledge any collaborators, and to cite outside sources
+
+**Code guidelines:**
+
+* If a question requires code, and code is not provided, you will not receive full credit
+
+## Setup
+
+1. Download the Quarto template file for this assignment: [hw_02_template.qmd](https://sta112-s26.github.io/homework/hw_02_template.qmd). Save it to your computer, and change the file name to `hw_02_your_name.qmd`
+2. Open `hw_02_your_name.qmd` in RStudio. Change the `author` in YAML to your name.
+3. Fill in answers to the questions below. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
+4. When you are done, render and submit your HTML file on Canvas (Assignments -> Homework 2).
+
+## Spurious correlations
+
+In class, we explored different [spurious correlations](https://www.tylervigen.com/spurious-correlations), and you tried [discovering](https://www.tylervigen.com/spurious/discover) one of your own.
+
+If you scroll to the bottom of the page at the spurious correlations website, you will see an explanation of why it is possible to find all of these strong correlations ("Why this works"), and why we should not read too much into any of these correlations.
+
+:::{.question}
+#### Question 1
+
+Report one of the spurious correlations you discovered. Which variables did you examine? What was the observed correlation coefficient?
+:::
+
+:::{.question}
+#### Question 2
+
+Explain to your friend, who has never studied statistics, why the correlation you described in question 1 is *spurious*.
+:::
+
+## Data dredging and ethics
+
+In HW 1, you thought about the importance of reproducible data analysis. On this assignment, you will think about another aspect of ethical data analysis.
+
+Read the following material, then answer the questions below:
+
+* [This](https://www.npr.org/sections/thesalt/2018/09/26/651849441/cornell-food-researchers-downfall-raises-larger-questions-for-science) NPR article on former Cornell professor Brian Wansink
+
+
+:::{.question}
+#### Question 3
+
+Summarize the different problems with Brian Wansink’s research discussed in the NPR article.
+:::
+
+:::{.question}
+#### Question 4
+
+What are some similarities between Brian Wansink's research practices, and the spurious correlations you have been exploring?
+:::
+
+
+## Oyster predictions
+
+The `Oysters` dataset in the `Stat2Data` package contains the results of an experiment comparing two different methods for measuring oyster size. You can load the data in R as follows:
+
+```{r}
+library(tidyverse)
+library(Stat2Data)
+data(Oysters)
+```
+
+The engineers who conducted the study want to know if a new 3-D measuring system (`ThreeD`) is better at predicting oyster volume than the old 2-D (`TwoD`) measuring system.
+
+:::{.question}
+#### Question 5
+
+Create two scatterplots, one showing the relationship between the 3-D measurements and oyster volume, and the other showing the relationship between the 2-D measurements and oyster volume.
+:::
+
+
+### Correlation, SSE, and RMSE
+
+To quantify the strength of the linear relationship between two quantitative variables, we can calculate the correlation coefficient. 
+
+:::{.question}
+#### Question 6
+
+Calculate correlation coefficients for the two scatterplots you created in the previous question. The [course codebook](https://sta112-s26.github.io/resources/codebook.html) includes examples of calculating correlation if you get stuck!
+:::
+
+In class we also talked about SSE and RMSE as related ways to summarize the predictive performance of a model. But first we need to fit a model! The code below will fit a linear model in R and calculate the SSE and RMSE:
+
+```{r}
+model_2d <- lm(Volume ~ TwoD, data = Oysters)
+sum(model_2d$residuals^2) # SSE
+sqrt(mean(model_2d$residuals^2)) # RMSE
+```
+
+
+
+:::{.question}
+#### Question 7
+
+Run the code to calculate the SSE and RMSE when using the 2-D measurements. Then modify the code to calculate SSE and RMSE for the 3-D measurements.
+:::
+
+:::{.question}
+#### Question 8
+
+Interpret the meaning of the RMSE for each model, in context of the outcome of interest (oyster volume).
+:::
+
+:::{.question}
+#### Question 9
+
+Finally, interpret the results of your analyses in this section (scatterplots, correlation, SSE, RMSE) -- which of the measurements do you think is doing a better job?
+:::
+
