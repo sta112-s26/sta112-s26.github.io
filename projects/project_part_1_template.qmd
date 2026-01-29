@@ -13,8 +13,6 @@ editor: source
 library(tidyverse)
 ```
 
-## Research question
-
 
 ## Data summary
 
