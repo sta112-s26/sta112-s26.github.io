@@ -1,0 +1,94 @@
+---
+title: "Class Activity: residual plots"
+output: 
+  tufte::tufte_html:
+    css: "lab.css"
+    tufte_variant: "envisioned"
+    highlight: pygments
+link-citations: yes
+---
+
+In this activity, you will practice checking the assumptions for linear regression models.
+
+**Instructions:** 
+
+* You are welcome to work with a neighbor, but everyone must submit their own file to Canvas
+* At the end of class, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+## Setup
+
+**Template file:** [ca_08_template.qmd](https://sta112-s26.github.io/class_activities/ca_08_template.qmd)
+
+This activity investigates the relationship between the number of doctors in a county, and the number of hospitals. The data come from a random sample of 53 counties in the US, and are contained in the `CountyHealth` dataset from the `Stat2Data` package. The dataset includes the following variables: 
+
+* `County`: the name and state of the county
+* `MDs`: the number of medical doctors in the county
+* `Hospitals`: number of hospitals in the county
+* `Beds`: the number of beds in the hospital
+
+The activity template contains copies of the code below. Run the setup chunk in the template before you begin.
+
+# Questions
+
+We are interested in the relationship between the number of hospitals and the number of doctors in a county. To begin, we'll assume that the relationship is linear:
+
+$\text{doctors} = \beta_0 + \beta_1 \text{hospitals} + \varepsilon$
+
+```{marginfigure}
+The `<-` in R represents *assignment*. That is, whatever is on the *right hand side* of the arrow gets saved, and given the name on the *left hand side*. In this case, we are creating a new linear regression model, and saving the model as `health_lm`
+```
+
+1. Fill in the code below to fit the linear regression model, and save the fitted model as `health_lm` in R:
+
+```r
+health_lm <- lm(... ~ ..., data = ...)
+```
+
+<SCRIPT>
+function ShowAndHide(divid) {
+    var x = document.getElementById(divid);
+    if (x.style.display == 'none') {
+        x.style.display = 'block';
+    } else {
+        x.style.display = 'none';
+    }
+}
+</SCRIPT>
+
+<BUTTON ONCLICK="ShowAndHide('q1_solution')">Solution</BUTTON>
+
+<DIV ID="q1_solution" STYLE="display:none">
+```r
+health_lm <- lm(MDs ~ Hospitals, data = CountyHealth)
+```
+</DIV>
+
+When we fit a linear model, we typically make certain assumptions about the data. To assess the **shape** and **constant variance** assumptions, we can make a *residual plot*.
+
+```{marginfigure}
+The `predict` function takes in a fitted model (in this case, `health_lm`), and outputs predictions for the observed data. The `residuals` function takes in a fitted model, and outputs the observed residuals. Here `data.frame` is creating a new dataset with the predictions and the residuals as columns.
+```
+
+2. Run the code below to make a residual plot for the fitted model:
+
+```r
+data.frame(yhat = predict(health_lm),
+         residuals = residuals(health_lm)) |>
+  ggplot(aes(x = yhat, y = residuals)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd = 1.2) +
+  labs(x = "Predicted number of doctors",
+       y = "Residual") +
+  theme_bw()
+```
+
+
+Recall that:
+
+* the shape assumption is reasonable if the residuals appear to be scattered randomly above and below 0, with no clear patterns. (By "pattern", I mean things like a U-shape, or areas where most of the points fall above/below the horizontal line)
+* the constant variance assumption is reasonable if the band of residuals has relatively constant width.
+
+3. Using the residual plot, assess whether the shape and constant variance assumptions are reasonable.
+
+

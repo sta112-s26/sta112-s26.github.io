@@ -3,10 +3,11 @@ title: Regression assumptions and diagnostics
 ---
 
 February 2
-: Outliers and influential points
+: Assumptions and diagnostics
+  : [Slides](https://sta112-s26.github.io/slides/lecture_08.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_08.html)
 
 February 4
-: Assumptions and diagnostics
+: Outliers and influential points
 
 : Reading for Friday's class
   : Textbook 1.4

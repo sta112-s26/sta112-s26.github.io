@@ -1,0 +1,791 @@
+---
+title: Assumptions and diagnostics
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Predictions revisited
+
+.large[
+Here are two different datasets with similar correlation ($r \approx 0.8$):
+]
+
+.pull-left[
+```{r, echo=F, message=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+set.seed(3)
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 1.5, col="red") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+data.frame(x = 1:100,
+           y = log(10*(1:100)) + rnorm(100, sd=0.3)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 1.5, col="red") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+.large[
+.question[
+For each dataset, suppose I wish to make a prediction for $x = 2$. For which dataset would I expect to predict better?
+]
+]
+
+---
+
+### Predictions revisited
+
+.large[
+Here are two different datasets with similar correlation ($r \approx 0.8$):
+]
+
+.pull-left[
+```{r, echo=F, message=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+set.seed(3)
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 1.5, col="red") +
+  geom_vline(xintercept = 70.5, col="red") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+data.frame(x = 1:100,
+           y = log(10*(1:100)) + rnorm(100, sd=0.3)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 1.5, col="red") +
+  geom_vline(xintercept = 70.5, col="red") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+.large[
+.question[
+For each dataset, suppose I wish to make a prediction for $x = 70$. For which dataset would I expect to predict better?
+]
+]
+
+---
+
+### Predictions revisited
+
+.large[
+Here are two different datasets with similar correlation ($r \approx 0.8$):
+]
+
+.pull-left[
+```{r, echo=F, message=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+set.seed(3)
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 1.5, col="red") +
+  geom_vline(xintercept = 70.5, col="red") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+data.frame(x = 1:100,
+           y = log(10*(1:100)) + rnorm(100, sd=0.3)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 1.5, col="red") +
+  geom_vline(xintercept = 70.5, col="red") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+.large[
+.question[
+For which dataset does the line appear to be a better fit?
+]
+]
+
+---
+
+### Predictions and linearity
+
+.large[
+If we use a line to describe non-linear data, the quality of our predictions may depend on the value of $x$:
+]
+
+.pull-left[
+```{r, echo=F, message=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+set.seed(3)
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 1.5, col="red") +
+  geom_vline(xintercept = 70.5, col="red") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+data.frame(x = 1:100,
+           y = log(10*(1:100)) + rnorm(100, sd=0.3)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 1.5, col="red") +
+  geom_vline(xintercept = 70.5, col="red") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+---
+
+### Predictions revisited
+
+.large[
+Here are two different datasets with similar correlation ($r \approx 0.8$):
+]
+
+.pull-left[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(3)
+
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 10.5, col="red") +
+  theme(text = element_text(size=25)) +
+  scale_y_continuous(limits=c(-50, 150))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)*(1:100)*0.02) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 10.5, col="red") +
+  theme(text = element_text(size=25)) +
+  scale_y_continuous(limits=c(-50, 150))
+```
+]
+
+.large[
+.question[
+For each dataset, suppose I wish to make a prediction for $x = 10$. For which dataset would I expect to predict better?
+]
+]
+
+---
+
+### Predictions revisited
+
+.large[
+Here are two different datasets with similar correlation ($r \approx 0.8$):
+]
+
+.pull-left[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(3)
+
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 70.5, col="red") +
+  theme(text = element_text(size=25)) +
+  scale_y_continuous(limits=c(-50, 150))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)*(1:100)*0.02) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = 70.5, col="red") +
+  theme(text = element_text(size=25)) +
+  scale_y_continuous(limits=c(-50, 150))
+```
+]
+
+.large[
+.question[
+For each dataset, suppose I wish to make a prediction for $x = 70$. For which dataset would I expect to predict better?
+]
+]
+
+---
+
+### Predictions revisited
+
+.large[
+Here are two different datasets with similar correlation ($r \approx 0.8$):
+]
+
+.pull-left[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(3)
+
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size=25)) +
+  scale_y_continuous(limits=c(-50, 150))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)*(1:100)*0.02) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size=25)) +
+  scale_y_continuous(limits=c(-50, 150))
+```
+]
+
+.large[
+.question[
+Does a linear fit seem appropriate for both datasets?
+]
+]
+
+---
+
+### Predictions and variability
+
+.large[
+If the variability of our residuals changes for different values of $x$, the quality of our predictions depends on $x$:
+]
+
+.pull-left[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(3)
+
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = c(10.5, 70.5), col="red") +
+  theme(text = element_text(size=25)) +
+  scale_y_continuous(limits=c(-50, 150))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)*(1:100)*0.02) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  geom_vline(xintercept = c(10.5, 70.5), col="red") +
+  theme(text = element_text(size=25)) +
+  scale_y_continuous(limits=c(-50, 150))
+```
+]
+
+---
+
+### Common linear model assumptions
+
+.large[
+$$Y = \beta_0 + \beta_1 X + \varepsilon$$
+
+**Shape assumption:** the shape of the regression model is at least approximately correct
+* When we fit linear regression, we assume the relationship is approximately linear
+
+**Constant variance assumption:** Variance of the noise $\varepsilon$ is the same for all values of the predictor $X$
+]
+
+---
+
+### Assessing shape and constant variance: residual plots
+
+.large[
+**Residual plot:** plot residuals $y - \widehat{y}$ on vertical axis, and predicted values $\widehat{y}$ on horizontal axis. Add a horizontal line at 0.
+]
+
+```{r, echo = F, message=F, fig.align='center', fig.width=6, fig.height=4}
+library(latex2exp)
+data.frame(x = 1:100,
+           y = rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0,
+              color = "blue", lwd=1.2) +
+  labs(title = "Residual plot",
+       x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$")) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+---
+
+### Residual plots
+
+```{r, echo=F, message=F, fig.align='center', fig.width=7, fig.height=5}
+library(gridExtra)
+set.seed(3)
+
+d1 <- data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20))
+
+p1 <- d1 %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+
+d2 <- data.frame(x = 1:100,
+           y = log(10*(1:100)) + rnorm(100, sd=0.3)) 
+
+p2 <- d2 %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+
+m1 <- lm(y ~ x, data = d1)
+m2 <- lm(y ~ x, data = d2)
+
+p3 <- d1 |>
+  mutate(pred = predict(m1), 
+         residuals = resid(m1)) |>
+  ggplot(aes(x = pred, y = residuals)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color = "blue") +
+  theme_bw() +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.x=element_blank(),
+        text = element_text(size = 25)) +
+  labs(x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$"))
+
+p4 <- d2 |>
+  mutate(pred = predict(m2), 
+         residuals = resid(m2)) |>
+  ggplot(aes(x = pred, y = residuals)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color = "blue") +
+  theme_bw() +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.x=element_blank(),
+        text = element_text(size = 25)) +
+  labs(x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$"))
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+.large[
+Shape assumption is reasonable if: 
+* residuals appear to be scattered randomly above and below 0
+* no clear patterns in the residuals
+]
+
+---
+
+### Residual plots
+
+```{r, echo=F, message=F, fig.align='center', fig.width=7, fig.height=5}
+library(gridExtra)
+set.seed(3)
+
+d1 <- data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20))
+
+p1 <- d1 %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  labs(title = "Dataset 1") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+
+d2 <- data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)*(1:100)*0.02)
+
+p2 <- d2 %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  labs(title = "Dataset 2") +
+  theme_bw() +
+  geom_smooth(se=F, method="lm") +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+
+m1 <- lm(y ~ x, data = d1)
+m2 <- lm(y ~ x, data = d2)
+
+p3 <- d1 |>
+  mutate(pred = predict(m1), 
+         residuals = resid(m1)) |>
+  ggplot(aes(x = pred, y = residuals)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color = "blue") +
+  theme_bw() +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.x=element_blank(),
+        text = element_text(size = 25)) +
+  labs(x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$"))
+
+p4 <- d2 |>
+  mutate(pred = predict(m2), 
+         residuals = resid(m2)) |>
+  ggplot(aes(x = pred, y = residuals)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color = "blue") +
+  theme_bw() +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.x=element_blank(),
+        text = element_text(size = 25)) +
+  labs(x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$"))
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+.large[
+Constant variance assumption is reasonable if:
+* the band of residuals has relatively constant width
+]
+
+---
+
+### Concept check
+
+.pull-left[
+```{r, echo = F, message=F, fig.align='center', fig.width=6, fig.height=6}
+data.frame(x = 1:100,
+           y = rnorm(100, sd=20)*(100:1)*0.02) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0,
+              color = "blue", lwd=1.2) +
+  labs(title = "Residual plot",
+       x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$")) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+.large[
+Which assumption looks reasonable?
+
+.abox[
+(A) Shape
+]
+
+.bbox[
+(B) Constant variance
+]
+
+.cbox[
+(C) Both shape and constant variance
+]
+
+.dbox[
+(D) Neither shape nor constant variance
+]
+]
+]
+
+
+---
+
+### Concept check
+
+.pull-left[
+```{r, echo = F, message=F, fig.align='center', fig.width=6, fig.height=6}
+sim_dat <- data.frame(x = seq(-50, 50),
+           y = 0.02*seq(-50, 50)^2 + rnorm(101, sd=10)*(1:101)*0.02)
+sim_reg <- lm(y ~ x, data = sim_dat)
+
+data.frame(pred = sim_reg$fitted.values,
+           res = sim_reg$residuals) %>%
+  ggplot(aes(x = pred, y = res)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0,
+              color = "blue", lwd=1.2) +
+  labs(title = "Residual plot",
+       x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$")) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+.large[
+Which assumption looks reasonable?
+
+.abox[
+(A) Shape
+]
+
+.bbox[
+(B) Constant variance
+]
+
+.cbox[
+(C) Both shape and constant variance
+]
+
+.dbox[
+(D) Neither shape nor constant variance
+]
+]
+]
+
+
+---
+
+### Concept check
+
+.pull-left[
+```{r, echo = F, message=F, fig.align='center', fig.width=6, fig.height=6}
+set.seed(2)
+
+sim_dat <- data.frame(x = seq(-50, 50),
+           y = 0.02*seq(-50, 50)^2 + rnorm(101, sd=10))
+sim_reg <- lm(y ~ x, data = sim_dat)
+
+data.frame(pred = sim_reg$fitted.values,
+           res = sim_reg$residuals) %>%
+  ggplot(aes(x = pred, y = res)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0,
+              color = "blue", lwd=1.2) +
+  labs(title = "Residual plot",
+       x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$")) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+.large[
+Which assumption looks reasonable?
+
+.abox[
+(A) Shape
+]
+
+.bbox[
+(B) Constant variance
+]
+
+.cbox[
+(C) Both shape and constant variance
+]
+
+.dbox[
+(D) Neither shape nor constant variance
+]
+]
+]
+
+
+---
+
+### Concept check
+
+.pull-left[
+```{r, echo = F, message=F, fig.align='center', fig.width=6, fig.height=6}
+data.frame(x = 1:100,
+           y = rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0,
+              color = "blue", lwd=1.2) +
+  labs(title = "Residual plot",
+       x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$")) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+.large[
+Which assumption looks reasonable?
+
+.abox[
+(A) Shape
+]
+
+.bbox[
+(B) Constant variance
+]
+
+.cbox[
+(C) Both shape and constant variance
+]
+
+.dbox[
+(D) Neither shape nor constant variance
+]
+]
+]
+
+---
+
+### Class activity
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_08.html](https://sta112-s26.github.io/class_activities/ca_08.html)
+]
+
+.large[
+* Evaluate shape and constant variance assumptions with residual plots
+* Submit HTML at end of class
+]
+
+---
+
+### Class activity
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+library(Stat2Data)
+data("CountyHealth")
+health_lm <- lm(MDs ~ Hospitals, data = CountyHealth)
+CountyHealth %>%
+  mutate(yhat = predict(health_lm),
+         residuals = residuals(health_lm)) %>%
+  ggplot(aes(x = yhat, y = residuals)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd = 1.2) +
+  labs(x = "Predicted number of doctors",
+       y = "Residual") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+Do the shape and constant variance assumptions look reasonable?
+]
+]
+
+
+
+
