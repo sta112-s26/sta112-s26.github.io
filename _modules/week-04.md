@@ -7,13 +7,14 @@ February 2
   : [Slides](https://sta112-s26.github.io/slides/lecture_08.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_08.html)
 
 February 4
-: Outliers and influential points
+: Diagnostics and transformations
+  : [Slides](https://sta112-s26.github.io/slides/lecture_09.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_09.pdf)
 
 : Reading for Friday's class
   : Textbook 1.4
 
 February 6
-: Diagnostics and transformations
+: Outliers and influential points
 
 : Reading for Monday's class
   : Textbook 2.1

@@ -1,0 +1,56 @@
+---
+title: "Class activity: linear regression and transformations"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+**Instructions:** Work with a neighbor on the following activity. I will collect the handout at the end of class, and it will be part of your class participation grade. You will be graded only on effort -- it is ok if you don't finish all the questions, or get them all correct.
+
+## GDP and life expectancy
+
+Consider the fitted model
+
+$$\widehat{\text{LifeExpectancy}} = 4.95 + 7.20 \log(\text{GDP per capita})$$
+
+For a GDP per capita of $20000, we calculated a predicted life expectancy of 76.255 years.
+
+1. Consider a 1% increase in GDP per capita -- from \$20000 to \$20200. What is the new predicted life expectancy from a GDP per capita of \$20200? *(Remember that here log means natural log!)*
+
+\vspace{3cm}
+
+
+2. What is the difference in the estimated predictions? How does this difference compare to the estimate slope $\widehat{\beta}_1 = 7.20$?
+
+\vspace{3cm}
+
+
+## Housing prices
+
+Consider the fitted model
+
+$$\widehat{\log(\text{Price})} = 10.51 + 0.091 \ \text{Area}$$
+
+where price is in dollars, and area in hundreds of square feet.
+
+For a house of 2000 square feet (i.e. area = 20), we calculated a predicted price of \$226386. 
+
+3. Calculate the predicted price for a house of 2100 square feet.
+
+\vspace{3cm}
+
+4. Calculate the *ratio* between your prediction in question 3, and the predicted price for a house of 2000 square feet.
+
+\vspace{3cm}
+
+5. Now calculate $e^{0.091}$. How does this compare to your answer in question 4?
+
+
+
+
+
+
+

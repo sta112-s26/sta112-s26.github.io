@@ -1,0 +1,784 @@
+---
+title: Nonlinear relationships and transformations
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Last time
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+library(Stat2Data)
+library(tidyverse)
+data("CountyHealth")
+health_lm <- lm(MDs ~ Hospitals, data = CountyHealth)
+CountyHealth %>%
+  mutate(yhat = predict(health_lm),
+         residuals = residuals(health_lm)) %>%
+  ggplot(aes(x = yhat, y = residuals)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd = 1.2) +
+  labs(x = "Predicted number of doctors",
+       y = "Residual") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+Do the shape and constant variance assumptions look reasonable?
+]
+]
+
+---
+
+### Today
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+library(Stat2Data)
+library(tidyverse)
+data("CountyHealth")
+health_lm <- lm(MDs ~ Hospitals, data = CountyHealth)
+CountyHealth %>%
+  mutate(yhat = predict(health_lm),
+         residuals = residuals(health_lm)) %>%
+  ggplot(aes(x = yhat, y = residuals)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd = 1.2) +
+  labs(x = "Predicted number of doctors",
+       y = "Residual") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+Today: handling non-linear relationships
+]
+
+---
+
+### Example
+
+```{r, echo=F, message=F, warning=F, fig.width=10, fig.height=5}
+library(gridExtra)
+
+set.seed(4)
+n <- 100
+x <- seq(1, 20, length.out = n)
+eps <- rnorm(n, sd=0.25)
+
+y <- log(x) + eps
+p1 <- data.frame(x = x, y = y) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(title = "Original data") +
+  theme(text = element_text(size = 15))
+
+m1 <- lm(y ~ x)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+.large[
+.question[
+The relationship between $x$ and $y$ does not appear linear. How could we model that relationship instead?
+]
+]
+
+---
+
+### Example: log transform
+
+.large[
+$$Y = \beta_0 + \beta_1 \log(X) + \varepsilon$$
+]
+
+```{r, echo=F, message=F, warning=F, fig.width=7, fig.height=6, fig.align='center'}
+library(gridExtra)
+
+set.seed(4)
+n <- 100
+x <- seq(1, 20, length.out = n)
+eps <- rnorm(n, sd=0.25)
+
+y <- log(x) + eps
+
+m1 <- lm(y ~ x)
+m2 <- lm(y ~ log(x))
+
+p1 <- data.frame(x = x, y = y) |>
+  ggplot() +
+  geom_point(aes(x = x, y = y)) +
+  geom_smooth(aes(x = x, y = y), se=F, method="lm") +
+  geom_line(aes(x = x, y = predict(m2)), color="red") +
+  theme_bw() +
+  labs(title = "Original data") +
+  theme(text = element_text(size = 15))
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+p3 <- data.frame(x = x, y = y) |>
+  ggplot(aes(x = log(x), y = y)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(title = "Log transform") +
+  theme(text = element_text(size = 15))
+
+p4 <- data.frame(preds = predict(m2), 
+                 resids = residuals(m2)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+---
+
+### Example
+
+```{r, echo=F, message=F, warning=F, fig.width=10, fig.height=5}
+library(gridExtra)
+
+set.seed(4)
+n <- 100
+x <- seq(1, 20, length.out = n)
+eps <- rnorm(n, sd=0.25)
+
+y <- 0.01*x^2 + eps
+p1 <- data.frame(x = x, y = y) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(title = "Original data") +
+  theme(text = element_text(size = 15))
+
+m1 <- lm(y ~ x)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+.large[
+.question[
+The relationship between $x$ and $y$ does not appear linear. How could we model that relationship instead?
+]
+]
+
+---
+
+### Example: squaring X
+
+.large[
+$$Y = \beta_0 + \beta_1 X^2 + \varepsilon$$
+]
+
+```{r, echo=F, message=F, warning=F, fig.width=7, fig.height=6, fig.align='center'}
+library(gridExtra)
+
+set.seed(4)
+n <- 100
+x <- seq(1, 20, length.out = n)
+eps <- rnorm(n, sd=0.25)
+
+y <- 0.01*x^2 + eps
+
+m1 <- lm(y ~ x)
+m2 <- lm(y ~ I(x^2))
+
+p1 <- data.frame(x = x, y = y) |>
+  ggplot() +
+  geom_point(aes(x = x, y = y)) +
+  geom_smooth(aes(x = x, y = y), se=F, method="lm") +
+  geom_line(aes(x = x, y = predict(m2)), color="red") +
+  theme_bw() +
+  labs(title = "Original data") +
+  theme(text = element_text(size = 15))
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+p3 <- data.frame(x = x, y = y) |>
+  ggplot(aes(x = x^2, y = y)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(title = "Square transform") +
+  theme(text = element_text(size = 15))
+
+p4 <- data.frame(preds = predict(m2), 
+                 resids = residuals(m2)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+---
+
+### Example
+
+```{r, echo=F, message=F, warning=F, fig.width=10, fig.height=5}
+library(gridExtra)
+
+set.seed(4)
+n <- 100
+x <- seq(1, 20, length.out = n)
+eps <- rnorm(n, sd=0.25)
+
+y <- 5/x + eps
+p1 <- data.frame(x = x, y = y) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(title = "Original data") +
+  theme(text = element_text(size = 15))
+
+m1 <- lm(y ~ x)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+.large[
+.question[
+The relationship between $x$ and $y$ does not appear linear. How could we model that relationship instead?
+]
+]
+
+---
+
+### Example: reciprocal transform
+
+.large[
+$$Y = \beta_0 + \beta_1 \ (1/X) + \varepsilon$$
+]
+
+```{r, echo=F, message=F, warning=F, fig.width=7, fig.height=6, fig.align='center'}
+library(gridExtra)
+
+set.seed(4)
+n <- 100
+x <- seq(1, 20, length.out = n)
+eps <- rnorm(n, sd=0.25)
+
+y <- 5/x + eps
+
+m1 <- lm(y ~ x)
+m2 <- lm(y ~ I(1/x))
+
+p1 <- data.frame(x = x, y = y) |>
+  ggplot() +
+  geom_point(aes(x = x, y = y)) +
+  geom_smooth(aes(x = x, y = y), se=F, method="lm") +
+  geom_line(aes(x = x, y = predict(m2)), color="red") +
+  theme_bw() +
+  labs(title = "Original data") +
+  theme(text = element_text(size = 15))
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+p3 <- data.frame(x = x, y = y) |>
+  ggplot(aes(x = 1/x, y = y)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(title = "Reciprocal transform") +
+  theme(text = element_text(size = 15))
+
+p4 <- data.frame(preds = predict(m2), 
+                 resids = residuals(m2)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predictions", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 15))
+
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+---
+
+### Choosing transformations
+
+.large[
+To model nonlinear relationships, try transformations for $x$ that looks like the relationship
+]
+
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=8, fig.height=5.5}
+library(patchwork)
+p1 <- data.frame(x = 1:100) %>%
+  ggplot(aes(x = x, y = sqrt(x))) +
+  geom_line(size = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 20)) +
+  labs(title = "Square root")
+
+p2 <- data.frame(x = 1:100) %>%
+  ggplot(aes(x = x, y = x^2)) +
+  geom_line(size = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 20)) +
+  labs(title = "Square")
+
+p3 <- data.frame(x = 1:100) %>%
+  ggplot(aes(x = x, y = log(x))) +
+  geom_line(size = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 20)) +
+  labs(title = "Log")
+
+p4 <- data.frame(x = 1:100) %>%
+  ggplot(aes(x = x, y = 1/x)) +
+  geom_line(size = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 20)) +
+  labs(title = "Reciprocal")
+
+(p1 + p2)/(p3 + p4)
+```
+
+---
+
+### Example
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=10, fig.height=4}
+library(gapminder)
+
+gapminder_2007 <- gapminder |>
+  filter(year == 2007)
+
+p1 <- gapminder_2007 |>
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "GDP per capita ($)", y = "Life Expectancy (years)") +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size = 20))
+
+m1 <- lm(lifeExp ~ gdpPercap, data = gapminder_2007)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted life expectancy", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+.large[
+.question[
+What transformation could I try for this data?
+]
+]
+
+---
+
+### Log transformation
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=8, fig.height=7}
+p1 <- gapminder_2007 |>
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "GDP per capita ($)", y = "Life Expectancy (years)") +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size = 20))
+
+m1 <- lm(lifeExp ~ gdpPercap, data = gapminder_2007)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted life expectancy", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+m2 <- lm(lifeExp ~ log(gdpPercap), data = gapminder_2007)
+
+p3 <- gapminder_2007 |>
+  ggplot(aes(x = log(gdpPercap), y = lifeExp)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "log(GDP per capita)", y = "Life Expectancy (years)") +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size = 20))
+
+p4 <- data.frame(preds = predict(m2), 
+                 resids = residuals(m2)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted life expectancy", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+---
+
+### Log transformation
+
+```{r echo=F, message=F, fig.align='center', fig.width=6, fig.height=4}
+p3
+```
+
+
+.large[
+$$\widehat{\text{LifeExpectancy}} = 4.95 + 7.20 \log(\text{GDP per capita})$$
+
+.question[
+What life expectancy would I predict for a GDP per capita of $20000?
+]
+]
+
+---
+
+### Example
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=10, fig.height=4}
+set.seed(4)
+
+n <- 100
+x <- seq(1, 3, length.out = n)
+eps <- rnorm(n, sd=0.25)
+
+y <- 30000*exp(x + eps)
+x <- x*10
+
+ex_df <- data.frame(SqFt = x, Price = y)
+
+p1 <- ex_df |>
+  ggplot(aes(x = SqFt, y = Price)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Area (hundreds of sq ft)", y = "Price ($)") +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size = 20))
+
+m1 <- lm(Price ~ SqFt, data = ex_df)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted price", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+.large[
+.question[
+What transformation could I try for this data?
+]
+]
+
+---
+
+### Trying squaring X
+
+.large[
+Model: $Price = \beta_0 + \beta_1 (Area)^2 + \varepsilon$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=8, fig.height=6}
+p1 <- ex_df |>
+  ggplot(aes(x = SqFt, y = Price)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Area (hundreds of sq ft)", y = "Price ($)") +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size = 20))
+
+m1 <- lm(Price ~ SqFt, data = ex_df)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted price", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+m2 <- lm(Price ~ I(SqFt^2), data = ex_df)
+
+p3 <- ex_df |>
+  ggplot(aes(x = SqFt^2, y = Price)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "(Area)^2", y = "Price ($)") +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size = 20))
+
+p4 <- data.frame(preds = predict(m2), 
+                 resids = residuals(m2)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted price", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+---
+
+### Trying squaring X
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=10, fig.height=4}
+grid.arrange(p3, p4, ncol=2)
+```
+
+.large[
+.question[
+What do you notice about the residual plot after trying the transformation?
+]
+]
+
+---
+
+### Another attempt: transforming the response!
+
+.large[
+Model: $\log(Price) = \beta_0 + \beta_1 Area + \varepsilon$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=8, fig.height=6}
+p1 <- ex_df |>
+  ggplot(aes(x = SqFt, y = Price)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Area (hundreds of sq ft)", y = "Price ($)") +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size = 20))
+
+m1 <- lm(Price ~ SqFt, data = ex_df)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted price", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+m2 <- lm(log(Price) ~ SqFt, data = ex_df)
+
+p3 <- ex_df |>
+  ggplot(aes(x = SqFt, y = log(Price))) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Area (hundreds of sq ft)", y = "log(Price)") +
+  geom_smooth(se=F, method="lm") +
+  theme(text = element_text(size = 20))
+
+p4 <- data.frame(preds = predict(m2), 
+                 resids = residuals(m2)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted log(price)", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+---
+
+### Log transformed response
+
+.large[
+$$\widehat{\log(\text{Price})} = 10.51 + 0.091 \ \text{Area}$$
+
+* Here Price is in $, Area is in hundreds of square feet
+]
+
+.large[
+.question[
+How would I calculate the predicted *price* (in $) for a house of 2000 square feet?
+]
+]
+
+---
+
+### Class activity
+
+
+.large[
+Work on the handout, then we will discuss as a class
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\text{LifeExpectancy}} = 4.95 + 7.20 \log(\text{GDP per capita})$$
+
+.question[
+What is the predicted price for GDP per capita of $20200?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\text{LifeExpectancy}} = 4.95 + 7.20 \log(\text{GDP per capita})$$
+
+* When GDP per capita = 20000: $\widehat{\text{LifeExpectancy}} = 76.255$
+* When GDP per capita = 20200: $\widehat{\text{LifeExpectancy}} = 76.327$
+
+Change:
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\log(\text{Price})} = 10.51 + 0.091 \ \text{Area}$$
+
+* Price in $, Area in hundres of sq ft
+]
+
+.large[
+.question[
+What is the predicted price for a house of 2100 square feet?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\log(\text{Price})} = 10.51 + 0.091 \ \text{Area}$$
+
+* Price in $, Area in hundres of sq ft
+* When Area = 20: $\widehat{\text{Price}} = 226386$
+* When Area = 21: $\widehat{\text{Price}} = 247954$
+
+Change:
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\log(\text{Price})} = 10.51 + 0.091 \ \text{Area}$$
+
+* Price in $, Area in hundres of sq ft
+* When Area = 20: $\widehat{\text{Price}} = 226386$
+* When Area = 21: $\widehat{\text{Price}} = 247954$
+
+Change: $\dfrac{247954}{226386} = 1.095 = e^{0.091}$
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
