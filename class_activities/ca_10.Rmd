@@ -1,0 +1,79 @@
+---
+title: "Class Activity: polynomial regression"
+output: 
+  tufte::tufte_html:
+    css: "lab.css"
+    tufte_variant: "envisioned"
+    highlight: pygments
+link-citations: yes
+---
+
+In this activity, you will explore polynomial regression with data on CO2 emissions in Germany. 
+
+**Instructions:** 
+
+* You are welcome to work with a neighbor, but everyone must submit their own file to Canvas
+* At the end of class, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+## Setup
+
+**Template file:** [ca_10_template.qmd](https://sta112-s26.github.io/class_activities/ca_10_template.qmd)
+
+The data is contained in the `CO2Germany` dataset in the `Stat2Data` package. You can load the data by running the following:
+
+```r
+library(Stat2Data)
+data("CO2Germany")
+```
+
+The `CO2Germany` contains two variables: `CO2` (the CO2 level in ppm) and `Day` (the number of day in 2011).
+
+## Question
+
+Here's a plot showing the relationship between Day and CO2:
+
+```{r message=F, warning=F, echo=F, fig.align='center', fig.width=7, fig.height=5}
+library(tidyverse)
+library(Stat2Data)
+data("CO2Germany")
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+1. Fit a polynomial regression of order 2, with Day as the predictor and CO2 as the response.
+
+```{r, eval=F}
+lm(... ~ poly(..., ..., raw=TRUE), data = ...)
+```
+
+For reference, here is the code we used for the Kentucky Derby data:
+
+```{r, eval=F}
+lm(speed ~ poly(Year, 2, raw=TRUE),  data = derby)
+```
+
+
+2. Based on the fitted model, is the relationship between Day and CO2 concave up or concave down?
+
+3. What is the predicted CO2 level for day 200?
+
+The figure below shows our fitted model (the blue curve) on the original scatterplot. We also try a polynomial of order 3 (the red dashed curve).
+
+```{r message=F, warning=F, echo=F, fig.align='center', fig.width=7, fig.height=5}
+library(tidyverse)
+library(Stat2Data)
+data("CO2Germany")
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red", lty=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+4. Does a polynomial of order 3 look like it fits better?

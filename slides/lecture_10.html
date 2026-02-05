@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Nonlinear relationships and transformations</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Nonlinear relationships and transformations
+]
+
+---
+
+
+### More transformations
+
+
+![](lecture_10_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
+.large[
+.question[
+What transformations could we try here?
+]
+]
+
+---
+
+### Trying some transformations
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Transform both predictor and response?
+
+.large[
+`$$\log(Species) = \beta_0 + \beta_1 \log(Area) + \varepsilon$$`
+]
+
+![](lecture_10_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+---
+
+### Interpreting the fitted model
+
+.large[
+`$$\widehat{\log(Species)} = 1.625 + 0.246 \log (Area)$$`
+]
+
+---
+
+### Summary of model interpretation so far
+
+`\(\widehat{y} = \widehat{\beta}_0 + \widehat{\beta}_1 x\)`
+
+* A one-unit increase in `\(x\)` is associated with a change in `\(y\)` of `\(\widehat{\beta}_1\)`, on average
+
+`\(\widehat{y} = \widehat{\beta}_0 + \widehat{\beta}_1 log(x)\)`
+
+* A 1% increase in `\(x\)` is associated with a change in `\(y\)` of `\(\widehat{\beta}_1/100\)`, on average
+
+`\(\widehat{log(y)} = \widehat{\beta}_0 + \widehat{\beta}_1 x\)`
+
+* A one-unit increase in `\(x\)` is associated with a change in `\(y\)` by a **factor** of `\(e^{\widehat{\beta}_1}\)`, on average
+
+`\(\widehat{log(y)} = \widehat{\beta}_0 + \widehat{\beta}_1 log(x)\)`
+
+* A 1% increase in `\(x\)` is associated with a change in `\(y\)` by a **factor** of `\((1.01)^{\widehat{\beta}_1}\)`, on average
+
+
+---
+
+### Kentucky Derby data
+
+.large[
+Data on the Kentucky Derby winner from each year between 1875 and 2012. Variables include
+
+* `year`: year of race
+* `speed`: speed of winning horse (mph)
+* `time`: winning time (seconds)
+* `condition`: condition of the track on the day of the race
+]
+
+---
+
+### EDA
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+What do you notice about the winning times?
+]
+]
+
+---
+
+### EDA
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+What do you notice about the winning times?
+]
+]
+
+.large[
+There's a big drop around 1900, then they decrease gradually.
+]
+
+---
+
+### EDA
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+How would you describe the relationship?
+]
+]
+
+---
+
+### Fitting a linear regression
+
+.large[
+`$$\text{Speed} = \beta_0 + \beta_1 \ \text{Year} + \varepsilon$$`
+]
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Polynomial transformations
+
+.large[
+Another possible transformation is a **polynomial**.
+
+.question[
+**Definition:** A polynomial transformation of order `\(k\)` is a linear combination of the terms `\(X\)`, `\(X^2\)`, ..., `\(X^k\)`:
+`$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \cdots + \beta_k X^k + \varepsilon$$`
+]
+]
+
+.large[
+* Example: If we use a polynomial of order 3, our model is 
+`$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \varepsilon$$`
+]
+
+---
+
+### Polynomial transformations
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+What order polynomial do you think we should use?
+]
+]
+
+---
+
+### Polynomial transformation
+
+.large[
+Let's try a polynomial of order 2:
+
+`$$\text{Speed} = \beta_0 + \beta_1 \ \text{Year} +  \beta_2 \ \text{Year}^2 + \varepsilon$$`
+]
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Diagnostic plots
+
+.large[
+We use residual plots to check the model assumptions after transforming our predictor, just like with other transformations.
+]
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+How does the shape assumption look now?
+]
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+
+``` r
+derby_lm &lt;- lm(speed ~ poly(Year, 2, raw=TRUE), 
+               data = derby)
+```
+]
+
+.large[
+* `poly` means "fit a polynomial"
+* `poly(..., 2, ...)` specifies a second-order polynomial (quadratic)
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+
+``` r
+derby_lm &lt;- lm(speed ~ poly(Year, 2, raw=TRUE), 
+               data = derby)
+derby_lm
+```
+
+```
+## 
+## Call:
+## lm(formula = speed ~ poly(Year, 2, raw = TRUE), data = derby)
+## 
+## Coefficients:
+##                (Intercept)  poly(Year, 2, raw = TRUE)1  
+##                 -1.120e+03                   1.164e+00  
+## poly(Year, 2, raw = TRUE)2  
+##                 -2.928e-04
+```
+]
+
+.large[
+`$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$`
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+`$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$`
+]
+
+.large[
+.question[
+How would I interpret the intercept of the fitted polynomial regression model?
+]
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+`$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$`
+]
+
+.large[
+.question[
+How would I interpret the intercept of the fitted polynomial regression model?
+]
+]
+
+.large[
+If Year = 0, we predict a speed of -1120 mph (doesn't make much sense, since year is nowhere near 0)
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+`$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$`
+]
+
+.large[
+.question[
+How would I interpret the terms on `\(\text{Year}\)` and `\(\text{Year}^2\)`?
+]
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+`$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$`
+]
+
+.large[
+.question[
+How would I interpret the terms on `\(\text{Year}\)` and `\(\text{Year}^2\)`?
+]
+]
+
+.large[
+They're kind of difficult to interpret -- if I change `\(\text{Year}\)`, I also change `\(\text{Year}^2\)`
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+`$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$`
+]
+
+.large[
+.question[
+Can I interpret the *sign* on `\(\text{Year}^2\)`?
+]
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+`$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$`
+]
+
+.large[
+.question[
+Can I interpret the *sign* on `\(\text{Year}^2\)`?
+]
+]
+
+.large[
+Yes (for a polynomial of order 2 specifically). The sign on `\(\text{Year}^2\)` tells us about the concavity of the relationship.
+]
+
+---
+
+### Class activity
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_10.html](https://sta112-s26.github.io/class_activities/ca_10.html)
+]
+
+.large[
+* Experiment with polynomial regression
+* Submit HTML at end of class
+]
+
+---
+
+### Previously: polynomial transformations
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`$$\widehat{\text{CO2}} = 414.975 - 0.476 \ \text{Day} + 0.0012 \ \text{Day}^2$$`
+]
+
+---
+
+### Previously: polynomial transformations
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`$$\widehat{\text{CO2}} = 414.975 - 0.476 \ \text{Day} + 0.0012 \ \text{Day}^2$$`
+
+.question[
+Can I use the correlation to calculate the relationship between Day and CO2?
+]
+]
+
+---
+
+### Measuring variability in the response
+
+.large[
+* When we fit a regression model with least squares, we choose parameters to minimize the sum of squared residuals:
+
+`$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$`
+]
+
+.large[
+* We can think of SSE as the "amount of variability" in `\(Y\)` after predicting with our regression model
+* The amount of variability in `\(Y\)` *before* predicting with our regression model is
+
+`$$SSTotal = \sum_i (y_i -\overline{y})^2$$`
+]
+
+---
+
+### Thinking about SSE
+
+.large[
+`$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$`
+]
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Thinking about SSTotal
+
+.large[
+`$$SSTotal = \sum_i (y_i -\overline{y})^2$$`
+]
+
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### SSE vs. SSTotal
+
+.pull-left[
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+SSE = 4992.71
+]
+
+.pull-right[
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+
+SSTotal: 11703.69
+]
+
+.large[
+.question[
+Do I want SSE to be large relative to SSTotal, or small relative to SSTotal?
+]
+]
+
+---
+
+### `\(R^2\)`: the coefficient of determination
+
+.large[
+`$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$`
+`$$SSTotal = \sum_i (y_i -\overline{y})^2$$`
+]
+
+.large[
+The proportion of variability in `\(Y\)` "explained" by our regression model is 
+
+`$$R^2 = 1 - \dfrac{SSE}{SSTotal}$$`
+]
+
+.large[
+* `\(R^2\)` is between 0 and 1
+* A higher `\(R^2\)` means our model is a "better fit" to the data
+* For regression with one variable, `\(R^2 = r^2\)` (the squared correlation)
+]
+
+---
+
+### SSE vs. SSTotal
+
+.pull-left[
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" /&gt;
+
+SSE = 4992.71
+]
+
+.pull-right[
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" /&gt;
+
+SSTotal: 11703.69
+]
+
+.large[
+`\(R^2 = 1 - \dfrac{4992.71}{11703.69} = 0.573\)`
+]
+
+---
+
+### Comparing `\(R^2\)` values
+
+.pull-left[
+Polynomial of order 2:
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`\(R^2 = 0.573\)`
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`\(R^2 = 0.575\)`
+]
+]
+
+.large[
+.question[
+`\(R^2\)` has increased very slightly -- does that mean that a polynomial of order 3 is a better fit?
+]
+]
+
+---
+
+### `\(R^2\)`
+
+.large[
+`\(R^2\)` **will always increase when you add more parameters to the model.**
+
+Why? Because
+
+`$$R^2 = 1 - \dfrac{SSE}{SSTotal}$$`
+and adding more parameters gives us more flexibility to decrease SSE.
+]
+
+---
+
+### Adjusted `\(R^2\)`
+
+.large[
+We can account for the number of parameters in the model with *adjusted* `\(R^2\)`:
+
+`$$R^2_{adj} = 1 - \dfrac{SSE/(n-p)}{SSTotal/(n-1)}$$`
+]
+
+.large[
+* `\(n =\)` number of observations in data (sample size)
+* `\(p =\)` number of parameters ( `\(\beta\)` terms) in model
+]
+
+---
+
+### Adjusted `\(R^2\)`
+
+.pull-left[
+Polynomial of order 2:
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+SSE = 4992.7
+
+SSTotal = 11703.69
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+SSE = 4971.9
+
+SSTotal = 11703.69
+]
+]
+
+.large[
+.question[
+Why is SSTotal the same for the two models?
+]
+]
+
+---
+
+
+### Adjusted `\(R^2\)`
+
+.pull-left[
+Polynomial of order 2:
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+SSE = 4992.7
+
+SSTotal = 11703.69
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+SSE = 4971.9
+
+SSTotal = 11703.69
+]
+]
+
+.large[
+`$$R^2_{adj} = 1 - \dfrac{SSE/(n-p)}{SSTotal/(n-1)}$$`
+]
+
+---
+
+### Adjusted `\(R^2\)`
+
+.pull-left[
+Polynomial of order 2:
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-27-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`\(R^2_{adj} = 0.56976\)`
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+&lt;img src="lecture_10_files/figure-html/unnamed-chunk-28-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`\(R^2_{adj} = 0.56972\)`
+]
+]
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

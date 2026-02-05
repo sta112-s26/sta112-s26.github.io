@@ -1,0 +1,32 @@
+---
+---
+---
+title: "Class activity"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(Stat2Data)
+data("CO2Germany")
+library(tidyverse)
+```
+
+### Exercise 1
+
+```{r}
+
+```
+
+### Exercise 2
+
+
+### Exercise 3
+
+
+### Exercise 4
+

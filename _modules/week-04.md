@@ -14,7 +14,8 @@ February 4
   : Textbook 1.4
 
 February 6
-: Outliers and influential points
+: Transformations
+  : [Slides](https://sta112-s26.github.io/slides/lecture_10.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_10.html)
 
 : Reading for Monday's class
   : Textbook 2.1

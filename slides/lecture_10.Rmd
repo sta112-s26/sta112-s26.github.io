@@ -1,0 +1,910 @@
+---
+title: Nonlinear relationships and transformations
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### More transformations
+
+
+```{r, echo=F, message=F, warning=F, fig.width=10, fig.height=5}
+library(tidyverse)
+library(Stat2Data)
+library(gridExtra)
+
+data("SpeciesArea")
+
+p1 <- SpeciesArea |>
+  ggplot(aes(x = Area, y = Species)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Area (sq km)", y = "Number of species") +
+  theme(text = element_text(size = 20)) +
+  geom_smooth(se=F, method="lm")
+
+m1 <- lm(Species ~ Area, data = SpeciesArea)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted number of species", y = "Residuals", 
+       title = "Residual plot") +
+  theme(text = element_text(size = 20))
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+.large[
+.question[
+What transformations could we try here?
+]
+]
+
+---
+
+### Trying some transformations
+
+```{r, echo=F, message=F, fig.width=8, fig.height=7, fig.align='center'}
+p1 <- SpeciesArea |>
+  ggplot(aes(x = log(Area), y = Species)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "log(Area)", y = "Number of species") +
+  theme(text = element_text(size = 20)) +
+  geom_smooth(se=F, method="lm")
+
+m1 <- lm(Species ~ log(Area), data = SpeciesArea)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted number of species", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+
+p3 <- SpeciesArea |>
+  ggplot(aes(x = sqrt(Area), y = Species)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "sqrt(Area)", y = "Number of species") +
+  theme(text = element_text(size = 20)) +
+  geom_smooth(se=F, method="lm")
+
+m1 <- lm(Species ~ sqrt(Area), data = SpeciesArea)
+
+p4 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted number of species", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+---
+
+### Transform both predictor and response?
+
+.large[
+$$\log(Species) = \beta_0 + \beta_1 \log(Area) + \varepsilon$$
+]
+
+```{r, echo=F, message=F, warning=F, fig.width=10, fig.height=5}
+p1 <- SpeciesArea |>
+  ggplot(aes(x = log(Area), y = log(Species))) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "log(Area)", y = "log(Number of species)") +
+  theme(text = element_text(size = 20)) +
+  geom_smooth(se=F, method="lm")
+
+m1 <- lm(log(Species) ~ log(Area), data = SpeciesArea)
+
+p2 <- data.frame(preds = predict(m1), 
+                 resids = residuals(m1)) |>
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted number of species", y = "Residuals") +
+  theme(text = element_text(size = 20))
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+---
+
+### Interpreting the fitted model
+
+.large[
+$$\widehat{\log(Species)} = 1.625 + 0.246 \log (Area)$$
+]
+
+---
+
+### Summary of model interpretation so far
+
+$\widehat{y} = \widehat{\beta}_0 + \widehat{\beta}_1 x$
+
+* A one-unit increase in $x$ is associated with a change in $y$ of $\widehat{\beta}_1$, on average
+
+$\widehat{y} = \widehat{\beta}_0 + \widehat{\beta}_1 log(x)$
+
+* A 1% increase in $x$ is associated with a change in $y$ of $\widehat{\beta}_1/100$, on average
+
+$\widehat{log(y)} = \widehat{\beta}_0 + \widehat{\beta}_1 x$
+
+* A one-unit increase in $x$ is associated with a change in $y$ by a **factor** of $e^{\widehat{\beta}_1}$, on average
+
+$\widehat{log(y)} = \widehat{\beta}_0 + \widehat{\beta}_1 log(x)$
+
+* A 1% increase in $x$ is associated with a change in $y$ by a **factor** of $(1.01)^{\widehat{\beta}_1}$, on average
+
+
+---
+
+### Kentucky Derby data
+
+.large[
+Data on the Kentucky Derby winner from each year between 1875 and 2012. Variables include
+
+* `year`: year of race
+* `speed`: speed of winning horse (mph)
+* `time`: winning time (seconds)
+* `condition`: condition of the track on the day of the race
+]
+
+---
+
+### EDA
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+library(tidyverse)
+derby <- read.delim("KYDerby17.txt")
+
+derby %>%
+  ggplot(aes(x = Year, y = Time)) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+What do you notice about the winning times?
+]
+]
+
+---
+
+### EDA
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+library(tidyverse)
+derby <- read.delim("KYDerby17.txt")
+
+derby %>%
+  ggplot(aes(x = Year, y = Time)) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+
+derby <- derby |> filter(Year > 1900)
+```
+
+.large[
+.question[
+What do you notice about the winning times?
+]
+]
+
+.large[
+There's a big drop around 1900, then they decrease gradually.
+]
+
+---
+
+### EDA
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+
+derby %>%
+  ggplot(aes(x = Year, y = speed)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+How would you describe the relationship?
+]
+]
+
+---
+
+### Fitting a linear regression
+
+.large[
+$$\text{Speed} = \beta_0 + \beta_1 \ \text{Year} + \varepsilon$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=10, fig.height=5}
+
+p1 <- derby %>%
+  ggplot(aes(x = Year, y = speed)) +
+  geom_point(size = 2.5) +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  theme(text = element_text(size = 20))
+
+derby_lm <- lm(speed ~ Year, data = derby)
+
+p2 <- derby %>%
+  mutate(pred = predict(derby_lm),
+         resid = residuals(derby_lm)) %>%
+  ggplot(aes(x = pred, y = resid)) +
+  geom_point(size = 2.5) +
+  geom_abline(slope = 0, intercept = 0, color = "blue", lwd=1.2) +
+  labs(x = "Predicted speed", y = "Residual") +
+  theme_bw() +
+  theme(text = element_text(size = 20))
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+---
+
+### Polynomial transformations
+
+.large[
+Another possible transformation is a **polynomial**.
+
+.question[
+**Definition:** A polynomial transformation of order $k$ is a linear combination of the terms $X$, $X^2$, ..., $X^k$:
+$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \cdots + \beta_k X^k + \varepsilon$$
+]
+]
+
+.large[
+* Example: If we use a polynomial of order 3, our model is 
+$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \varepsilon$$
+]
+
+---
+
+### Polynomial transformations
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+
+derby %>%
+  ggplot(aes(x = Year, y = speed)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+What order polynomial do you think we should use?
+]
+]
+
+---
+
+### Polynomial transformation
+
+.large[
+Let's try a polynomial of order 2:
+
+$$\text{Speed} = \beta_0 + \beta_1 \ \text{Year} +  \beta_2 \ \text{Year}^2 + \varepsilon$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+
+derby %>%
+  ggplot(aes(x = Year, y = speed)) +
+  geom_point(size = 2.5) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+---
+
+### Diagnostic plots
+
+.large[
+We use residual plots to check the model assumptions after transforming our predictor, just like with other transformations.
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+derby_lm <- lm(speed ~ I(Year) + I(Year^2), data = derby)
+
+derby %>%
+  mutate(pred = predict(derby_lm),
+         resid = residuals(derby_lm)) %>%
+  ggplot(aes(x = pred, y = resid)) +
+  geom_point(size = 2.5) +
+  geom_abline(slope = 0, intercept = 0, color = "blue", lwd=1.2) +
+  labs(x = "Predicted speed", y = "Residual") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+How does the shape assumption look now?
+]
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+```{r eval=F}
+derby_lm <- lm(speed ~ poly(Year, 2, raw=TRUE), 
+               data = derby)
+```
+]
+
+.large[
+* `poly` means "fit a polynomial"
+* `poly(..., 2, ...)` specifies a second-order polynomial (quadratic)
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+```{r}
+derby_lm <- lm(speed ~ poly(Year, 2, raw=TRUE), 
+               data = derby)
+derby_lm
+```
+]
+
+.large[
+$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$
+]
+
+.large[
+.question[
+How would I interpret the intercept of the fitted polynomial regression model?
+]
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$
+]
+
+.large[
+.question[
+How would I interpret the intercept of the fitted polynomial regression model?
+]
+]
+
+.large[
+If Year = 0, we predict a speed of -1120 mph (doesn't make much sense, since year is nowhere near 0)
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$
+]
+
+.large[
+.question[
+How would I interpret the terms on $\text{Year}$ and $\text{Year}^2$?
+]
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$
+]
+
+.large[
+.question[
+How would I interpret the terms on $\text{Year}$ and $\text{Year}^2$?
+]
+]
+
+.large[
+They're kind of difficult to interpret -- if I change $\text{Year}$, I also change $\text{Year}^2$
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$
+]
+
+.large[
+.question[
+Can I interpret the *sign* on $\text{Year}^2$?
+]
+]
+
+---
+
+### Interpreting the fitted model
+
+.large[
+$$\widehat{\text{Speed}} = -1120 + 1.16 \ \text{Year} - 0.00029 \ \text{Year}^2$$
+]
+
+.large[
+.question[
+Can I interpret the *sign* on $\text{Year}^2$?
+]
+]
+
+.large[
+Yes (for a polynomial of order 2 specifically). The sign on $\text{Year}^2$ tells us about the concavity of the relationship.
+]
+
+---
+
+### Class activity
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_10.html](https://sta112-s26.github.io/class_activities/ca_10.html)
+]
+
+.large[
+* Experiment with polynomial regression
+* Submit HTML at end of class
+]
+
+---
+
+### Previously: polynomial transformations
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+library(Stat2Data)
+data("CO2Germany")
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+$$\widehat{\text{CO2}} = 414.975 - 0.476 \ \text{Day} + 0.0012 \ \text{Day}^2$$
+]
+
+---
+
+### Previously: polynomial transformations
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+library(Stat2Data)
+data("CO2Germany")
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+$$\widehat{\text{CO2}} = 414.975 - 0.476 \ \text{Day} + 0.0012 \ \text{Day}^2$$
+
+.question[
+Can I use the correlation to calculate the relationship between Day and CO2?
+]
+]
+
+---
+
+### Measuring variability in the response
+
+.large[
+* When we fit a regression model with least squares, we choose parameters to minimize the sum of squared residuals:
+
+$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$
+]
+
+.large[
+* We can think of SSE as the "amount of variability" in $Y$ after predicting with our regression model
+* The amount of variability in $Y$ *before* predicting with our regression model is
+
+$$SSTotal = \sum_i (y_i -\overline{y})^2$$
+]
+
+---
+
+### Thinking about SSE
+
+.large[
+$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+---
+
+### Thinking about SSTotal
+
+.large[
+$$SSTotal = \sum_i (y_i -\overline{y})^2$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ 1, lwd=1.2)
+```
+
+---
+
+### SSE vs. SSTotal
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+
+m1 <- lm(CO2 ~ poly(Day, 2, raw=TRUE), data = CO2Germany)
+#sum(m1$residuals^2)
+```
+
+SSE = 4992.71
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ 1, lwd=1.2)
+
+m2 <- lm(CO2 ~ 1, data = CO2Germany)
+#sum(m2$residuals^2)
+```
+
+SSTotal: 11703.69
+]
+
+.large[
+.question[
+Do I want SSE to be large relative to SSTotal, or small relative to SSTotal?
+]
+]
+
+---
+
+### $R^2$: the coefficient of determination
+
+.large[
+$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$
+$$SSTotal = \sum_i (y_i -\overline{y})^2$$
+]
+
+.large[
+The proportion of variability in $Y$ "explained" by our regression model is 
+
+$$R^2 = 1 - \dfrac{SSE}{SSTotal}$$
+]
+
+.large[
+* $R^2$ is between 0 and 1
+* A higher $R^2$ means our model is a "better fit" to the data
+* For regression with one variable, $R^2 = r^2$ (the squared correlation)
+]
+
+---
+
+### SSE vs. SSTotal
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+
+m1 <- lm(CO2 ~ poly(Day, 2, raw=TRUE), data = CO2Germany)
+#sum(m1$residuals^2)
+```
+
+SSE = 4992.71
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ 1, lwd=1.2)
+
+m2 <- lm(CO2 ~ 1, data = CO2Germany)
+#sum(m2$residuals^2)
+```
+
+SSTotal: 11703.69
+]
+
+.large[
+$R^2 = 1 - \dfrac{4992.71}{11703.69} = 0.573$
+]
+
+---
+
+### Comparing $R^2$ values
+
+.pull-left[
+Polynomial of order 2:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+$R^2 = 0.573$
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red")
+```
+
+.large[
+$R^2 = 0.575$
+]
+]
+
+.large[
+.question[
+$R^2$ has increased very slightly -- does that mean that a polynomial of order 3 is a better fit?
+]
+]
+
+---
+
+### $R^2$
+
+.large[
+$R^2$ **will always increase when you add more parameters to the model.**
+
+Why? Because
+
+$$R^2 = 1 - \dfrac{SSE}{SSTotal}$$
+and adding more parameters gives us more flexibility to decrease SSE.
+]
+
+---
+
+### Adjusted $R^2$
+
+.large[
+We can account for the number of parameters in the model with *adjusted* $R^2$:
+
+$$R^2_{adj} = 1 - \dfrac{SSE/(n-p)}{SSTotal/(n-1)}$$
+]
+
+.large[
+* $n =$ number of observations in data (sample size)
+* $p =$ number of parameters ( $\beta$ terms) in model
+]
+
+---
+
+### Adjusted $R^2$
+
+.pull-left[
+Polynomial of order 2:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+SSE = 4992.7
+
+SSTotal = 11703.69
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red")
+```
+
+.large[
+SSE = 4971.9
+
+SSTotal = 11703.69
+]
+]
+
+.large[
+.question[
+Why is SSTotal the same for the two models?
+]
+]
+
+---
+
+
+### Adjusted $R^2$
+
+.pull-left[
+Polynomial of order 2:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+SSE = 4992.7
+
+SSTotal = 11703.69
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red")
+```
+
+.large[
+SSE = 4971.9
+
+SSTotal = 11703.69
+]
+]
+
+.large[
+$$R^2_{adj} = 1 - \dfrac{SSE/(n-p)}{SSTotal/(n-1)}$$
+]
+
+---
+
+### Adjusted $R^2$
+
+.pull-left[
+Polynomial of order 2:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+$R^2_{adj} = 0.56976$
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red")
+```
+
+.large[
+$R^2_{adj} = 0.56972$
+]
+]
+
+
+
+
+
+
+

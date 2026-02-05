@@ -3,7 +3,7 @@ title: Inference for regression models
 ---
 
 February 9
-: Transformations
+: Outliers and influential points
 
 February 11
 : Inference for regression slope
