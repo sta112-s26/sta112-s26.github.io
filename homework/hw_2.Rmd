@@ -11,7 +11,7 @@ link-citations: yes
 knitr::opts_chunk$set(echo = T, eval=F)
 ```
 
-**Due:** Friday, February 6, 11:59pm on Canvas
+**Due:** Friday, February 13, 11:59pm on Canvas
 
 **Instructions:** 
 
@@ -30,25 +30,9 @@ knitr::opts_chunk$set(echo = T, eval=F)
 3. Fill in answers to the questions below. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
 4. When you are done, render and submit your HTML file on Canvas (Assignments -> Homework 2).
 
-## Spurious correlations
 
-In class, we explored different [spurious correlations](https://www.tylervigen.com/spurious-correlations), and you tried [discovering](https://www.tylervigen.com/spurious/discover) one of your own.
 
-If you scroll to the bottom of the page at the spurious correlations website, you will see an explanation of why it is possible to find all of these strong correlations ("Why this works"), and why we should not read too much into any of these correlations.
-
-:::{.question}
-#### Question 1
-
-Report one of the spurious correlations you discovered. Which variables did you examine? What was the observed correlation coefficient?
-:::
-
-:::{.question}
-#### Question 2
-
-Explain to your friend, who has never studied statistics, why the correlation you described in question 1 is *spurious*.
-:::
-
-## Data dredging and ethics
+# Data dredging and ethics
 
 In HW 1, you thought about the importance of reproducible data analysis. On this assignment, you will think about another aspect of ethical data analysis.
 
@@ -58,19 +42,19 @@ Read the following material, then answer the questions below:
 
 
 :::{.question}
-#### Question 3
+#### Question 1
 
 Summarize the different problems with Brian Wansink’s research discussed in the NPR article.
 :::
 
 :::{.question}
-#### Question 4
+#### Question 2
 
-What are some similarities between Brian Wansink's research practices, and the spurious correlations you have been exploring?
+What are some similarities between Brian Wansink's research practices, and the spurious correlations we discussed in class?
 :::
 
 
-## Oyster predictions
+# Oyster predictions
 
 The `Oysters` dataset in the `Stat2Data` package contains the results of an experiment comparing two different methods for measuring oyster size. You can load the data in R as follows:
 
@@ -83,7 +67,7 @@ data(Oysters)
 The engineers who conducted the study want to know if a new 3-D measuring system (`ThreeD`) is better at predicting oyster volume than the old 2-D (`TwoD`) measuring system.
 
 :::{.question}
-#### Question 5
+#### Question 3
 
 Create two scatterplots, one showing the relationship between the 3-D measurements and oyster volume, and the other showing the relationship between the 2-D measurements and oyster volume.
 :::
@@ -94,7 +78,7 @@ Create two scatterplots, one showing the relationship between the 3-D measuremen
 To quantify the strength of the linear relationship between two quantitative variables, we can calculate the correlation coefficient. 
 
 :::{.question}
-#### Question 6
+#### Question 4
 
 Calculate correlation coefficients for the two scatterplots you created in the previous question. The [course codebook](https://sta112-s26.github.io/resources/codebook.html) includes examples of calculating correlation if you get stuck!
 :::
@@ -110,20 +94,241 @@ sqrt(mean(model_2d$residuals^2)) # RMSE
 
 
 :::{.question}
-#### Question 7
+#### Question 5
 
 Run the code to calculate the SSE and RMSE when using the 2-D measurements. Then modify the code to calculate SSE and RMSE for the 3-D measurements.
 :::
 
 :::{.question}
-#### Question 8
+#### Question 6
 
 Interpret the meaning of the RMSE for each model, in context of the outcome of interest (oyster volume).
 :::
 
 :::{.question}
-#### Question 9
+#### Question 7
 
 Finally, interpret the results of your analyses in this section (scatterplots, correlation, SSE, RMSE) -- which of the measurements do you think is doing a better job?
 :::
+
+# Marine Bryozoans
+
+### Data
+
+Researchers have observed many species for which larger offspring have a biological fitness advantage over smaller offspring, but there have been competing hypotheses for why this is the case, and there are exceptions. In the paper "Why does offspring size affect performance? Integrating metabolic scaling with life-history theory" (Pattersen et al. 2015, *Proc. R. Soc. B.*), the authors propose that larger offspring are more efficient in energy consumption and thus have greater fitness.
+
+To investigate, the authors collected data on two species of marine bryozoan, *Bugula neritina* and *Watersipora subtorquata*. After initial growth, the developmental process of these two species consists of three phases before they are considered mature - a larval stage (before the individual settles and begins metamorphosis), an early post-settlement stage, and a late post-settlement stage (as the individual nears the end of metamorphosis).
+
+Here we have data from 568 individuals from these two species, measured at the three different developmental stages. For each individual, the researchers recorded the mass (in micrograms) and the rate of oxygen consumption. The rate of oxygen consumption was then converted into the metabolic rate (rate of energy consumption), based on the amount of energy in oxygen.
+
+Note that the same individuals were measured at the early and late stages, so while there are 568 individuals in the data, the dataset has 823 rows.
+
+The different columns are:
+
+* *Species:* 	Species of the organism measured, either bugula (Bugula neritina) or watersipora (Watersipora subtorquata)
+* *Stage:* Developmental stage of the organism (larvae = larval stage, early = early post-settlement stage, late = late post-settlement stage)
+* *Run:* Which run of the study the individual was recorded in. Several runs were done for each species
+* *Mass:* Mass of the individual (in micrograms)
+* *Metabolic:* Recorded metabolic rate (rate of energy consumption) of the individual (in mJ per hour)
+
+### Downloading the data
+
+The data for this assignment comes from the paper by Pattersen *et al.*, and is stored in a CSV file. CSV files can be read into R with the `read_csv` function, which is part of the `readr` package in the tidyverse. The following code imports the data and saves it as a data frame called `bryozoan`:
+
+```{r, eval=F}
+library(tidyverse)
+bryozoan <- read_csv("https://sta112-s26.github.io/homework/bryozoan_data.csv")
+```
+
+This code is included in the setup chunk of the R Markdown template for this assignment. The argument to the `read_csv` function here is the path to the CSV file we want to import. This can be either a local path (on your computer) or a url.
+
+**Note: since the data is imported from a csv file, rather than an R package, the `?bryozoan` command will not provide any information about the data. I have included background on the dataset and variables above.**
+
+## Research question
+
+Researchers hypothesize that, even though larger individuals have a higher metabolic rate, they are more *energy efficient* (that is, they use less energy proportional to their body size).
+
+### Proportional to body size?
+
+What does it mean for larger individuals to be more energy efficient, proportional to body size?
+
+Mathematically, this means that the shape of the relationship between mass and metabolic rate looks like the third plot below, with the curve flattening out as mass increases.
+
+```{r echo=F, message=F, fig.align='center', fig.width = 12, fig.height = 4}
+library(patchwork)
+library(tidyverse)
+p1 <- data.frame(x = 1:100, y = 1:100) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Mass", 
+       y = "Metabolism",
+       title = "Efficiency is the same") +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+p2 <- data.frame(x = 1:100, y = (1:100)^2) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Mass", 
+       y = "Metabolism",
+       title = "Larger individuals are less efficient") +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+p3 <- data.frame(x = 1:100, y = (1:100)^0.25) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Mass", 
+       y = "Metabolism",
+       title = "Larger individuals are more efficient") +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+p1 + p2 + p3
+```
+
+:::{.question}
+#### Question 8
+
+Explain why the model
+
+$\text{metabolic rate} = \beta_0 + \beta_1 \text{mass} + \varepsilon$
+
+is not a suitable choice to model the relationship between mass and metabolic rate, if the researchers think that larger individuals are more energy efficient, proportional to body size.
+:::
+
+### Transformation
+
+Instead of the linear model in Question 8, the researchers propose the following:
+
+$\text{metabolic rate} \approx \alpha (\text{mass})^\beta$,
+
+where $\alpha > 0$ and $\beta$ are unknown parameters. (I have written this model with the $\approx$ symbol to denote "approximately", since we haven't written a noise term yet). The plots below show how the value of $\beta$ corresponds to different shapes of the relationship:
+
+```{r echo=F, message=F, fig.align='center', fig.width = 12, fig.height = 4}
+library(latex2exp)
+p1 <- data.frame(x = 1:100, y = 1:100) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Mass", 
+       y = "Metabolism",
+       title = TeX("$\\beta = 1$")) +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+p2 <- data.frame(x = 1:100, y = (1:100)^2) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Mass", 
+       y = "Metabolism",
+       title = TeX("$\\beta > 1$")) +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+p3 <- data.frame(x = 1:100, y = (1:100)^0.25) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Mass", 
+       y = "Metabolism",
+       title = TeX("$0 < \\beta < 1$")) +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+p1 + p2 + p3
+```
+
+**Therefore, the researchers' hypothesis corresponds to $\beta < 1$.**
+
+So, how can we estimate $\beta$? If we transform the variables, it turns out that we can fit a linear model with transformed data!
+
+:::{.question}
+#### Question 9
+
+Show that if
+
+$\text{metabolic rate} = \alpha (\text{mass})^\beta$,
+
+then
+
+$\log(\text{metabolic rate}) = \log(\alpha) + \beta \log(\text{mass})$.
+
+Make sure to show your work. For this question, you may submit a separate scan of handwritten work on Canvas.
+:::
+
+Now we have a linear regression model! If we just let $\beta_0 = \log(\alpha)$ and $\beta_1 = \beta$, and bring back the noise term $\varepsilon$, then 
+
+$\log(\text{metabolic rate}) = \beta_0 + \beta_1 \log(\text{mass}) + \varepsilon$
+
+Now we can fit this model, and estimate $\beta_1$.
+
+### Modifying the data
+
+The bryozoan data contains records for different species, at different stages of life. For now, we will focus on one species and one stage of life: early-stage Bugula. We also would like to create new columns in the dataset for log mass and log metabolic rate.
+
+Here is code that will let us do these two steps:
+
+```{r, eval=F}
+bugula_early <- bryozoan |>
+  filter(Species == "bugula", Stage == "early") |>
+  mutate(logMass = log(Mass),
+         logMetabolic = log(Metabolic))
+```
+
+In this code:
+
+* The `<-` means "create a new object". That is, everything on the *right* is being stored in the object on the *left* -- we create a new dataset called `bugula_early`, based on modifying the original `bryozoan` data
+* `filter` chooses a subset of rows
+* `mutate` creates new columns, or modifies existing columns
+    
+
+:::{.question}
+#### Question 10
+
+Run the code above to create the `bugula_early` dataset. Use the modified dataset for the questions below.
+:::
+
+:::{.question}
+#### Question 11
+
+Using your `bugula_early` dataset, create plot showing the relationship between log mass and log metabolic rate. Be sure to label your axes, and add a best-fit line.
+:::
+
+### Model fitting
+
+:::{.question}
+#### Question 12
+
+Fit a linear regression with `logMass` as the predictor and `logMetabolic` as the response, and report the estimated slope $\widehat{\beta}_1$. Does your estimated slope support the researcher's hypothesis that larger organisms are more energy efficient, proportional to body size?
+:::
+
+:::{.question}
+#### Question 13
+
+Based on our discussion from class, interpret the estimated coefficient $\widehat{\beta}_1$ in context of the data.
+:::
+
+:::{.question}
+#### Question 14
+
+Make a residual plot for the fitted model in Question 12, and assess the shape and constant variance assumptions.
+:::
+
 

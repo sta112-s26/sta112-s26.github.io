@@ -1647,10 +1647,13 @@ margin-left: 0 !important;
         <nav role="navigation" id="toc">
           <ul>
           <li><a href="#setup" id="toc-setup">Setup</a></li>
-          <li><a href="#spurious-correlations" id="toc-spurious-correlations">Spurious correlations</a></li>
           <li><a href="#data-dredging-and-ethics" id="toc-data-dredging-and-ethics">Data dredging and
           ethics</a></li>
           <li><a href="#oyster-predictions" id="toc-oyster-predictions">Oyster predictions</a></li>
+          <li><a href="#marine-bryozoans" id="toc-marine-bryozoans">Marine Bryozoans</a>
+          <ul>
+          <li><a href="#research-question" id="toc-research-question">Research question</a></li>
+          </ul></li>
           </ul>
         </nav>
         <ul class="authors">
@@ -1675,7 +1678,7 @@ margin-left: 0 !important;
       
    
 <!-- Don't indent these lines or it will mess pre blocks indentation --> 
-<p><strong>Due:</strong> Friday, February 6, 11:59pm on Canvas</p>
+<p><strong>Due:</strong> Friday, February 13, 11:59pm on Canvas</p>
 <p><strong>Instructions:</strong></p>
 <ul>
 <li>A template Quarto file will be provided, with set-up instructions
@@ -1706,29 +1709,8 @@ catch any knitting issues early.</li>
 (Assignments -&gt; Homework 2).</li>
 </ol>
 </div>
-<div id="spurious-correlations" class="section level2">
-<h2>Spurious correlations</h2>
-<p>In class, we explored different <a href="https://www.tylervigen.com/spurious-correlations">spurious
-correlations</a>, and you tried <a href="https://www.tylervigen.com/spurious/discover">discovering</a> one
-of your own.</p>
-<p>If you scroll to the bottom of the page at the spurious correlations
-website, you will see an explanation of why it is possible to find all
-of these strong correlations (“Why this works”), and why we should not
-read too much into any of these correlations.</p>
-<div id="question-1" class="section level4 question">
-<h4>Question 1</h4>
-<p>Report one of the spurious correlations you discovered. Which
-variables did you examine? What was the observed correlation
-coefficient?</p>
-</div>
-<div id="question-2" class="section level4 question">
-<h4>Question 2</h4>
-<p>Explain to your friend, who has never studied statistics, why the
-correlation you described in question 1 is <em>spurious</em>.</p>
-</div>
-</div>
-<div id="data-dredging-and-ethics" class="section level2">
-<h2>Data dredging and ethics</h2>
+<div id="data-dredging-and-ethics" class="section level1">
+<h1>Data dredging and ethics</h1>
 <p>In HW 1, you thought about the importance of reproducible data
 analysis. On this assignment, you will think about another aspect of
 ethical data analysis.</p>
@@ -1737,19 +1719,19 @@ ethical data analysis.</p>
 <li><a href="https://www.npr.org/sections/thesalt/2018/09/26/651849441/cornell-food-researchers-downfall-raises-larger-questions-for-science">This</a>
 NPR article on former Cornell professor Brian Wansink</li>
 </ul>
-<div id="question-3" class="section level4 question">
-<h4>Question 3</h4>
+<div id="question-1" class="section level4 question">
+<h4>Question 1</h4>
 <p>Summarize the different problems with Brian Wansink’s research
 discussed in the NPR article.</p>
 </div>
-<div id="question-4" class="section level4 question">
-<h4>Question 4</h4>
+<div id="question-2" class="section level4 question">
+<h4>Question 2</h4>
 <p>What are some similarities between Brian Wansink’s research
-practices, and the spurious correlations you have been exploring?</p>
+practices, and the spurious correlations we discussed in class?</p>
 </div>
 </div>
-<div id="oyster-predictions" class="section level2">
-<h2>Oyster predictions</h2>
+<div id="oyster-predictions" class="section level1">
+<h1>Oyster predictions</h1>
 <p>The <code>Oysters</code> dataset in the <code>Stat2Data</code>
 package contains the results of an experiment comparing two different
 methods for measuring oyster size. You can load the data in R as
@@ -1760,8 +1742,8 @@ follows:</p>
 <p>The engineers who conducted the study want to know if a new 3-D
 measuring system (<code>ThreeD</code>) is better at predicting oyster
 volume than the old 2-D (<code>TwoD</code>) measuring system.</p>
-<div id="question-5" class="section level4 question">
-<h4>Question 5</h4>
+<div id="question-3" class="section level4 question">
+<h4>Question 3</h4>
 <p>Create two scatterplots, one showing the relationship between the 3-D
 measurements and oyster volume, and the other showing the relationship
 between the 2-D measurements and oyster volume.</p>
@@ -1771,8 +1753,8 @@ between the 2-D measurements and oyster volume.</p>
 <p>To quantify the strength of the linear relationship between two
 quantitative variables, we can calculate the correlation
 coefficient.</p>
-<div id="question-6" class="section level4 question">
-<h4>Question 6</h4>
+<div id="question-4" class="section level4 question">
+<h4>Question 4</h4>
 <p>Calculate correlation coefficients for the two scatterplots you
 created in the previous question. The <a href="https://sta112-s26.github.io/resources/codebook.html">course
 codebook</a> includes examples of calculating correlation if you get
@@ -1785,22 +1767,194 @@ the SSE and RMSE:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>model_2d <span class="ot">&lt;-</span> <span class="fu">lm</span>(Volume <span class="sc">~</span> TwoD, <span class="at">data =</span> Oysters)</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">sum</span>(model_2d<span class="sc">$</span>residuals<span class="sc">^</span><span class="dv">2</span>) <span class="co"># SSE</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>(model_2d<span class="sc">$</span>residuals<span class="sc">^</span><span class="dv">2</span>)) <span class="co"># RMSE</span></span></code></pre></div>
-<div id="question-7" class="section level4 question">
-<h4>Question 7</h4>
+<div id="question-5" class="section level4 question">
+<h4>Question 5</h4>
 <p>Run the code to calculate the SSE and RMSE when using the 2-D
 measurements. Then modify the code to calculate SSE and RMSE for the 3-D
 measurements.</p>
 </div>
-<div id="question-8" class="section level4 question">
-<h4>Question 8</h4>
+<div id="question-6" class="section level4 question">
+<h4>Question 6</h4>
 <p>Interpret the meaning of the RMSE for each model, in context of the
 outcome of interest (oyster volume).</p>
 </div>
-<div id="question-9" class="section level4 question">
-<h4>Question 9</h4>
+<div id="question-7" class="section level4 question">
+<h4>Question 7</h4>
 <p>Finally, interpret the results of your analyses in this section
 (scatterplots, correlation, SSE, RMSE) – which of the measurements do
 you think is doing a better job?</p>
+</div>
+</div>
+</div>
+<div id="marine-bryozoans" class="section level1">
+<h1>Marine Bryozoans</h1>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<p>Researchers have observed many species for which larger offspring
+have a biological fitness advantage over smaller offspring, but there
+have been competing hypotheses for why this is the case, and there are
+exceptions. In the paper “Why does offspring size affect performance?
+Integrating metabolic scaling with life-history theory” (Pattersen et
+al. 2015, <em>Proc. R. Soc. B.</em>), the authors propose that larger
+offspring are more efficient in energy consumption and thus have greater
+fitness.</p>
+<p>To investigate, the authors collected data on two species of marine
+bryozoan, <em>Bugula neritina</em> and <em>Watersipora subtorquata</em>.
+After initial growth, the developmental process of these two species
+consists of three phases before they are considered mature - a larval
+stage (before the individual settles and begins metamorphosis), an early
+post-settlement stage, and a late post-settlement stage (as the
+individual nears the end of metamorphosis).</p>
+<p>Here we have data from 568 individuals from these two species,
+measured at the three different developmental stages. For each
+individual, the researchers recorded the mass (in micrograms) and the
+rate of oxygen consumption. The rate of oxygen consumption was then
+converted into the metabolic rate (rate of energy consumption), based on
+the amount of energy in oxygen.</p>
+<p>Note that the same individuals were measured at the early and late
+stages, so while there are 568 individuals in the data, the dataset has
+823 rows.</p>
+<p>The different columns are:</p>
+<ul>
+<li><em>Species:</em> Species of the organism measured, either bugula
+(Bugula neritina) or watersipora (Watersipora subtorquata)</li>
+<li><em>Stage:</em> Developmental stage of the organism (larvae = larval
+stage, early = early post-settlement stage, late = late post-settlement
+stage)</li>
+<li><em>Run:</em> Which run of the study the individual was recorded in.
+Several runs were done for each species</li>
+<li><em>Mass:</em> Mass of the individual (in micrograms)</li>
+<li><em>Metabolic:</em> Recorded metabolic rate (rate of energy
+consumption) of the individual (in mJ per hour)</li>
+</ul>
+</div>
+<div id="downloading-the-data" class="section level3">
+<h3>Downloading the data</h3>
+<p>The data for this assignment comes from the paper by Pattersen <em>et
+al.</em>, and is stored in a CSV file. CSV files can be read into R with
+the <code>read_csv</code> function, which is part of the
+<code>readr</code> package in the tidyverse. The following code imports
+the data and saves it as a data frame called <code>bryozoan</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>bryozoan <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://sta112-s26.github.io/homework/bryozoan_data.csv&quot;</span>)</span></code></pre></div>
+<p>This code is included in the setup chunk of the R Markdown template
+for this assignment. The argument to the <code>read_csv</code> function
+here is the path to the CSV file we want to import. This can be either a
+local path (on your computer) or a url.</p>
+<p><strong>Note: since the data is imported from a csv file, rather than
+an R package, the <code>?bryozoan</code> command will not provide any
+information about the data. I have included background on the dataset
+and variables above.</strong></p>
+</div>
+<div id="research-question" class="section level2">
+<h2>Research question</h2>
+<p>Researchers hypothesize that, even though larger individuals have a
+higher metabolic rate, they are more <em>energy efficient</em> (that is,
+they use less energy proportional to their body size).</p>
+<div id="proportional-to-body-size" class="section level3">
+<h3>Proportional to body size?</h3>
+<p>What does it mean for larger individuals to be more energy efficient,
+proportional to body size?</p>
+<p>Mathematically, this means that the shape of the relationship between
+mass and metabolic rate looks like the third plot below, with the curve
+flattening out as mass increases.</p>
+<div id="question-8" class="section level4 question">
+<h4>Question 8</h4>
+<p>Explain why the model</p>
+<p><span class="math inline">\(\text{metabolic rate} = \beta_0 + \beta_1
+\text{mass} + \varepsilon\)</span></p>
+<p>is not a suitable choice to model the relationship between mass and
+metabolic rate, if the researchers think that larger individuals are
+more energy efficient, proportional to body size.</p>
+</div>
+</div>
+<div id="transformation" class="section level3">
+<h3>Transformation</h3>
+<p>Instead of the linear model in Question 8, the researchers propose
+the following:</p>
+<p><span class="math inline">\(\text{metabolic rate} \approx \alpha
+(\text{mass})^\beta\)</span>,</p>
+<p>where <span class="math inline">\(\alpha &gt; 0\)</span> and <span class="math inline">\(\beta\)</span> are unknown parameters. (I have
+written this model with the <span class="math inline">\(\approx\)</span>
+symbol to denote “approximately”, since we haven’t written a noise term
+yet). The plots below show how the value of <span class="math inline">\(\beta\)</span> corresponds to different shapes of
+the relationship:</p>
+<p><strong>Therefore, the researchers’ hypothesis corresponds to <span class="math inline">\(\beta &lt; 1\)</span>.</strong></p>
+<p>So, how can we estimate <span class="math inline">\(\beta\)</span>?
+If we transform the variables, it turns out that we can fit a linear
+model with transformed data!</p>
+<div id="question-9" class="section level4 question">
+<h4>Question 9</h4>
+<p>Show that if</p>
+<p><span class="math inline">\(\text{metabolic rate} = \alpha
+(\text{mass})^\beta\)</span>,</p>
+<p>then</p>
+<p><span class="math inline">\(\log(\text{metabolic rate}) =
+\log(\alpha) + \beta \log(\text{mass})\)</span>.</p>
+<p>Make sure to show your work. For this question, you may submit a
+separate scan of handwritten work on Canvas.</p>
+</div>
+<p>Now we have a linear regression model! If we just let <span class="math inline">\(\beta_0 = \log(\alpha)\)</span> and <span class="math inline">\(\beta_1 = \beta\)</span>, and bring back the noise
+term <span class="math inline">\(\varepsilon\)</span>, then</p>
+<p><span class="math inline">\(\log(\text{metabolic rate}) = \beta_0 +
+\beta_1 \log(\text{mass}) + \varepsilon\)</span></p>
+<p>Now we can fit this model, and estimate <span class="math inline">\(\beta_1\)</span>.</p>
+</div>
+<div id="modifying-the-data" class="section level3">
+<h3>Modifying the data</h3>
+<p>The bryozoan data contains records for different species, at
+different stages of life. For now, we will focus on one species and one
+stage of life: early-stage Bugula. We also would like to create new
+columns in the dataset for log mass and log metabolic rate.</p>
+<p>Here is code that will let us do these two steps:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>bugula_early <span class="ot">&lt;-</span> bryozoan <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">filter</span>(Species <span class="sc">==</span> <span class="st">&quot;bugula&quot;</span>, Stage <span class="sc">==</span> <span class="st">&quot;early&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">logMass =</span> <span class="fu">log</span>(Mass),</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>         <span class="at">logMetabolic =</span> <span class="fu">log</span>(Metabolic))</span></code></pre></div>
+<p>In this code:</p>
+<ul>
+<li>The <code>&lt;-</code> means “create a new object”. That is,
+everything on the <em>right</em> is being stored in the object on the
+<em>left</em> – we create a new dataset called
+<code>bugula_early</code>, based on modifying the original
+<code>bryozoan</code> data</li>
+<li><code>filter</code> chooses a subset of rows</li>
+<li><code>mutate</code> creates new columns, or modifies existing
+columns</li>
+</ul>
+<div id="question-10" class="section level4 question">
+<h4>Question 10</h4>
+<p>Run the code above to create the <code>bugula_early</code> dataset.
+Use the modified dataset for the questions below.</p>
+</div>
+<div id="question-11" class="section level4 question">
+<h4>Question 11</h4>
+<p>Using your <code>bugula_early</code> dataset, create plot showing the
+relationship between log mass and log metabolic rate. Be sure to label
+your axes, and add a best-fit line.</p>
+</div>
+</div>
+<div id="model-fitting" class="section level3">
+<h3>Model fitting</h3>
+<div id="question-12" class="section level4 question">
+<h4>Question 12</h4>
+<p>Fit a linear regression with <code>logMass</code> as the predictor
+and <code>logMetabolic</code> as the response, and report the estimated
+slope <span class="math inline">\(\widehat{\beta}_1\)</span>. Does your
+estimated slope support the researcher’s hypothesis that larger
+organisms are more energy efficient, proportional to body size?</p>
+</div>
+<div id="question-13" class="section level4 question">
+<h4>Question 13</h4>
+<p>Based on our discussion from class, interpret the estimated
+coefficient <span class="math inline">\(\widehat{\beta}_1\)</span> in
+context of the data.</p>
+</div>
+<div id="question-14" class="section level4 question">
+<h4>Question 14</h4>
+<p>Make a residual plot for the fitted model in Question 12, and assess
+the shape and constant variance assumptions.</p>
+</div>
 </div>
 </div>
 </div>

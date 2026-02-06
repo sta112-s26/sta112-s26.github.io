@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(Stat2Data)
 data(Oysters)
+bryozoan <- read_csv("https://sta112-s26.github.io/homework/bryozoan_data.csv")
 ```
 
 ### Question 1
