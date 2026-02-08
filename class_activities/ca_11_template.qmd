@@ -1,0 +1,26 @@
+---
+---
+---
+title: "Class activity"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(usdata)
+data("urban_owner")
+```
+
+### Exercise 1
+
+```{r}
+
+```
+
+
+

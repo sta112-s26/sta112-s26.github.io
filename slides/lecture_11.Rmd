@@ -1,0 +1,524 @@
+---
+title: Outliers and influential points
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+### Anything unusual?
+
+.large[
+Votes for Bush and Buchanan, in Florida counties in 2000:
+]
+
+```{r echo=F, message=F, warning=F, fig.width = 7, fig.height=5, fig.align='center', message=F}
+library(tidyverse)
+library(Stat2Data)
+data("PalmBeach")
+
+PalmBeach %>%
+  ggplot(aes(x = Bush, y = Buchanan)) +
+  geom_point(size = 2.5) +
+  labs(x = "Votes for Bush",
+       y = "Votes for Buchanan") +
+  theme_bw() +
+  theme(text= element_text(size=25))
+```
+
+.large[
+.question[
+Does anything look unusual in this scatterplot?
+]
+]
+
+---
+
+### Anything unusual?
+
+.large[
+**Outlier:** A point which doesn't follow the general relationship between the predictor and response.
+]
+
+```{r echo=F, message=F, warning=F, fig.width = 7, fig.height=4.5, fig.align='center', message=F}
+library(tidyverse)
+library(Stat2Data)
+data("PalmBeach")
+
+PalmBeach %>%
+  ggplot(aes(x = Bush, y = Buchanan)) +
+  geom_point(size = 2.5) +
+  labs(x = "Votes for Bush",
+       y = "Votes for Buchanan") +
+  theme_bw() +
+  theme(text= element_text(size=25))
+```
+
+.large[
+.question[
+Why might the potential outlier be a problem?
+]
+]
+
+---
+
+### The impact of outliers
+
+```{r echo=F, fig.width=7, fig.height=5, fig.align='center', message=F, warning=F}
+lm_1 <- lm(Buchanan ~ Bush, data = PalmBeach)
+lm_2 <- lm(Buchanan ~ Bush, 
+           data = PalmBeach %>%
+             filter(County != "PALM BEACH"))
+
+PalmBeach %>%
+  mutate(pred_1 = predict(lm_1),
+         pred_2 = predict(lm_2, 
+                          newdata = PalmBeach)) %>%
+  ggplot(aes(x = Bush)) +
+  geom_point(aes(y = Buchanan), 
+             size = 2.5) +
+  geom_line(aes(y = pred_1), color = "blue",
+            lwd = 1.2) +
+  geom_line(aes(y = pred_2), color = "red",
+            lwd = 1.2, lty=2) +
+  labs(x = "Votes for Bush",
+       y = "Votes for Buchanan") +
+  theme_bw() +
+  theme(text= element_text(size=25))
+```
+
+.large[
+* Blue, solid line: potential outlier is included in the data
+* Red, dashed line: potential outlier is excluded
+]
+
+---
+
+### Influential points
+
+.large[
+Outliers which substantially change the fitted line are called **influential.**
+]
+
+```{r echo=F, fig.width=7, fig.height=4.5, fig.align='center', message=F, warning=F}
+lm_1 <- lm(Buchanan ~ Bush, data = PalmBeach)
+lm_2 <- lm(Buchanan ~ Bush, 
+           data = PalmBeach %>%
+             filter(County != "PALM BEACH"))
+
+PalmBeach %>%
+  mutate(pred_1 = predict(lm_1),
+         pred_2 = predict(lm_2, 
+                          newdata = PalmBeach)) %>%
+  ggplot(aes(x = Bush)) +
+  geom_point(aes(y = Buchanan), 
+             size = 2.5) +
+  geom_line(aes(y = pred_1), color = "blue",
+            lwd = 1.2) +
+  geom_line(aes(y = pred_2), color = "red",
+            lwd = 1.2, lty=2) +
+  labs(x = "Votes for Bush",
+       y = "Votes for Buchanan") +
+  theme_bw() +
+  theme(text= element_text(size=25))
+```
+
+.large[
+.question[
+Why would an outlier change the fitted line?
+]
+]
+
+---
+
+### Impact of influential points
+
+.large[
+$\widehat{\beta}_0$ and $\widehat{\beta}_1$ minimize $\sum \limits_{i=1}^n (y_i - \widehat{\beta}_0 - \widehat{\beta}_1 x_i)^2$
+]
+
+```{r echo=F, fig.width=7, fig.height=5, fig.align='center', message = F, warning=F}
+lm_1 <- lm(Buchanan ~ Bush, data = PalmBeach)
+lm_2 <- lm(Buchanan ~ Bush, 
+           data = PalmBeach %>%
+             filter(County != "PALM BEACH"))
+
+PalmBeach %>%
+  mutate(pred_1 = predict(lm_1),
+         pred_2 = predict(lm_2, 
+                          newdata = PalmBeach)) %>%
+  ggplot(aes(x = Bush)) +
+  geom_segment(aes(x = 152846, y = 796.81,
+                   xend = 152846, yend = 3407)) +
+  geom_point(aes(y = Buchanan), 
+             size = 2.5) +
+  geom_line(aes(y = pred_1), color = "blue",
+            lwd = 1.2) +
+  geom_line(aes(y = pred_2), color = "red",
+            lwd = 1.2, lty=2) +
+  labs(x = "Votes for Bush",
+       y = "Votes for Buchanan") +
+  theme_bw() +
+  theme(text= element_text(size=25))
+```
+
+---
+
+### Potential for influence
+
+.large[
+.question[
+Which point do you think is more influential?
+]
+]
+
+.pull-left[
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(1)
+
+x  = sample(1:100, 15)
+y = x + rnorm(15, sd=10)
+
+data.frame(x = x,
+           y = y) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 2.5) +
+  geom_point(aes(x = 50, y = 120), color="red",
+             size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+]
+
+.pull-right[
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(2)
+
+x  = sample(1:100, 15)
+y = x + rnorm(15, sd=10)
+
+data.frame(x = x,
+           y = y) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 2.5) +
+  geom_point(aes(x = 100, y = 30), color="red",
+             size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+]
+
+.large[
+.abox[
+(A) The one on the left
+]
+
+.bbox[
+(B) The one on the right
+]
+]
+
+---
+
+### Potential for influence
+
+.large[
+Influence depends on how far $x$ is from $\overline{x}$.
+]
+
+.pull-left[
+<ins> Some influence </ins>
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(2)
+
+x  = sample(1:100, 15)
+y = x + rnorm(15, sd=10)
+
+x1 <- c(x, 50)
+y1 <- c(y, 120)
+lm1 <- lm(y ~ x)
+lm2 <- lm(y1 ~ x1)
+
+data.frame(x = x,
+           y = y,
+           pred1 = predict(lm1),
+           pred2 = predict(lm2, newdata = data.frame(x1 = x, y1 = y))) %>%
+  ggplot(aes(x = x)) +
+  geom_point(aes(y = y), size = 2.5) +
+  geom_point(aes(x = 50, y = 120), color="red",
+             size = 2.5) +
+  geom_line(aes(y = pred1), color = "blue",
+            lwd = 1.2) +
+  geom_line(aes(y = pred2), color = "red",
+            lwd = 1.2, lty=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+]
+
+.pull-right[
+<ins> More influence </ins>
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+
+x1 <- c(x, 100)
+y1 <- c(y, 30)
+lm1 <- lm(y ~ x)
+lm2 <- lm(y1 ~ x1)
+
+data.frame(x = x,
+           y = y,
+           pred1 = predict(lm1),
+           pred2 = predict(lm2, newdata = data.frame(x1 = x, y1 = y))) %>%
+  ggplot(aes(x = x)) +
+  geom_point(aes(y = y), size = 2.5) +
+  geom_point(aes(x = 100, y = 30), color="red",
+             size = 2.5) +
+  geom_line(aes(y = pred1), color = "blue",
+            lwd = 1.2) +
+  geom_line(aes(y = pred2), color = "red",
+            lwd = 1.2, lty=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+]
+
+---
+
+### Influential points
+
+.large[
+.question[
+Which point do you think is more influential?
+]
+]
+
+.pull-left[
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(2)
+
+x  = sample(1:100, 15)
+y = x + rnorm(15, sd=10)
+
+
+data.frame(x = x,
+           y = y) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 2.5) +
+  geom_point(aes(x = 50, y = 120), color="red",
+             size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+]
+
+.pull-right[
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(2)
+
+x  = sample(1:100, 15)
+y = x + rnorm(15, sd=10)
+
+data.frame(x = x,
+           y = y) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 2.5) +
+  geom_point(aes(x = 100, y = 100), color="red",
+             size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+]
+
+.large[
+.abox[
+(A) The one on the left
+]
+
+.bbox[
+(B) The one on the right
+]
+]
+
+---
+
+### Influential points
+
+.large[
+Influence depends on both $x$ and $y$.
+]
+
+.pull-left[
+<ins> Some influence </ins>
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(2)
+
+x1 <- c(x, 50)
+y1 <- c(y, 120)
+lm1 <- lm(y ~ x)
+lm2 <- lm(y1 ~ x1)
+
+data.frame(x = x,
+           y = y,
+           pred1 = predict(lm1),
+           pred2 = predict(lm2, newdata = data.frame(x1 = x, y1 = y))) %>%
+  ggplot(aes(x = x)) +
+  geom_point(aes(y = y), size = 2.5) +
+  geom_point(aes(x = 50, y = 120), color="red",
+             size = 2.5) +
+  geom_line(aes(y = pred1), color = "blue",
+            lwd = 1.2) +
+  geom_line(aes(y = pred2), color = "red",
+            lwd = 1.2, lty=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+]
+
+.pull-right[
+<ins> Not influential </ins>
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+x1 <- c(x, 100)
+y1 <- c(y, 100)
+lm1 <- lm(y ~ x)
+lm2 <- lm(y1 ~ x1)
+
+data.frame(x = x,
+           y = y,
+           pred1 = predict(lm1),
+           pred2 = predict(lm2, newdata = data.frame(x1 = x, y1 = y))) %>%
+  ggplot(aes(x = x)) +
+  geom_point(aes(y = y), size = 2.5) +
+  geom_point(aes(x = 100, y = 100), color="red",
+             size = 2.5) +
+  geom_line(aes(y = pred1), color = "blue",
+            lwd = 1.2) +
+  geom_line(aes(y = pred2), color = "red",
+            lwd = 1.2, lty=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+]
+
+---
+
+### Assessing outliers: studentized residuals
+
+.large[
+**Studentized residuals:** $\dfrac{y_i - \widehat{y}_i}{\widehat{\sigma}_{\varepsilon}}$
+
+where $\widehat{\sigma}_{\varepsilon}$ is computed without observation $i$. 
+
+* Measure how many *standard deviations* away the observation is from the predicted value
+
+.question[
+What is a large number of standard deviations?
+]
+]
+
+---
+
+### Studentized residual plot
+
+.large[
+**Studentized residuals:** $\dfrac{y_i - \widehat{y}_i}{\widehat{\sigma}_{\varepsilon}}$
+
+**Studentized residual plot:** plot studentized residuals on vertical axis, and $\widehat{y}$ on horizontal axis. Add lines at -3, -2, 2, and 3.
+]
+
+```{r echo=F, fig.width=7, fig.height=4.5, fig.align='center'}
+vote_lm <- lm(Buchanan ~ Bush, data = PalmBeach)
+
+PalmBeach %>%
+  mutate(studentized_resids = rstudent(vote_lm),
+         yhat = predict(vote_lm)) %>%
+  ggplot(aes(x = yhat, y = studentized_resids)) +
+  geom_point(size = 2.5) +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd=1.2) +
+  geom_abline(slope = 0, intercept = c(-3, -2, 2, 3),
+              color = "orange", lty = 2, lwd=1.2) +
+  labs(x = "Predicted votes for Buchanan",
+       y = "Studentized residuals") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+---
+
+### Studentized residual plot
+
+.large[
+**Studentized residual plot:** plot studentized residuals on vertical axis, and $\widehat{y}$ on horizontal axis. Add lines at -3, -2, 2, and 3.
+]
+
+```{r echo=F, fig.width=7, fig.height=4.5, fig.align='center'}
+vote_lm <- lm(Buchanan ~ Bush, data = PalmBeach)
+
+PalmBeach %>%
+  mutate(studentized_resids = rstudent(vote_lm),
+         yhat = predict(vote_lm)) %>%
+  ggplot(aes(x = yhat, y = studentized_resids)) +
+  geom_point(size = 2.5) +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd=1.2) +
+  geom_abline(slope = 0, intercept = c(-3, -2, 2, 3),
+              color = "orange", lty = 2, lwd=1.2) +
+  labs(x = "Predicted votes for Buchanan",
+       y = "Studentized residuals") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+Points $< -3$ or $> 3$ are suspected outliers.
+]
+
+---
+
+### Handling outliers
+
+.large[
+.question[
+Suppose we identify a suspected outlier. What should we do about it?
+]
+]
+
+---
+
+### Handling outliers
+
+.large[
+.question[
+Suppose we identify a suspected outlier. What should we do about it?
+]
+]
+
+.large[
+If the observation is clearly a measurement error:
+* Remove it
+
+Otherwise:
+* Fit line with and without point, see how the estimated line changes
+* If the estimated line changes substantially, report both fits
+]
+
+---
+
+### Class activity
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_11.html](https://sta112-s26.github.io/class_activities/ca_11.html)
+]
+
+.large[
+* Exploring outliers
+* Submit HTML at end of class
+]
+

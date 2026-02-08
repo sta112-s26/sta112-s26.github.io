@@ -1,0 +1,114 @@
+---
+title: "Class activity: exploring outliers"
+format: html
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Instructions:** 
+
+* Work individually or with a neighbor to answer the following questions 
+* To get started, download the [class activity template](https://sta112-s26.github.io/class_activities/ca_11_template.qmd) file
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+## Urban housing data
+
+In this activity, we will work with data on housing and urban homeowners. The data are available in the `usdata` package. 
+
+**Setup:**
+
+1. In your *R console*, run the following to install the `usdata` package:
+
+```{r, eval=F}
+install.packages("usdata")
+```
+
+2. Now run the following code to import the `urban_owner` data into R.
+
+```{r, eval=F}
+library(tidyverse)
+library(usdata)
+data("urban_owner")
+```
+
+Each row in the `urban_owner` dataset represents one state in the US, plus Puerto Rico and DC. We are interested in the following two variables:
+
+* `poppct_urban`: the proportion of the population living in urban areas
+* `pct_owner_occupied`: the proportion of families who own their own home
+
+## Questions
+
+1. Run the following code to create a scatterplot of the percent of families owning their own home, vs. the proportion of the population living in urban areas. What do you notice about the scatterplot?
+
+```{r, eval=F}
+urban_owner |>
+  ggplot(aes(x = poppct_urban, 
+             y = pct_owner_occupied)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Percent urban population", 
+       y = "Percent who own their home")
+```
+
+2. Fill in the following code to create a linear regression model with `poppct_urban` as the explanatory variable, and `pct_owner_occupied` as the response. We are saving this model as `urban_lm`:
+
+```{r, eval=F}
+urban_lm <- lm(... ~ ..., data = urban_owner)
+```
+
+
+3. Run the following code to create a studentized residual plot for your fitted model:
+
+```{r, eval=F}
+data.frame(studentized_resids = rstudent(urban_lm),
+         yhat = predict(urban_lm)) |>
+  ggplot(aes(x = yhat, y = studentized_resids)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd=1.2) +
+  geom_abline(slope = 0, intercept = c(-3, -2, 2, 3),
+              color = "orange", lty = 2, lwd=1.2) +
+  labs(x = "Predicted fraction owning their home",
+       y = "Studentized residuals") +
+  theme_bw()
+```
+
+4. We are typically concerned by observations with studentized residuals $> 3$ or $< -3$. How many such points appear in the plot?
+
+5. Now let's identify *which* observation in the data has an extreme studentized residual! To do this, we will use the `filter` function. The `filter` function keeps only the rows of the data which satisfy a specified condition. Fill in the code below:
+
+```{r, eval=F}
+urban_owner |>
+  select(state, 
+         poppct_urban, 
+         pct_owner_occupied) |>
+  mutate(studentized_resids = rstudent(...)) |> # fill this in!
+  filter(studentized_resids > 3 | studentized_resids < -3)
+```
+
+::: {.callout-note}
+* `select` chooses a subset of the columns (here we only want `state`, `poppct_urban`, and `pct_owner_occupied`)
+* `mutate` creates a new column (or modifies an existing column)
+* `filter` keeps a subset of rows
+:::
+
+6. Which observation has the extreme studentized residual? Does this seem plausible, or do you think this is an error?
+
+If we don't think an outlier is an error, then we should report our results both *with* and *without* the potential outlier. Here is code to remove the potential outlier from our dataset, creating a new dataset called `urban_owner_no_outliers`:
+
+```{r, eval=F}
+urban_owner_no_outliers <- urban_owner |>
+  select(state, 
+         poppct_urban, 
+         pct_owner_occupied) |>
+  mutate(studentized_resids = rstudent(...)) |> # fill this in!
+  filter(studentized_resids < 3 & studentized_resids > -3)
+```
+
+7. Use the `urban_owner_no_outliers` data to fit the linear model without DC. Is there a big change to the estimated coefficients?
+
+
+
+
+
