@@ -19,3 +19,6 @@ February 6
 
 : Reading for Monday's class
   : Textbook 2.1
+  
+: **HW 2 released**{: .label .label-yellow }
+  : [HW 2](https://sta112-s26.github.io/homework/hw_2.html)
