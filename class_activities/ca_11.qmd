@@ -51,10 +51,11 @@ urban_owner |>
        y = "Percent who own their home")
 ```
 
-2. Fill in the following code to create a linear regression model with `poppct_urban` as the explanatory variable, and `pct_owner_occupied` as the response. We are saving this model as `urban_lm`:
+2. Fill in the following code (the `...`) to create a linear regression model with `poppct_urban` as the explanatory variable, and `pct_owner_occupied` as the response. We are saving this model as `urban_lm`:
 
 ```{r, eval=F}
 urban_lm <- lm(... ~ ..., data = urban_owner)
+urban_lm
 ```
 
 
@@ -106,7 +107,14 @@ urban_owner_no_outliers <- urban_owner |>
   filter(studentized_resids < 3 & studentized_resids > -3)
 ```
 
-7. Use the `urban_owner_no_outliers` data to fit the linear model without DC. Is there a big change to the estimated coefficients?
+7. Use the `urban_owner_no_outliers` data to fit the linear model without DC. We will call this model `urban_lm_no_dc`, to distinguish it from the `urban_lm` model from earlier:
+
+```{r, eval=F}
+urban_lm_no_dc <- lm(... ~ ..., data = urban_owner_no_outliers)
+urban_lm_no_dc
+```
+
+Is there a big change to the estimated coefficients?
 
 
 

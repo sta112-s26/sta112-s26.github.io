@@ -173,10 +173,11 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Percent who own their home"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="2" type="1">
-<li>Fill in the following code to create a linear regression model with <code>poppct_urban</code> as the explanatory variable, and <code>pct_owner_occupied</code> as the response. We are saving this model as <code>urban_lm</code>:</li>
+<li>Fill in the following code (the <code>...</code>) to create a linear regression model with <code>poppct_urban</code> as the explanatory variable, and <code>pct_owner_occupied</code> as the response. We are saving this model as <code>urban_lm</code>:</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>urban_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(... <span class="sc">~</span> ..., <span class="at">data =</span> urban_owner)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>urban_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(... <span class="sc">~</span> ..., <span class="at">data =</span> urban_owner)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>urban_lm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="3" type="1">
 <li>Run the following code to create a studentized residual plot for your fitted model:</li>
@@ -236,8 +237,13 @@ Note
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(studentized_resids <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> studentized_resids <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="7" type="1">
-<li>Use the <code>urban_owner_no_outliers</code> data to fit the linear model without DC. Is there a big change to the estimated coefficients?</li>
+<li>Use the <code>urban_owner_no_outliers</code> data to fit the linear model without DC. We will call this model <code>urban_lm_no_dc</code>, to distinguish it from the <code>urban_lm</code> model from earlier:</li>
 </ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>urban_lm_no_dc <span class="ot">&lt;-</span> <span class="fu">lm</span>(... <span class="sc">~</span> ..., <span class="at">data =</span> urban_owner_no_outliers)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>urban_lm_no_dc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Is there a big change to the estimated coefficients?</p>
 </section>
 
 </main>
