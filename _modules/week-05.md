@@ -8,6 +8,7 @@ February 9
 
 February 11
 : Inference for regression slope
+  : [Slides](https://sta112-s26.github.io/slides/lecture_12.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_12.pdf)
 
 February 13
 : Inference for regression slope

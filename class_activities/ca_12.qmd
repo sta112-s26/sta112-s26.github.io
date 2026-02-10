@@ -1,0 +1,76 @@
+---
+title: "Class activity: inference for the regression slope"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+**Instructions:** Work with a neighbor on the following activity. I will collect the handout at the end of class, and it will be part of your class participation grade. You will be graded only on effort -- it is ok if you don't finish all the questions, or get them all correct.
+
+## Sparrow data
+
+In this activity, you will practice hypothesis testing with a linear regression model. We will work with data on 116 sparrows, which were observed on Kent Island, New Brunswick. For each sparrow, we have information including:
+
+* *Weight*: the weight of the sparrow (in grams)
+* *WingLength*: the sparrow's wing length (in mm)
+
+We fit the model
+
+$$\text{wing length} = \beta_0 + \beta_1 \text{weight} + \varepsilon$$
+Here is output from the fitted model:
+
+```{r, include=F}
+library(Stat2Data)
+library(tidyverse)
+data("Sparrows")
+
+sparrow_lm <- lm(WingLength ~ Weight, data = Sparrows)
+summary(sparrow_lm)$coefficients
+```
+
+\begin{verbatim}
+Coefficients:
+            Estimate Std. Error  
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+\end{verbatim}
+
+
+## Questions
+
+Researchers want to know whether there is a relationship between sparrow weight and wing length.
+
+1. Write down null and alternative hypotheses corresponding to the research question.
+
+\vspace{3cm}
+
+2. Using the regression output, calculate the test statistic for the hypotheses in question 1.
+
+\vspace{3cm}
+
+3. Without calculating a p-value, do you think the observed test statistic would be unusual if the null hypothesis were true?
+
+\vspace{2cm}
+
+4. What will be the degrees of freedom for the $t$ distribution used to calculate a p-value in this test?
+
+\vspace{1.5cm}
+
+5. Below is a picture of the appropriate $t$ distribution. Indicate the area under the curve corresponding to the p-value for your hypothesis test.
+
+```{r, echo=F, message=F, warning=F}
+library(tidyverse)
+x <- seq(-15, 15, by=0.05)
+y <- dt(x, df=114)
+data.frame(x, y) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_classic() +
+  labs(x = "", y = "")
+```
+
+
+
