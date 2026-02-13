@@ -1,0 +1,361 @@
+---
+title: Inference for linear regression models
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Activity
+
+.large[
+Work on the activity (handout), then we will discuss as a class.
+]
+
+---
+
+### Activity
+
+.large[
+Your parents, worried about the nutritional value of your breakfast, believe that there will be a positive relationship between the amount of sugar in a serving, and the number of calories per serving.
+
+.question[
+What is our population model?
+]
+]
+
+---
+
+### Activity
+
+.large[
+```
+Coefficients:
+            Estimate Std. Error   
+(Intercept)  87.4277     5.1627  
+Sugar         2.4808     0.7074 
+```
+
+.question[
+How would I interpret the estimated slope?
+]
+]
+
+---
+
+### Activity
+
+.large[
+Your parents, worried about the nutritional value of your breakfast, believe that there will be a positive relationship between the amount of sugar in a serving, and the number of calories per serving.
+
+$$\text{Calories} = \beta_0 + \beta_1 \text{Sugar} + \varepsilon$$
+
+.question[
+What are our null and alternative hypotheses?
+]
+]
+
+---
+
+### Activity
+
+.large[
+$$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 > 0$$
+
+```
+Coefficients:
+            Estimate Std. Error   
+(Intercept)  87.4277     5.1627  
+Sugar         2.4808     0.7074 
+```
+
+.question[
+What is our test statistic? What are the degrees of freedom?
+]
+]
+
+---
+
+### Activity
+
+```{r, echo=F, message=F, warning=F, fig.width = 7, fig.height=4}
+library(tidyverse)
+x <- qt(ppoints(1500), df=34)
+y <- dt(x, df=34)
+data.frame(x, y) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_classic() +
+  labs(x = "", y = "") +
+  geom_vline(xintercept = 3.507) +
+  theme(text = element_text(size = 20))
+```
+
+.large[
+.question[
+What area under the curve corresponds to my p-value?
+]
+]
+
+---
+
+### A new question
+
+.large[
+$$\text{Calories} = \beta_0 + \beta_1 \text{Sugar} + \varepsilon$$
+
+```
+Coefficients:
+            Estimate Std. Error   
+(Intercept)  87.4277     5.1627  
+Sugar         2.4808     0.7074 
+```
+
+.question[
+Here $\widehat{\beta}_1 = 2.48$. Will $\widehat{\beta}_1$ be exactly equal to the true value $\beta_1$?
+]
+]
+
+---
+
+### A new question
+
+.large[
+$$\text{Calories} = \beta_0 + \beta_1 \text{Sugar} + \varepsilon$$
+
+```
+Coefficients:
+            Estimate Std. Error   
+(Intercept)  87.4277     5.1627  
+Sugar         2.4808     0.7074 
+```
+
+.question[
+Here $\widehat{\beta}_1 = 2.48$. Will $\widehat{\beta}_1$ be exactly equal to the true value $\beta_1$?
+]
+
+No -- our estimate comes from one sample of data, and there is variability from sample to sample.
+
+.question[
+How can I account for this variability when reporting an estimate of $\beta_1$?
+]
+]
+
+---
+
+### Interval estimates
+
+.large[
+**Point estimate:** a single "best guess" value of a parameter. The estimated slope $\widehat{\beta}_1$ is a point estimate of $\beta_1$
+
+**Interval estimate:** a "reasonable range" of possible values for a parameter. A *confidence interval* is an interval estimate
+
+.question[
+How would I construct a confidence interval for $\beta_1$?
+]
+]
+
+---
+
+### The critical value $t^*$
+
+.large[
+To construct a $(1 - \alpha)\cdot 100\%$ confidence interval, $t^*$ is the value such that the area in the right tail of the $t_{n-2}$ distribution is $\alpha/2$
+]
+
+.pull-left[
+```{r, echo=F, message=F, warning=F, fig.width=6, fig.height=4}
+library(tidyverse)
+x <- qt(ppoints(1000), df=34)
+y <- dt(x, df=34)
+data.frame(x, y) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_classic() +
+  geom_vline(xintercept = c(-2.03, 2.03), color="red") +
+  labs(x = "", y = "", title = "Critical value for a 95% CI, df=34") +
+  theme(text = element_text(size = 20))
+```
+
+]
+
+
+.pull-right[
+```{r, echo=F, fig.width=6, fig.height=4}
+x <- qt(ppoints(1000), df=34)
+y <- dt(x, df=34)
+data.frame(x, y) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_classic() +
+  geom_vline(xintercept = c(-2.73, 2.73), color="red") +
+  labs(x = "", y = "", title = "Critical value for a 99% CI, df=34") +
+  theme(text = element_text(size = 20))
+```
+]
+
+---
+
+### Computing $t^*$
+
+
+.large[
+Example: for a 95% confidence interval and 34 degrees of freedom, $t^*$ = 2.03
+
+```{r}
+qt(0.025, df=34, lower.tail=FALSE)
+```
+
+Example: for a 99% confidence interval and 34 degrees of freedom, $t^*$ = 2.73
+
+```{r}
+qt(0.005, df=34, lower.tail=FALSE)
+```
+
+]
+
+---
+
+### Confidence interval
+
+.large[
+```
+Coefficients:
+            Estimate Std. Error   
+(Intercept)  87.4277     5.1627  
+Sugar         2.4808     0.7074 
+```
+
+95% confidence interval for $\beta_1$:
+]
+
+---
+
+### Confidence interval
+
+.large[
+```
+Coefficients:
+            Estimate Std. Error   
+(Intercept)  87.4277     5.1627  
+Sugar         2.4808     0.7074 
+```
+
+95% confidence interval for $\beta_1$:
+
+$$2.48 \pm 2.03(0.71) = (1.04, 3.92)$$
+
+.question[
+How do I interpret this confidence interval?
+]
+]
+
+---
+
+### Confidence interval
+
+.large[
+```
+Coefficients:
+            Estimate Std. Error   
+(Intercept)  87.4277     5.1627  
+Sugar         2.4808     0.7074 
+```
+
+95% confidence interval for $\beta_1$:
+
+$$2.48 \pm 2.03(0.71) = (1.04, 3.92)$$
+
+Interpretation: We are 95% confident that a one-gram increase in sugar per serving of breakfast cereal is associated with an increase of between 1.04 and 3.92 calories per serving.
+
+.question[
+What does it mean to be "95% confident"?
+]
+]
+
+---
+
+### Activity
+
+.large[
+Work on the activity (handout), then we will discuss as a class.
+]
+
+---
+
+### Activity
+
+.large[
+Data on 116 sparrows. Want to make a 98% confidence interval.
+
+```{r, eval=F}
+qt(..., df = ..., lower.tail=FALSE)
+```
+
+.question[
+What do I fill in to calculate the critical value $t^*$?
+]
+]
+
+---
+
+### Activity
+
+.large[
+Data on 116 sparrows. Want to make a 98% confidence interval.
+
+```{r}
+qt(0.01, df = 114, lower.tail=FALSE)
+```
+
+]
+
+---
+
+### Activity
+
+.large[
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+$t^* = 2.36$
+
+.question[
+What is my 98% confidence interval?
+]
+]
+
+---
+
+### Activity
+
+.large[
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+$t^* = 2.36$
+
+$$1.31 \pm 2.36(0.098) = (1.08, 1.54)$$
+
+.question[
+Your friend claims that there is a 2% chance that the true slope $\beta_1$ is greater than 1.54 or less than 1.08. Is your friend correct?
+]
+
+]
+
+
+
+
+

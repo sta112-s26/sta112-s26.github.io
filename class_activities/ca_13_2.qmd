@@ -1,0 +1,43 @@
+---
+title: "Class activity: confidence intervals"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+**Instructions:** Work with a neighbor on the following activity. I will collect the handout at the end of class, and it will be part of your class participation grade. You will be graded only on effort -- it is ok if you don't finish all the questions, or get them all correct.
+
+## Sparrows data
+
+We are interested in whether there is a relationship between wing length (in mm) and weight (in g) for sparrows, using a sample of 116 sparrows. Our model is
+
+$$\text{wing length} = \beta_0 + \beta_1 \text{weight} + \varepsilon$$
+
+Here is output for the fitted model in R:
+
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+1. Use the `qt` function in R to find the critical value for a 98% confidence interval:
+
+```{r, eval=F}
+qt(..., df = ..., lower.tail = FALSE)
+```
+
+
+\vspace{3cm}
+
+2. Calculate and interpret a 98% confidence interval for the average change in wing length associated with an increase of 1g in sparrow weight.
+
+\vspace{3cm}
+
+3. Reading the confidence interval, your friend claims that there is a 2% chance that the true slope $\beta_1$ is greater than 1.54 or less than 1.08. Is your friend correct?
+
+
+

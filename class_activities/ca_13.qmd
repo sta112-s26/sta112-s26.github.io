@@ -1,0 +1,73 @@
+---
+title: "Class activity: regression interpretation and inference"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+**Instructions:** Work with a neighbor on the following activity. I will collect the handout at the end of class, and it will be part of your class participation grade. You will be graded only on effort -- it is ok if you don't finish all the questions, or get them all correct.
+
+## Breakfast cereal nutrition
+
+In this activity, we have data on a sample of 36 different breakfast cereals. For each cereal, we have:
+
+* `Sugar`: the grams of sugar per serving
+* `Calories`: the calories per serving
+
+Your parents, worried about the nutritional value of your breakfast, believe that there will be a positive relationship between the amount of sugar in a serving, and the number of calories per serving.
+
+1. Write down a population linear regression model that would allow you to explore your parents' belief. You may assume that no transformations are needed on either variable.
+
+\vspace{3cm}
+
+You fit the model in R, producing the output below:
+
+```
+Coefficients:
+            Estimate Std. Error   
+(Intercept)  87.4277     5.1627  
+Sugar         2.4808     0.7074 
+```
+
+2. Interpret the estimated slope in context.
+
+\vspace{3cm}
+
+3. Write down null and alternative hypotheses, in terms of a parameter from your population model, that allow you to address your parents' question.
+
+\vspace{1.5cm}
+
+4. Calculate an appropriate test statistic for these hypotheses, using the R output shown above.
+
+\vspace{2cm}
+
+5. What will be the degrees of freedom for the $t$ distribution used to calculate a p-value in this test?
+
+\vspace{1.5cm}
+
+6. Below is a picture of the appropriate $t$ distribution. Shade the area under the curve corresponding to the p-value for your hypothesis test.
+
+```{r, echo=F, message=F, warning=F}
+library(tidyverse)
+x <- qt(ppoints(1000), df=34)
+y <- dt(x, df=34)
+data.frame(x, y) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_line() +
+  theme_classic() +
+  labs(x = "", y = "")
+```
+
+
+
+
+
+
+
+
+
+
+

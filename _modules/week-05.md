@@ -12,3 +12,7 @@ February 11
 
 February 13
 : Inference for regression slope
+  : [Slides](https://sta112-s26.github.io/slides/lecture_13.pdf), [activity 1](https://sta112-s26.github.io/class_activities/ca_13.pdf), [activity 2](https://sta112-s26.github.io/class_activities/ca_13_2.pdf)
+  
+: **HW 3 released**{: .label .label-yellow }
+  : [HW 3](https://sta112-s26.github.io/homework/hw_3.html)

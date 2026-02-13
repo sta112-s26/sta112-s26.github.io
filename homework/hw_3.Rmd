@@ -1,0 +1,243 @@
+---
+title: "Homework 3"
+output: 
+  rmdformats::robobook:
+    css: "homework.css"
+    highlight: pygments
+link-citations: yes
+---
+
+**Due:** Friday, February 20, 11:59pm on Canvas
+
+**Instructions:** 
+
+* A template Quarto file will be provided, with set-up instructions below.
+* When you are done with the assignment, render the Quarto file containing all your code and responses. Submit the rendered HTML file on Canvas.
+* Remember to acknowledge any collaborators, and to cite outside sources
+
+# Setup
+
+1. Download the Quarto template file for this assignment: [hw_03_template.qmd](https://sta112-s26.github.io/homework/hw_03_template.qmd). Save it to your computer, and change the file name to `hw_03_your_name.qmd`
+2. Open `hw_03_your_name.qmd` in RStudio. Change the `author` in YAML to your name.
+3. Fill in answers to the questions below. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
+4. When you are done, render and submit your HTML file on Canvas (Assignments -> Homework 3).
+
+
+## College tuition
+
+Researchers gathered data on the amount of money students paid to attend Elmhurst College in 2011. They collected information on 49 students, and for each student, we have:
+
+* `family_income`: the student's family income (in 1000s of dollars)
+* `price_paid`: the tuition price paid by the student (in 1000s of dollars)
+
+Researchers believe that students with a higher family income will tend to pay more in tuition (as they will receive less financial aid).
+
+### Choosing a model
+
+Researchers consider a linear model on the original data, and also consider two different transformations of family income. Below are three sets of scatterplots, showing the original data and the two transformations, along with residual plots for the linear model with each set of variables.
+
+```{r, include=F}
+library(tidyverse)
+library(gridExtra)
+
+elmhurst <-
+structure(list(family_income = c(92.921999999999997, 0.25, 53.091999999999999, 
+50.200000000000003, 137.613, 47.957000000000001, 113.53400000000001, 
+168.57900000000001, 208.11500000000001, 12.523, 119.822, 50.563000000000002, 
+16.120000000000001, 206.93199999999999, 68.677999999999997, 73.597999999999999, 
+218.12, 89.983000000000004, 271.97399999999999, 118.16500000000001, 
+108.395, 235.52199999999999, 78.926000000000002, 76.853999999999999, 
+98.495999999999995, 134.58600000000001, 75.156999999999996, 135.857, 
+79.447999999999993, 80.858000000000004, 86.140000000000001, 40.490000000000002, 
+143.33699999999999, 97.664000000000001, 74.712999999999994, 178.79499999999999, 
+71.549999999999997, 92.605000000000004, 62.545999999999999, 0, 
+159.98099999999999, 40.396999999999998, 85.203000000000003, 27.164000000000001, 
+146.39699999999999, 14.089, 217.44300000000001, 140.09299999999999, 
+104.14700000000001, 83.332999999999998), gift_aid = c(21.719999999999999, 
+27.469999999999999, 27.75, 27.219999999999999, 18, 18.52, 13, 
+13, 14, 25.469999999999999, 21, 17.475999999999999, 22.469999999999999, 
+11, 25.719999999999999, 32.719999999999999, 23, 16, 20, 24, 15.5, 
+7, 20, 23.52, 14, 10, 21.120000000000001, 21, 27.5, 20.550000000000001, 
+14.300000000000001, 18.32, 18, 10, 21, 13.6, 20.469999999999999, 
+21, 21.600000000000001, 27.469999999999999, 25.814, 25.969999999999999, 
+25.558, 20.469999999999999, 17, 20.420000000000002, 20, 15, 17.559999999999999, 
+23.5), price_paid = c(14.279999999999999, 8.5299999999999994, 
+14.25, 8.7799999999999994, 24, 23.48, 23, 29, 28, 16.530000000000001, 
+15, 18.524000000000001, 13.529999999999999, 25, 16.280000000000001, 
+9.2799999999999994, 19, 20, 22, 18, 26.5, 35, 16, 18.48, 22, 
+32, 20.879999999999999, 21, 14.5, 15.449999999999999, 27.699999999999999, 
+23.68, 24, 26, 15, 22.399999999999999, 15.529999999999999, 15, 
+14.4, 14.529999999999999, 10.186, 10.029999999999999, 16.442, 
+21.530000000000001, 25, 21.579999999999998, 22, 21, 24.440000000000001, 
+18.5)), row.names = c(NA, -50L), class = c("tbl_df", "tbl", "data.frame"
+)) |>
+  filter(family_income > 0)
+```
+
+```{r, echo=F, message=F, warning=F}
+p1 <- elmhurst |>
+  ggplot(aes(x = family_income, y = price_paid)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(x = "Family income (1000s of $)",
+       y = "Tuition paid (1000s of $)",
+       title = "Original data")
+
+m1 <- lm(price_paid ~ family_income, data = elmhurst)
+
+p2 <- data.frame(x = predict(m1),
+                 y = resid(m1)) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 1, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted tuition paid (1000s of $)", 
+       y = "Residuals",
+       title = "Residual plot")
+
+p3 <- elmhurst |>
+  ggplot(aes(x = log(family_income), y = price_paid)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(x = "log(Family income)",
+       y = "Tuition paid (1000s of $)",
+       title = "Transformation 1")
+
+m2 <- lm(price_paid ~ log(family_income), data = elmhurst)
+
+p4 <- data.frame(x = predict(m2),
+                 y = resid(m2)) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 1, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted tuition paid (1000s of $)", 
+       y = "Residuals",
+       title = "Residual plot")
+
+p5 <- elmhurst |>
+  ggplot(aes(x = sqrt(family_income), y = price_paid)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(x = "sqrt(Family income)",
+       y = "Tuition paid (1000s of $)",
+       title = "Transformation 2")
+
+m3 <- lm(price_paid ~ sqrt(family_income), data = elmhurst)
+
+p6 <- data.frame(x = predict(m3),
+                 y = resid(m3)) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_abline(slope = 0, intercept = 1, color="blue") +
+  theme_bw() +
+  labs(x = "Predicted tuition paid (1000s of $)", 
+       y = "Residuals",
+       title = "Residual plot")
+
+grid.arrange(p1, p3, p5, p2, p4, p6, ncol=3)
+```
+
+
+:::{.question}
+#### Question 1
+
+Based on the plots, write down a population regression model that allows the researchers to investigate their hypothesis. Explain your choice of model with reference to the plots.
+:::
+
+
+Below is output in R for the three different models considered:
+
+**Model 1 (original data):**
+
+```
+Coefficients:
+              Estimate Std. Error 
+(Intercept)   14.47313    1.38685  
+family_income  0.04983    0.01161 
+```
+
+<br/>
+
+**Model 2 (transformation 1):**
+
+```
+Coefficients:
+                   Estimate Std. Error 
+(Intercept)          8.5573     3.2203  
+log(family_income)   2.5487     0.7187
+```
+
+<br/>
+
+**Model 3 (transformation 2):**
+
+```
+Coefficients:
+                    Estimate Std. Error 
+(Intercept)          10.4342     2.3347  
+sqrt(family_income)   0.9532     0.2291
+```
+
+<br/>
+
+:::{.question}
+#### Question 2
+
+Using the R output corresponding to your model from question 1, write down the equation of your *fitted* regression model, and interpret the estimated slope in context.
+:::
+
+### Inference
+
+:::{.question}
+#### Question 3
+
+Write down null and alternative hypotheses which address the researchers' hypothesis about the relationship between family income and tuition.
+:::
+
+:::{.question}
+#### Question 4
+
+Using the R output corresponding to your model from question 1, carry out a test for the hypotheses in question 3.
+
+* Calculate an appropriate test statistic
+* Give the appropriate degrees of freedom
+* Calculate a p-value
+* Report and interpret your results in context of the original data and research question
+:::
+
+:::{.question}
+#### Question 5
+
+Using the R output corresponding to your model from question 1, construct and interpret a 97% confidence interval that addresses the researchers' question.
+:::
+
+:::{.question}
+#### Question 6
+
+Your friend has heard about polynomial regression, and wonders if a polynomial model would be appropriate for this college tuition data. 
+
+Sketch a hypothetical scatterplot of tuition vs. family income which would suggest that a polynomial transformation of order 2 on family income is appropriate. (You may submit this as a separate scan of handwritten work on Canvas). 
+:::
+
+### Studentized residuals
+
+One student has a family income of \$160,000 and paid \$10,200 in tuition. The standard deviation of the residuals (excluding this point) is $\widehat{\sigma}_\varepsilon = 4.76$.
+
+:::{.question}
+#### Question 7
+
+Using the model chosen in question 1, compute the studentized residual for this student. 
+
+Do you think we should be concerned about the influence of this point on the fitted line? Explain, with reference to both the studentized residual and the original data.
+:::
+
+:::{.question}
+#### Question 8
+
+Sketch a hypothetical scatterplot of tuition vs. family income which includes an outlier that would strongly influence the fit of the regression line. (You may submit this as a separate scan of handwritten work on Canvas). 
+:::
+
