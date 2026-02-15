@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Inference and assumptions</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Inference and assumptions
+]
+
+---
+
+
+### Last time: Activity
+
+.large[
+Data on 116 sparrows. Want to make a 98% confidence interval.
+
+
+``` r
+qt(..., df = ..., lower.tail=FALSE)
+```
+
+.question[
+What do I fill in to calculate the critical value `\(t^*\)`?
+]
+]
+
+---
+
+### Activity
+
+.large[
+Data on 116 sparrows. Want to make a 98% confidence interval.
+
+
+``` r
+qt(0.01, df = 114, lower.tail=FALSE)
+```
+
+```
+## [1] 2.359504
+```
+
+]
+
+---
+
+### Activity
+
+.large[
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+`\(t^* = 2.36\)`
+
+.question[
+What is my 98% confidence interval?
+]
+]
+
+---
+
+### Activity
+
+.large[
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+`\(t^* = 2.36\)`
+
+`$$1.31 \pm 2.36(0.098) = (1.08, 1.54)$$`
+
+.question[
+How do I interpret this confidence interval?
+]
+]
+
+---
+
+### Activity
+
+.large[
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+`\(t^* = 2.36\)`
+
+`$$1.31 \pm 2.36(0.098) = (1.08, 1.54)$$`
+
+.question[
+Your friend claims that there is a 2% chance that the true slope `\(\beta_1\)` is greater than 1.54 or less than 1.08. Is your friend correct?
+]
+]
+
+---
+
+### Activity
+
+.large[
+`$$1.31 \pm 2.36(0.098) = (1.08, 1.54)$$`
+
+.question[
+Your friend claims that there is a 2% chance that the true slope `\(\beta_1\)` is greater than 1.54 or less than 1.08. Is your friend correct?
+]
+]
+
+.large[
+No. The true slope `\(\beta_1\)` is a fixed (though unknown) parameter. There is no randomness involved in `\(\beta_1\)`, we just don't know what it is.
+
+This means that for any specific interval we calculate -- e.g., (1.08, 1.54) -- `\(\beta_1\)` is either *in the interval* or it is *not in the interval*. There is no probability involved! 
+
+Probability only becomes involved when we imagine repeating the process *many times*.
+]
+
+---
+
+### Linear regression assumptions
+
+.large[
+* **Shape assumption:** the shape of the regression model is at least approximately correct
+
+To do *inference* (confidence intervals and hypothesis tests) we need some other assumptions:
+
+* Constant variance
+* Normality (with zero mean)
+* Randomness
+* Independence
+]
+
+---
+
+### Constant variance
+
+.large[
+.center[
+`\(y = \beta_0 + \beta_1 x + \varepsilon\)`
+]
+]
+
+.large[
+**Assumption:** Variance of the noise `\(\varepsilon\)` is the same for all values of the predictor `\(x\)`
+]
+
+.pull-left[
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+### Assessing shape and constant variance: residual plots
+
+.large[
+**Residual plot:** plot residuals `\(y - \widehat{y}\)` on vertical axis, and predicted values `\(\widehat{y}\)` on horizontal axis. Add a horizontal line at 0.
+]
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Residual plots
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+Shape assumption is reasonable if: 
+* residuals appear to be scattered randomly above and below 0
+* no clear patterns in the residuals
+]
+
+---
+
+### Residual plots
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+Constant variance assumption is reasonable if:
+* the band of residuals has relatively constant width
+]
+
+---
+
+### Normality (with zero mean)
+
+.large[
+**Linear regression model:**
+
+.center[
+`\(y = \beta_0 + \beta_1 x + \varepsilon\)`
+]
+]
+
+.large[
+**Assumption:** The noise term `\(\varepsilon\)` follows a &lt;ins&gt;normal&lt;/ins&gt; distribution, with mean 0
+
+
+Example of a normal distribution:
+]
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Normal distributions
+
+.large[
+Parameterized by mean `\(\mu\)` and variance `\(\sigma^2\)`:
+
+.center[
+`\(N(\mu, \sigma^2)\)`
+]
+]
+
+.pull-left[
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+### Assessing normality
+
+.large[
+**Quantile-quantile (QQ) plots:** quantiles of residuals on y-axis, quantiles of theoretical normal distribution on x-axis.
+
+If residuals are normal, plot should look approximately linear.
+]
+
+.pull-left[
+
+.large[
+&lt;ins&gt;Residuals look normal&lt;/ins&gt;
+]
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+.large[
+&lt;ins&gt;Residuals do not look normal&lt;/ins&gt;
+]
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+### QQ plot examples
+
+.pull-left[
+
+.large[
+&lt;ins&gt;Residuals look normal&lt;/ins&gt;
+]
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+.large[
+&lt;ins&gt;Residuals do not look normal&lt;/ins&gt;
+]
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+### Formal assumptions for inference
+
+.large[
+Assumptions about the relationship between variables:
+
+* Shape
+* Constant variance
+* Normality (with zero mean)
+
+Assumptions about how the data were collected:
+
+* Independence
+* Randomness
+]
+
+---
+
+### Independence
+
+.large[
+**Assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+Independence can't be checked with plots. We need to think about how the data were collected.
+]
+
+---
+
+### Independence?
+
+.large[
+.pull-left[
+**Scenario:** You collect a sample of 116 sparrows from Kent island. For each sparrow, you record their wing length and weight. Your data has 116 rows (one for each sparrow), and two columns.
+]
+
+.pull-right[
+Is it reasonable to assume the observations are independent?
+
+.abox[
+(A) Yes
+]
+
+.bbox[
+(B) No
+]
+]
+]
+
+---
+
+### Independence?
+
+.large[
+.pull-left[
+**Scenario:** You go to Kent island, and find a sparrow. For 116 consecutive days, you record its weight and wing length. Your data has 116 rows, and two columns.
+]
+
+.pull-right[
+Is it reasonable to assume the observations are independent?
+
+.abox[
+(A) Yes
+]
+
+.bbox[
+(B) No
+]
+]
+]
+
+---
+
+### Randomness
+
+.large[
+**Assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.pull-left[
+&lt;ins&gt;Randomness assumption is reasonable&lt;/ins&gt;
+
+We collect data on a random sample of 116 sparrows from Kent island. For each sparrow, we record weight and wing length.
+]
+
+.pull-right[
+&lt;ins&gt;Randomness assumption is not reasonable&lt;/ins&gt;
+
+We collect data on the weight and wing length of sparrows from Kent island. To collect the data, I deliberately choose sparrows that are very heavy, with very short wings.
+]
+]
+
+---
+
+### Randomness
+
+.large[
+**Assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.pull-left[
+&lt;ins&gt;Randomness assumption is reasonable&lt;/ins&gt;
+
+We collect data on a random sample of 116 sparrows from Kent island. For each sparrow, we record weight and wing length.
+
+**Conclusions from the estimated regression line can be generalized to a population of interest.**
+]
+
+.pull-right[
+&lt;ins&gt;Randomness assumption is not reasonable&lt;/ins&gt;
+
+We collect data on the weight and wing length of sparrows from Kent island. To collect the data, I deliberately choose sparrows that are very heavy, with very short wings.
+
+**Conclusions from the estimated regression line do not generalize.**
+]
+]
+
+---
+
+### Randomness
+
+.large[
+**Assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+* Assumption about data collection process
+* Necessary for defining the scope of inference
+* Can't be checked with plots
+]
+
+---
+
+### Putting it all together
+
+.large[
+For a quantitative response `\(y\)` and a single quantitative predictor `\(x\)`, the &lt;ins&gt;simple linear regression model&lt;/ins&gt; is
+
+.center[
+`\(y = \beta_0 + \beta_1 x + \varepsilon\)`
+]
+]
+
+.large[
+where `\(\varepsilon \sim N(0, \sigma_{\varepsilon}^2)\)`, and the noise `\(\varepsilon\)` are independent from one another.
+]
+
+.large[
+When we fit the model with a sample `\((x_1, y_1), ..., (x_n, y_n)\)`, we also assume the data are generated by a random process that allows us to generalize to the population of interest.
+]
+
+---
+
+### Summary: checking assumptions for inference
+
+.large[
+* Shape and constant variance: residual plot
+* normality: QQ plot
+* independence and randomness: think about data generation and collection
+]
+
+---
+
+### Class activity
+
+.large[
+Data on doctors and hospitals from a random sample of 53 US counties:
+
+* `County`: the name and state of the county
+* `MDs`: the number of medical doctors in the county
+* `Hospitals`: number of hospitals in the county
+* `Beds`: the number of beds in the hospital
+
+[https://sta112-s26.github.io/class_activities/ca_14.html](https://sta112-s26.github.io/class_activities/ca_14.html)
+]
+
+---
+
+### Class activity
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+Do the shape and constant variance assumptions look reasonable?
+]
+]
+
+---
+
+### Class activity
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+* Shape may be slightly violated
+* Constant variance is definitely violated
+]
+
+---
+
+### Class activity
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+Does the normality assumption look reasonable?
+]
+]
+
+---
+
+### Class activity
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+The normality assumption is definitely violated.
+]
+
+---
+
+### Transformation
+
+.large[
+Trying a square root transformation of the response:
+]
+
+![](lecture_14_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+
+.large[
+.question[
+How do the shape and constant variance assumptions look now?
+]
+]
+
+---
+
+### Transformation
+
+.large[
+QQ plot with the transformed data:
+]
+
+&lt;img src="lecture_14_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+How does the normality assumption look now?
+]
+]
+
+
+---
+
+### Class activity
+
+.large[
+.question[
+Do the independence and randomness assumptions seem reasonable for the `CountyHealth` data?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+Do the independence and randomness assumptions seem reasonable for the `CountyHealth` data?
+]
+]
+
+.large[
+Yes, both seem reasonable.
+
+* Independence: reasonable to assume the number of hospitals/doctors for one county doesn't affect the number of hospitals/doctors for another county
+* Randomness: we are told the data come from a random sample
+]
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

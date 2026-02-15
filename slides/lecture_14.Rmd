@@ -1,0 +1,775 @@
+---
+title: Inference and assumptions
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Last time: Activity
+
+.large[
+Data on 116 sparrows. Want to make a 98% confidence interval.
+
+```{r, eval=F}
+qt(..., df = ..., lower.tail=FALSE)
+```
+
+.question[
+What do I fill in to calculate the critical value $t^*$?
+]
+]
+
+---
+
+### Activity
+
+.large[
+Data on 116 sparrows. Want to make a 98% confidence interval.
+
+```{r}
+qt(0.01, df = 114, lower.tail=FALSE)
+```
+
+]
+
+---
+
+### Activity
+
+.large[
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+$t^* = 2.36$
+
+.question[
+What is my 98% confidence interval?
+]
+]
+
+---
+
+### Activity
+
+.large[
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+$t^* = 2.36$
+
+$$1.31 \pm 2.36(0.098) = (1.08, 1.54)$$
+
+.question[
+How do I interpret this confidence interval?
+]
+]
+
+---
+
+### Activity
+
+.large[
+```
+            Estimate Std. Error 
+(Intercept)  8.75465    1.39601  
+Weight       1.31341    0.09756 
+```
+
+$t^* = 2.36$
+
+$$1.31 \pm 2.36(0.098) = (1.08, 1.54)$$
+
+.question[
+Your friend claims that there is a 2% chance that the true slope $\beta_1$ is greater than 1.54 or less than 1.08. Is your friend correct?
+]
+]
+
+---
+
+### Activity
+
+.large[
+$$1.31 \pm 2.36(0.098) = (1.08, 1.54)$$
+
+.question[
+Your friend claims that there is a 2% chance that the true slope $\beta_1$ is greater than 1.54 or less than 1.08. Is your friend correct?
+]
+]
+
+.large[
+No. The true slope $\beta_1$ is a fixed (though unknown) parameter. There is no randomness involved in $\beta_1$, we just don't know what it is.
+
+This means that for any specific interval we calculate -- e.g., (1.08, 1.54) -- $\beta_1$ is either *in the interval* or it is *not in the interval*. There is no probability involved! 
+
+Probability only becomes involved when we imagine repeating the process *many times*.
+]
+
+---
+
+### Linear regression assumptions
+
+.large[
+* **Shape assumption:** the shape of the regression model is at least approximately correct
+
+To do *inference* (confidence intervals and hypothesis tests) we need some other assumptions:
+
+* Constant variance
+* Normality (with zero mean)
+* Randomness
+* Independence
+]
+
+---
+
+### Constant variance
+
+.large[
+.center[
+$y = \beta_0 + \beta_1 x + \varepsilon$
+]
+]
+
+.large[
+**Assumption:** Variance of the noise $\varepsilon$ is the same for all values of the predictor $x$
+]
+
+.pull-left[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+library(tidyverse)
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Constant variance") +
+  theme_bw() +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+.pull-right[
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4}
+data.frame(x = 1:100,
+           y = 1:100 + rnorm(100, sd=20)*(1:100)*0.02) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  labs(title = "Non-constant variance") +
+  theme_bw() +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        text = element_text(size=25))
+```
+]
+
+---
+
+### Assessing shape and constant variance: residual plots
+
+.large[
+**Residual plot:** plot residuals $y - \widehat{y}$ on vertical axis, and predicted values $\widehat{y}$ on horizontal axis. Add a horizontal line at 0.
+]
+
+```{r, echo = F, message=F, fig.align='center', fig.width=6, fig.height=4}
+library(latex2exp)
+data.frame(x = 1:100,
+           y = rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0,
+              color = "blue", lwd=1.2) +
+  labs(title = "Residual plot",
+       x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$")) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+---
+
+### Residual plots
+
+```{r, echo = F, message=F, fig.align='center', fig.width=6, fig.height=4}
+data.frame(x = 1:100,
+           y = rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0,
+              color = "blue", lwd=1.2) +
+  labs(title = "Residual plot",
+       x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$")) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+.large[
+Shape assumption is reasonable if: 
+* residuals appear to be scattered randomly above and below 0
+* no clear patterns in the residuals
+]
+
+---
+
+### Residual plots
+
+```{r, echo = F, message=F, fig.align='center', fig.width=6, fig.height=4}
+data.frame(x = 1:100,
+           y = rnorm(100, sd=20)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0,
+              color = "blue", lwd=1.2) +
+  labs(title = "Residual plot",
+       x = TeX("$\\widehat{y}$"),
+       y = TeX("$y - \\widehat{y}$")) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+.large[
+Constant variance assumption is reasonable if:
+* the band of residuals has relatively constant width
+]
+
+---
+
+### Normality (with zero mean)
+
+.large[
+**Linear regression model:**
+
+.center[
+$y = \beta_0 + \beta_1 x + \varepsilon$
+]
+]
+
+.large[
+**Assumption:** The noise term $\varepsilon$ follows a <ins>normal</ins> distribution, with mean 0
+
+
+Example of a normal distribution:
+]
+
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+data.frame(x = seq(-4, 4, 0.1),
+           y = dnorm(seq(-4, 4, 0.1))) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line(lwd=1.2) +
+  theme_classic() +
+  labs(x = "x", y = "Density")
+```
+
+---
+
+### Normal distributions
+
+.large[
+Parameterized by mean $\mu$ and variance $\sigma^2$:
+
+.center[
+$N(\mu, \sigma^2)$
+]
+]
+
+.pull-left[
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+data.frame(x = seq(-10, 10, 0.1),
+           y = dnorm(seq(-10, 10, 0.1))) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line(lwd=1.5) +
+  theme_classic() +
+  labs(x = "x", y = "Density",
+       title = "N(0, 1)") +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+data.frame(x = seq(-8, 12, 0.1),
+           y = dnorm(seq(-8, 12, 0.1), 2, 3)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line(lwd=1.5) +
+  theme_classic() +
+  labs(x = "x", y = "Density",
+       title = "N(2, 9)") +
+  theme(text = element_text(size=25))
+```
+]
+
+---
+
+### Assessing normality
+
+.large[
+**Quantile-quantile (QQ) plots:** quantiles of residuals on y-axis, quantiles of theoretical normal distribution on x-axis.
+
+If residuals are normal, plot should look approximately linear.
+]
+
+.pull-left[
+
+.large[
+<ins>Residuals look normal</ins>
+]
+
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(2)
+temp_x = 1:50
+temp_y = 1:50 + rnorm(50, sd=10)
+temp_lm <- lm(temp_y ~ temp_x)
+
+data.frame(res = residuals(temp_lm)) %>%
+  ggplot(aes(sample = res)) +
+  geom_qq(size = 2) +
+  geom_qq_line(size = 1.5) +
+  labs(x = "Theoretical normal quantiles",
+       y = "Observed residual quantiles") +
+  theme_classic() +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+
+.large[
+<ins>Residuals do not look normal</ins>
+]
+
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(2)
+temp_x = 1:50
+temp_y = 1:50 + rexp(50, rate = 1)
+temp_lm <- lm(temp_y ~ temp_x)
+
+data.frame(res = residuals(temp_lm)) %>%
+  ggplot(aes(sample = res)) +
+  geom_qq(size = 2) +
+  geom_qq_line(size = 1.5) +
+  labs(x = "Theoretical normal quantiles",
+       y = "Observed residual quantiles") +
+  theme_classic() +
+  theme(text = element_text(size=25))
+```
+]
+
+---
+
+### QQ plot examples
+
+.pull-left[
+
+.large[
+<ins>Residuals look normal</ins>
+]
+
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(5)
+temp_x = seq(1, 50, 0.5)
+temp_y = seq(1, 50, 0.5) + rnorm(99, sd=10)
+temp_lm <- lm(temp_y ~ temp_x)
+
+data.frame(res = residuals(temp_lm)) %>%
+  ggplot(aes(sample = res)) +
+  geom_qq(size = 2) +
+  geom_qq_line(size = 1.5) +
+  labs(x = "Theoretical normal quantiles",
+       y = "Observed residual quantiles") +
+  theme_classic() +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+
+.large[
+<ins>Residuals do not look normal</ins>
+]
+
+```{r, echo=F, fig.align='center', fig.width=6, fig.height=4, message=F, warning=F}
+set.seed(2)
+temp_x = seq(1, 50, 0.5)
+temp_y = seq(1, 50, 0.5) + runif(99)*10
+temp_lm <- lm(temp_y ~ temp_x)
+
+data.frame(res = residuals(temp_lm)) %>%
+  ggplot(aes(sample = res)) +
+  geom_qq(size = 2) +
+  geom_qq_line(size = 1.5) +
+  labs(x = "Theoretical normal quantiles",
+       y = "Observed residual quantiles") +
+  theme_classic() +
+  theme(text = element_text(size=25))
+```
+]
+
+---
+
+### Formal assumptions for inference
+
+.large[
+Assumptions about the relationship between variables:
+
+* Shape
+* Constant variance
+* Normality (with zero mean)
+
+Assumptions about how the data were collected:
+
+* Independence
+* Randomness
+]
+
+---
+
+### Independence
+
+.large[
+**Assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+Independence can't be checked with plots. We need to think about how the data were collected.
+]
+
+---
+
+### Independence?
+
+.large[
+.pull-left[
+**Scenario:** You collect a sample of 116 sparrows from Kent island. For each sparrow, you record their wing length and weight. Your data has 116 rows (one for each sparrow), and two columns.
+]
+
+.pull-right[
+Is it reasonable to assume the observations are independent?
+
+.abox[
+(A) Yes
+]
+
+.bbox[
+(B) No
+]
+]
+]
+
+---
+
+### Independence?
+
+.large[
+.pull-left[
+**Scenario:** You go to Kent island, and find a sparrow. For 116 consecutive days, you record its weight and wing length. Your data has 116 rows, and two columns.
+]
+
+.pull-right[
+Is it reasonable to assume the observations are independent?
+
+.abox[
+(A) Yes
+]
+
+.bbox[
+(B) No
+]
+]
+]
+
+---
+
+### Randomness
+
+.large[
+**Assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.pull-left[
+<ins>Randomness assumption is reasonable</ins>
+
+We collect data on a random sample of 116 sparrows from Kent island. For each sparrow, we record weight and wing length.
+]
+
+.pull-right[
+<ins>Randomness assumption is not reasonable</ins>
+
+We collect data on the weight and wing length of sparrows from Kent island. To collect the data, I deliberately choose sparrows that are very heavy, with very short wings.
+]
+]
+
+---
+
+### Randomness
+
+.large[
+**Assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.pull-left[
+<ins>Randomness assumption is reasonable</ins>
+
+We collect data on a random sample of 116 sparrows from Kent island. For each sparrow, we record weight and wing length.
+
+**Conclusions from the estimated regression line can be generalized to a population of interest.**
+]
+
+.pull-right[
+<ins>Randomness assumption is not reasonable</ins>
+
+We collect data on the weight and wing length of sparrows from Kent island. To collect the data, I deliberately choose sparrows that are very heavy, with very short wings.
+
+**Conclusions from the estimated regression line do not generalize.**
+]
+]
+
+---
+
+### Randomness
+
+.large[
+**Assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+* Assumption about data collection process
+* Necessary for defining the scope of inference
+* Can't be checked with plots
+]
+
+---
+
+### Putting it all together
+
+.large[
+For a quantitative response $y$ and a single quantitative predictor $x$, the <ins>simple linear regression model</ins> is
+
+.center[
+$y = \beta_0 + \beta_1 x + \varepsilon$
+]
+]
+
+.large[
+where $\varepsilon \sim N(0, \sigma_{\varepsilon}^2)$, and the noise $\varepsilon$ are independent from one another.
+]
+
+.large[
+When we fit the model with a sample $(x_1, y_1), ..., (x_n, y_n)$, we also assume the data are generated by a random process that allows us to generalize to the population of interest.
+]
+
+---
+
+### Summary: checking assumptions for inference
+
+.large[
+* Shape and constant variance: residual plot
+* normality: QQ plot
+* independence and randomness: think about data generation and collection
+]
+
+---
+
+### Class activity
+
+.large[
+Data on doctors and hospitals from a random sample of 53 US counties:
+
+* `County`: the name and state of the county
+* `MDs`: the number of medical doctors in the county
+* `Hospitals`: number of hospitals in the county
+* `Beds`: the number of beds in the hospital
+
+[https://sta112-s26.github.io/class_activities/ca_14.html](https://sta112-s26.github.io/class_activities/ca_14.html)
+]
+
+---
+
+### Class activity
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+library(Stat2Data)
+data("CountyHealth")
+health_lm <- lm(MDs ~ Hospitals, data = CountyHealth)
+CountyHealth %>%
+  mutate(yhat = predict(health_lm),
+         residuals = residuals(health_lm)) %>%
+  ggplot(aes(x = yhat, y = residuals)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd = 1.2) +
+  labs(x = "Predicted number of doctors",
+       y = "Residual") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+Do the shape and constant variance assumptions look reasonable?
+]
+]
+
+---
+
+### Class activity
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+CountyHealth %>%
+  mutate(yhat = predict(health_lm),
+         residuals = residuals(health_lm)) %>%
+  ggplot(aes(x = yhat, y = residuals)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd = 1.2) +
+  labs(x = "Predicted number of doctors",
+       y = "Residual") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+* Shape may be slightly violated
+* Constant variance is definitely violated
+]
+
+---
+
+### Class activity
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+CountyHealth %>%
+  mutate(residuals = residuals(health_lm)) %>%
+  ggplot(aes(sample = residuals)) +
+  geom_qq(size=2) +
+  geom_qq_line() +
+  labs(x = "Theoretical normal quantiles",
+       y = "Observed residual quantiles") +
+  theme_classic() +
+  theme(text = element_text(size=25))
+```
+
+.large[
+.question[
+Does the normality assumption look reasonable?
+]
+]
+
+---
+
+### Class activity
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+CountyHealth %>%
+  mutate(residuals = residuals(health_lm)) %>%
+  ggplot(aes(sample = residuals)) +
+  geom_qq(size=2) +
+  geom_qq_line() +
+  labs(x = "Theoretical normal quantiles",
+       y = "Observed residual quantiles") +
+  theme_classic() +
+  theme(text = element_text(size=25))
+```
+
+.large[
+The normality assumption is definitely violated.
+]
+
+---
+
+### Transformation
+
+.large[
+Trying a square root transformation of the response:
+]
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5}
+health_lm <- lm(sqrt(MDs) ~ Hospitals, data = CountyHealth)
+CountyHealth %>%
+  mutate(yhat = predict(health_lm),
+         residuals = residuals(health_lm)) %>%
+  ggplot(aes(x = yhat, y = residuals)) +
+  geom_point(size=2) +
+  geom_abline(slope = 0, intercept = 0, 
+              color = "blue", lwd = 1.2) +
+  labs(x = "Predicted sqrt(number of doctors)",
+       y = "Residual") +
+  theme_bw() +
+  theme(text = element_text(size = 20))
+```
+
+.large[
+.question[
+How do the shape and constant variance assumptions look now?
+]
+]
+
+---
+
+### Transformation
+
+.large[
+QQ plot with the transformed data:
+]
+
+```{r, echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+CountyHealth %>%
+  mutate(residuals = residuals(health_lm)) %>%
+  ggplot(aes(sample = residuals)) +
+  geom_qq(size=2) +
+  geom_qq_line() +
+  labs(x = "Theoretical normal quantiles",
+       y = "Observed residual quantiles") +
+  theme_classic() +
+  theme(text = element_text(size=20))
+```
+
+.large[
+.question[
+How does the normality assumption look now?
+]
+]
+
+
+---
+
+### Class activity
+
+.large[
+.question[
+Do the independence and randomness assumptions seem reasonable for the `CountyHealth` data?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+Do the independence and randomness assumptions seem reasonable for the `CountyHealth` data?
+]
+]
+
+.large[
+Yes, both seem reasonable.
+
+* Independence: reasonable to assume the number of hospitals/doctors for one county doesn't affect the number of hospitals/doctors for another county
+* Randomness: we are told the data come from a random sample
+]
+
+
+
