@@ -1,0 +1,24 @@
+---
+---
+---
+title: "Class activity"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+drosophila <- read_csv("https://sta112-s26.github.io/class_activities/drosophila.csv")
+```
+
+### Exercise 1
+
+```{r}
+
+```
+
+

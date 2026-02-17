@@ -1,0 +1,70 @@
+---
+title: "Class Activity: categorical explanatory variables"
+output: 
+  tufte::tufte_html:
+    css: "lab.css"
+    tufte_variant: "envisioned"
+    highlight: pygments
+link-citations: yes
+---
+
+In this activity, you will practice fitting a regression model with a quantitative response and a single categorical predictor.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+drosophila <- read_csv("https://sta112-f25.github.io/class_activities/drosophila.csv")
+diet_lm <- lm(WingLength ~ Diet, data = drosophila)
+```
+
+## Setup
+
+Researchers are interested in investigating the relationship between diet and wing length for fruit flies (*Drosophila melanogaster*). In an experiment, they randomly assign infant flies to one of three diet groups: Standard, Rich, and Poor. They then measure each fly's wing length when they reach maturity.
+
+You can load the data as follows:
+
+```r
+library(tidyverse)
+drosophila <- read_csv("https://sta112-s26.github.io/class_activities/drosophila.csv")
+```
+
+Download the activity template: [activity template](https://sta112-s26.github.io/class_activities/ca_15_template.qmd)
+
+### Modeling
+
+We can visualize the relationship between diet and wing length with boxplots:
+
+```{r echo=F, fig.align='center'}
+drosophila %>%
+  ggplot(aes(x = Diet, y = WingLength)) +
+  geom_boxplot() +
+  theme_bw() +
+  theme(text = element_text(size = 20))
+``` 
+
+We will model this relationship as
+
+$\text{WingLength} = \beta_0 + \beta_1 \text{IsRich} + \beta_2 \text{IsStandard} + \varepsilon$,
+
+where $\text{IsRich}$ and $\text{IsStandard}$ are indicator variables for Diet:
+
+```{marginfigure}
+There are lots of different notation for indicator variables. For example, R would call these indicators `Dietrich` and `Dietstandard`. Other notation includes $I_{\text{rich}}$ and $I_{\text{standard}}$.
+```
+
+$\text{IsRich} = \begin{cases} 0 & \text{Diet } \neq \text{rich} \\ 1 & \text{Diet } = \text{rich} \end{cases}$
+
+$\text{IsStandard} = \begin{cases} 0 & \text{Diet } \neq \text{standard} \\ 1 & \text{Diet } = \text{standard} \end{cases}$
+
+
+## Questions
+
+1. Use the `lm` function to fit the regression model with Diet as the predictor and WingLength as the response.
+
+
+2. What is the estimated average WingLength for drosophila in each diet type?
+
+
+3. How many degrees of freedom does the fitted model from question 1 have?
+
+

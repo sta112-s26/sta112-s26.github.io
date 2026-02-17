@@ -1,0 +1,579 @@
+---
+title: Regression with a categorical predictor
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Reminders and agenda
+
+.large[
+* Exam 1 next Friday (Feb 27)
+    * Covers material through the last class (Feb 16)
+* Exam 1 review day next Wednesday (Feb 25)
+* Studying advice:
+    * Practice questions on the course website
+    * Review previous class activities
+    * Review previous homework assignments
+* Today: thinking about categorical explanatory variables
+]
+
+---
+
+### Regression so far
+
+.large[
+Simple linear regression:
+
+$$y = \beta_0 + \beta_1 x + \varepsilon$$
+Polynomial regression:
+
+$$y = \beta_0 + \beta_1 x + \beta_2 x^2 + \cdots + \beta_k x^k + \varepsilon$$
+
+where $x$ and $y$ are both **quantitative**.
+
+.question[
+What if $x$ is *categorical*?
+]
+]
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+library(palmerpenguins)
+library(tidyverse)
+
+penguins_no_nas <- penguins %>%
+  drop_na()
+
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1.5) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+* How do we model the relationship between species and bill length?
+* Can we test for a relationship between bill length and species?
+]
+
+---
+
+### Categorical predictor
+
+.large[
+Imagine population like this:
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0.5, size=2) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38.8, xend = 1.4, yend = 38.8), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 48.8, xend = 2.4, yend = 48.8), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47.6, xend = 3.4, yend = 47.6), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+If $\text{species} = \text{Adelie}$, 
+
+$$\hspace{1cm} \text{bill length} = \text{mean Adelie bill length} + \varepsilon$$
+]
+
+---
+
+### Categorical predictor
+
+.large[
+Imagine population like this:
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0.5, size=2) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38.8, xend = 1.4, yend = 38.8), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 48.8, xend = 2.4, yend = 48.8), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47.6, xend = 3.4, yend = 47.6), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+If $\text{species} = \text{Chinstrap}$, 
+
+$$\hspace{0.3cm} \text{bill length} = \text{mean Chinstrap bill length} + \varepsilon$$
+]
+
+---
+
+### Categorical predictor
+
+.large[
+Imagine population like this:
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0.5, size=2) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38.8, xend = 1.4, yend = 38.8), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 48.8, xend = 2.4, yend = 48.8), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47.6, xend = 3.4, yend = 47.6), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+
+If $\text{species} = \text{Gentoo}$, 
+
+$$\hspace{1cm} \text{bill length} = \text{mean Gentoo bill length} + \varepsilon$$
+]
+
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=5, fig.height=3}
+
+library(latex2exp)
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38),
+                     labels = c(TeX("$\\beta_0")))
+```
+
+.large[
+If $\text{species} = \text{Adelie}, \hspace{1cm} \text{bill length} = \beta_0 + \varepsilon$
+
+* $\beta_0$ = true mean bill length of Adelie penguins (in the population)
+]
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=5, fig.height=3}
+
+library(latex2exp)
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38),
+                     labels = c(TeX("$\\beta_0")))
+```
+
+.large[
+If $\text{species} = \text{Adelie}, \hspace{1cm} \text{bill length} = \beta_0 + \varepsilon$
+
+* $\beta_0$ = true mean bill length of Adelie penguins (in the population)
+
+.question[
+What notation could I use for Chinstrap penguins?
+]
+]
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=5, fig.height=3}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+If $\text{species} = \text{Adelie}, \hspace{1cm} \text{bill length} = \beta_0 + \varepsilon$
+
+* $\beta_0$ = true mean bill length of Adelie penguins (in the population)
+
+If $\text{species} = \text{Chinstrap}, \hspace{0.3cm} \text{bill length} = \beta_0 + \beta_1 + \varepsilon$
+]
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=5, fig.height=3}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+If $\text{species} = \text{Adelie}, \hspace{1cm} \text{bill length} = \beta_0 + \varepsilon$
+
+If $\text{species} = \text{Chinstrap}, \hspace{0.3cm} \text{bill length} = \beta_0 + \beta_1 + \varepsilon$
+
+.question[
+What about Gentoo penguins?
+]
+]
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=5, fig.height=3}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50, 47),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"), 
+                                TeX("$\\beta_0 + \\beta_2"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_segment(aes(x = 2.45, y = 38,
+                   xend = 2.45, yend = 47),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7) +
+  annotate("text", x = 2.3, y = 43, 
+           label = TeX("$\\beta_2", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+If $\text{species} = \text{Adelie}, \hspace{1cm} \text{bill length} = \beta_0 + \varepsilon$
+
+If $\text{species} = \text{Chinstrap}, \hspace{0.3cm} \text{bill length} = \beta_0 + \beta_1 + \varepsilon$
+
+If $\text{species} = \text{Gentoo}, \hspace{1cm} \text{bill length} = \beta_0 + \beta_2 + \varepsilon$
+]
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50, 47),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"), 
+                                TeX("$\\beta_0 + \\beta_2"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_segment(aes(x = 2.45, y = 38,
+                   xend = 2.45, yend = 47),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7) +
+  annotate("text", x = 2.3, y = 43, 
+           label = TeX("$\\beta_2", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+$$\text{bill length} = \begin{cases} \beta_0 + \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \varepsilon & \text{species = Gentoo} \end{cases}$$
+]
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50, 47),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"), 
+                                TeX("$\\beta_0 + \\beta_2"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_segment(aes(x = 2.45, y = 38,
+                   xend = 2.45, yend = 47),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7) +
+  annotate("text", x = 2.3, y = 43, 
+           label = TeX("$\\beta_2", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+$$\text{bill length} = \begin{cases} \beta_0 + \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \varepsilon & \text{species = Gentoo} \end{cases}$$
+]
+
+.large[
+.question[
+Can we write this more concisely?
+]
+]
+
+---
+
+### Indicator variables
+
+.large[
+$$\text{IsChinstrap} = \begin{cases} 0 & \text{species } \neq \text{Chinstrap} \\ 1 & \text{species = Chinstrap} \end{cases}$$
+
+$$\text{IsGentoo} = \begin{cases} 0 & \text{species } \neq \text{Gentoo} \\ 1 & \text{species = Gentoo} \end{cases}$$
+.question[
+Do I need another indicator variable to represent Adelie penguins?
+]
+]
+
+---
+
+### Indicator variables
+
+.large[
+$$\text{IsChinstrap} = \begin{cases} 0 & \text{species } \neq \text{Chinstrap} \\ 1 & \text{species = Chinstrap} \end{cases}$$
+
+$$\text{IsGentoo} = \begin{cases} 0 & \text{species } \neq \text{Gentoo} \\ 1 & \text{species = Gentoo} \end{cases}$$
+
+Then:
+
+| Species | IsChinstrap | IsGentoo |
+| --- | --- | --- |
+| Adelie | 0 | 0 |
+| Chinstrap | 1 | 0 |
+| Gentoo | 0 | 1 |
+]
+
+---
+
+### Indicator variables
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=3.5}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50, 47),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"), 
+                                TeX("$\\beta_0 + \\beta_2"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_segment(aes(x = 2.45, y = 38,
+                   xend = 2.45, yend = 47),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7) +
+  annotate("text", x = 2.3, y = 43, 
+           label = TeX("$\\beta_2", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+$$\text{bill length} = \begin{cases} \beta_0 + \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \varepsilon & \text{species = Gentoo} \end{cases}$$
+
+Or, more concisely:
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+]
+
+---
+
+### Estimated model
+
+.large[
+$$\widehat{\text{bill length}} = 38.82 + 10.01 \ \text{IsChinstrap} + 8.74 \ \text{IsGentoo}$$
+]
+
+.large[
+.question[
+* What is the estimated average bill length for each of the three species of penguin?
+* There are 333 penguins in the dataset used to fit the model. How many degrees of freedom does the fitted model have?
+]
+]
+
+---
+
+### Estimated model
+
+.large[
+$$\widehat{\text{bill length}} =  38.82 + 10.01 \ \text{IsChinstrap} + 8.74 \ \text{IsGentoo}$$
+
+| Species | $\widehat{\text{bill length}}$ |
+| --- | --- |
+| Adelie | 38.82 | 
+| Chinstrap | 38.82 + 10.01 = 48.83 | 
+| Gentoo | 38.82 + 8.74 = 47.56 |
+]
+
+---
+
+### Estimated model
+
+.large[
+$$\widehat{\text{bill length}} =  38.82 + 10.01 \ \text{IsChinstrap} + 8.74 \ \text{IsGentoo}$$
+
+| Species | $\widehat{\text{bill length}}$ |
+| --- | --- |
+| Adelie | 38.82 | 
+| Chinstrap | 38.82 + 10.01 = 48.83 | 
+| Gentoo | 38.82 + 8.74 = 47.56 |
+]
+
+.large[
+**Degrees of freedom:** 333 - 3 = 330
+* (Lose one degree of freedom for each parameter estimated)
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+R will automatically create indicator variables:
+
+```{r}
+lm(bill_length_mm ~ species, data = penguins_no_nas)
+```
+
+$$\widehat{\text{bill length}} =  38.82 + 10.01 \ \text{IsChinstrap} + 8.74 \ \text{IsGentoo}$$
+]
+
+---
+
+### Class activity
+
+.large[
+* Practice regression with a single categorical predictor, with experimental data on fruit flies
+
+[https://sta112-s26.github.io/class_activities/ca_15.html](https://sta112-s26.github.io/class_activities/ca_15.html)
+]
+
+
+
