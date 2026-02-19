@@ -1,0 +1,78 @@
+---
+title: "Class Activity"
+output: 
+  tufte::tufte_html:
+    css: "lab.css"
+    tufte_variant: "envisioned"
+    highlight: pygments
+link-citations: yes
+---
+
+## Setup
+
+In this class activity, we will look at data from AwesomeGems.com on the price and characteristics of 351 diamonds. The data are contained in the `Diamonds` dataset in the `Stat2Data` package, with information on their total price, price per carat, carat, color, clarity, and depth. 
+
+In alphabetical order, the levels of clarity in the `Diamonds` data are IF (internally flawless), SI1, SI2, SI3 (slightly included), VS1, VS2 (very slightly included), VVS1, VVS2 (very very slightly included). To be consistent with R, we will use this order for our regression model, with IF the baseline and indicator variables IsSI1, IsSI2, IsSI3, IsVS1, IsVS2, IsVVS1, and IsVVS2. Our model is
+
+\begin{align}
+\text{Price per carat} &= \beta_0 + \beta_1 \ \text{IsSI1} + \beta_2 \ \text{IsSI2} + \beta_3 \ \text{IsSI3} + \beta_4 \ \text{IsVS1} \\
+& \hspace{1cm} + \beta_5 \ \text{IsVS2} + \beta_6 \ \text{IsVVS1} + \beta_7 \ \text{IsVVS2} + \varepsilon
+\end{align}
+
+Download the activity template: [activity template](https://sta112-s26.github.io/class_activities/ca_16_template.qmd)
+
+## Questions
+
+1. Using the `lm` function in R, fit the regression with clarity as the explanatory variable and price per carat as the response.
+
+<SCRIPT>
+function ShowAndHide(divid) {
+    var x = document.getElementById(divid);
+    if (x.style.display == 'none') {
+        x.style.display = 'block';
+    } else {
+        x.style.display = 'none';
+    }
+}
+</SCRIPT>
+
+<BUTTON ONCLICK="ShowAndHide('q1_solution')">Solution</BUTTON>
+
+<DIV ID="q1_solution" STYLE="display:none">
+```r
+diamond_lm <- lm(PricePerCt ~ Clarity, data = Diamonds)
+summary(diamond_lm)
+```
+</DIV>
+
+
+2. What is the estimated mean price for a diamond of clarity level SI3?
+
+<BUTTON ONCLICK="ShowAndHide('q2_solution')">Solution</BUTTON>
+
+<DIV ID="q2_solution" STYLE="display:none">
+$6630.53 - 3714.53 = \$2916$
+</DIV>
+
+3. For the fitted model, SSE = 2825742771 and SSTotal = 2934184218. Calculate $R^2$ and $R^2_{adj}$.
+
+<BUTTON ONCLICK="ShowAndHide('q3_solution')">Solution</BUTTON>
+
+<DIV ID="q3_solution" STYLE="display:none">
+$R^2 = 1 - 2825742771/2934184218 = 0.03696$
+
+$R^2_{adj} = 1 - \dfrac{2825742771/(n - 8)}{2934184218/(n-1)} = 1 - \dfrac{2825742771/(351 - 8)}{2934184218/(351-1)} = 0.0173$
+</DIV>
+
+4. Verify your results from question 3 with the R output for the fitted model.
+
+<BUTTON ONCLICK="ShowAndHide('q4_solution')">Solution</BUTTON>
+
+<DIV ID="q4_solution" STYLE="display:none">
+```
+Multiple R-squared:  0.03696,	Adjusted R-squared:  0.0173 
+```
+</DIV>
+
+5. Why is $R^2_{adj} < R^2$?
+

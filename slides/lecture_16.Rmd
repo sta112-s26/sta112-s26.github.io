@@ -1,0 +1,579 @@
+---
+title: Regression with a categorical predictor
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Previously: regression with a categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=3.5}
+library(tidyverse)
+library(palmerpenguins)
+library(latex2exp)
+
+set.seed(1)
+penguins %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50, 47),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"), 
+                                TeX("$\\beta_0 + \\beta_2"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_segment(aes(x = 2.45, y = 38,
+                   xend = 2.45, yend = 47),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7) +
+  annotate("text", x = 2.3, y = 43, 
+           label = TeX("$\\beta_2", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+$$\text{bill length} = \begin{cases} \beta_0 + \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \varepsilon & \text{species = Gentoo} \end{cases}$$
+
+Or, more concisely:
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+]
+
+---
+
+### Previously: regression with a categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=3.5}
+penguins %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1.5) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+Can I use the correlation to summarize the relationship between species and bill length?
+]
+]
+
+---
+
+### Previously: polynomial transformations
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+library(Stat2Data)
+data("CO2Germany")
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+$$\widehat{\text{CO2}} = 414.975 - 0.476 \ \text{Day} + 0.0012 \ \text{Day}^2$$
+]
+
+---
+
+### Previously: polynomial transformations
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+library(Stat2Data)
+data("CO2Germany")
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+$$\widehat{\text{CO2}} = 414.975 - 0.476 \ \text{Day} + 0.0012 \ \text{Day}^2$$
+
+.question[
+Can I use the correlation to calculate the relationship between Day and CO2?
+]
+]
+
+---
+
+### Measuring variability in the response
+
+.large[
+* When we fit a regression model with least squares, we choose parameters to minimize the sum of squared residuals:
+
+$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$
+]
+
+.large[
+* We can think of SSE as the "amount of variability" in $Y$ after predicting with our regression model
+* The amount of variability in $Y$ *before* predicting with our regression model is
+
+$$SSTotal = \sum_i (y_i -\overline{y})^2$$
+]
+
+---
+
+### Thinking about SSE
+
+.large[
+$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+---
+
+### Thinking about SSTotal
+
+.large[
+$$SSTotal = \sum_i (y_i -\overline{y})^2$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ 1, lwd=1.2)
+```
+
+---
+
+### SSE vs. SSTotal
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+
+m1 <- lm(CO2 ~ poly(Day, 2, raw=TRUE), data = CO2Germany)
+#sum(m1$residuals^2)
+```
+
+SSE = 4992.71
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ 1, lwd=1.2)
+
+m2 <- lm(CO2 ~ 1, data = CO2Germany)
+#sum(m2$residuals^2)
+```
+
+SSTotal: 11703.69
+]
+
+.large[
+.question[
+Do I want SSE to be large relative to SSTotal, or small relative to SSTotal?
+]
+]
+
+---
+
+### $R^2$: the coefficient of determination
+
+.large[
+$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$
+$$SSTotal = \sum_i (y_i -\overline{y})^2$$
+]
+
+.large[
+The proportion of variability in $Y$ "explained" by our regression model is 
+
+$$R^2 = 1 - \dfrac{SSE}{SSTotal}$$
+]
+
+.large[
+* $R^2$ is between 0 and 1
+* A higher $R^2$ means our model is a "better fit" to the data
+* For regression with one variable, $R^2 = r^2$ (the squared correlation)
+]
+
+---
+
+
+### SSE vs. SSTotal
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+
+m1 <- lm(CO2 ~ poly(Day, 2, raw=TRUE), data = CO2Germany)
+#sum(m1$residuals^2)
+```
+
+SSE = 4992.71
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ 1, lwd=1.2)
+
+m2 <- lm(CO2 ~ 1, data = CO2Germany)
+#sum(m2$residuals^2)
+```
+
+SSTotal: 11703.69
+]
+
+.large[
+$R^2 = 1 - \dfrac{4992.71}{11703.69} = 0.573$
+]
+
+---
+
+### SSE vs. SSTotal
+
+.pull-left[
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+penguins %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0.5, size=2) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38.8, xend = 1.4, yend = 38.8), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 48.8, xend = 2.4, yend = 48.8), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47.6, xend = 3.4, yend = 47.6), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+SSE = 2969.9
+]
+
+.pull-right[
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+penguins %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0.5, size=2) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 44, xend = 3.4, yend = 44), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+SSTotal = 10164.21
+]
+
+.large[
+$R^2 = 1 - \dfrac{2969.9}{10164.21} = 0.708$
+]
+
+---
+
+### Comparing $R^2$ values
+
+.pull-left[
+Polynomial of order 2:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+$R^2 = 0.573$
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red")
+```
+
+.large[
+$R^2 = 0.575$
+]
+]
+
+.large[
+.question[
+$R^2$ has increased very slightly -- does that mean that a polynomial of order 3 is a better fit?
+]
+]
+
+---
+
+### $R^2$
+
+.large[
+$R^2$ **will always increase when you add more parameters to the model.**
+
+Why? Because
+
+$$R^2 = 1 - \dfrac{SSE}{SSTotal}$$
+and adding more parameters gives us more flexibility to decrease SSE.
+]
+
+---
+
+### Adjusted $R^2$
+
+.large[
+We can account for the number of parameters in the model with *adjusted* $R^2$:
+
+$$R^2_{adj} = 1 - \dfrac{SSE/(n-p)}{SSTotal/(n-1)}$$
+]
+
+.large[
+* $n =$ number of observations in data (sample size)
+* $p =$ number of parameters ( $\beta$ terms) in model
+]
+
+---
+
+### Adjusted $R^2$
+
+.pull-left[
+Polynomial of order 2:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+SSE = 4992.7
+
+SSTotal = 11703.69
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red")
+```
+
+.large[
+SSE = 4971.9
+
+SSTotal = 11703.69
+]
+]
+
+.large[
+.question[
+Why is SSTotal the same for the two models?
+]
+]
+
+---
+
+### Adjusted $R^2$
+
+.pull-left[
+Polynomial of order 2:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+SSE = 4992.7
+
+SSTotal = 11703.69
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red")
+```
+
+.large[
+SSE = 4971.9
+
+SSTotal = 11703.69
+]
+]
+
+.large[
+$$R^2_{adj} = 1 - \dfrac{SSE/(n-p)}{SSTotal/(n-1)}$$
+]
+
+---
+
+### Adjusted $R^2$
+
+.pull-left[
+Polynomial of order 2:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2), lwd=1.2)
+```
+
+.large[
+$R^2_{adj} = 0.56976$
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+CO2Germany %>%
+  ggplot(aes(x = Day, y = CO2)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  geom_smooth(se=F, method="lm", formula = y ~ I(x) + I(x^2) + I(x^3), lwd=1.2,
+              color = "red")
+```
+
+.large[
+$R^2 = 0.56972$
+]
+]
+
+---
+
+### Properties of $R^2_{adj}$
+
+.large[
+* $R^2_{adj} < R^2$ (always)
+* $R^2_{adj}$ accounts for the number of parameters in the model
+* $R^2$ can *never* decrease when predictors are added
+* $R^2_{adj}$ *can* decrease if unhelpful predictors are added
+]
+
+---
+
+### Values in R
+
+.large[
+```{r, eval=F}
+penguin_mod <- lm(bill_length_mm ~ species, 
+                  data = penguins)
+summary(penguin_mod)
+```
+
+```
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       38.7914     0.2409  161.05   <2e-16 ***
+speciesChinstrap  10.0424     0.4323   23.23   <2e-16 ***
+speciesGentoo      8.7135     0.3595   24.24   <2e-16 ***
+...
+Multiple R-squared:  0.7078, Adjusted R-squared:  0.7061
+```
+
+```{r, eval=F}
+co2_mod <- lm(CO2 ~ poly(Day, 2, raw=TRUE), 
+              data = CO2Germany)
+summary(co2_mod)
+```
+
+```
+...
+Multiple R-squared:  0.5734, Adjusted R-squared:  0.5698
+```
+]
+
+
+
+---
+
+### Class activity
+
+.large[
+* Practice regression with a single categorical predictor, with diamonds data
+* Calculate $R^2$ and $R^2_{adj}$
+* No need to submit this one on Canvas
+
+[https://sta112-s26.github.io/class_activities/ca_16.html](https://sta112-s26.github.io/class_activities/ca_16.html)
+]
+
+
+

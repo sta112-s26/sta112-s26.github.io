@@ -15,3 +15,4 @@ February 18
 
 February 20
 : Regression with a categorical predictor, R-squared
+  : [Slides](https://sta112-s26.github.io/slides/lecture_16.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_16.html)

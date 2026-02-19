@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Regression with a categorical predictor</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Regression with a categorical predictor
+]
+
+---
+
+
+### Previously: regression with a categorical predictor
+
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`$$\text{bill length} = \begin{cases} \beta_0 + \varepsilon &amp; \text{species = Adelie} \\ \beta_0 + \beta_1 + \varepsilon &amp; \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \varepsilon &amp; \text{species = Gentoo} \end{cases}$$`
+
+Or, more concisely:
+
+`$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$`
+]
+
+---
+
+### Previously: regression with a categorical predictor
+
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+Can I use the correlation to summarize the relationship between species and bill length?
+]
+]
+
+---
+
+### Previously: polynomial transformations
+
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`$$\widehat{\text{CO2}} = 414.975 - 0.476 \ \text{Day} + 0.0012 \ \text{Day}^2$$`
+]
+
+---
+
+### Previously: polynomial transformations
+
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`$$\widehat{\text{CO2}} = 414.975 - 0.476 \ \text{Day} + 0.0012 \ \text{Day}^2$$`
+
+.question[
+Can I use the correlation to calculate the relationship between Day and CO2?
+]
+]
+
+---
+
+### Measuring variability in the response
+
+.large[
+* When we fit a regression model with least squares, we choose parameters to minimize the sum of squared residuals:
+
+`$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$`
+]
+
+.large[
+* We can think of SSE as the "amount of variability" in `\(Y\)` after predicting with our regression model
+* The amount of variability in `\(Y\)` *before* predicting with our regression model is
+
+`$$SSTotal = \sum_i (y_i -\overline{y})^2$$`
+]
+
+---
+
+### Thinking about SSE
+
+.large[
+`$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$`
+]
+
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Thinking about SSTotal
+
+.large[
+`$$SSTotal = \sum_i (y_i -\overline{y})^2$$`
+]
+
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### SSE vs. SSTotal
+
+.pull-left[
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+SSE = 4992.71
+]
+
+.pull-right[
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+SSTotal: 11703.69
+]
+
+.large[
+.question[
+Do I want SSE to be large relative to SSTotal, or small relative to SSTotal?
+]
+]
+
+---
+
+### `\(R^2\)`: the coefficient of determination
+
+.large[
+`$$SSE = \sum_i (y_i - \widehat{y}_i)^2$$`
+`$$SSTotal = \sum_i (y_i -\overline{y})^2$$`
+]
+
+.large[
+The proportion of variability in `\(Y\)` "explained" by our regression model is 
+
+`$$R^2 = 1 - \dfrac{SSE}{SSTotal}$$`
+]
+
+.large[
+* `\(R^2\)` is between 0 and 1
+* A higher `\(R^2\)` means our model is a "better fit" to the data
+* For regression with one variable, `\(R^2 = r^2\)` (the squared correlation)
+]
+
+---
+
+
+### SSE vs. SSTotal
+
+.pull-left[
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+SSE = 4992.71
+]
+
+.pull-right[
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+
+SSTotal: 11703.69
+]
+
+.large[
+`\(R^2 = 1 - \dfrac{4992.71}{11703.69} = 0.573\)`
+]
+
+---
+
+### SSE vs. SSTotal
+
+.pull-left[
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+
+SSE = 2969.9
+]
+
+.pull-right[
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+
+SSTotal = 10164.21
+]
+
+.large[
+`\(R^2 = 1 - \dfrac{2969.9}{10164.21} = 0.708\)`
+]
+
+---
+
+### Comparing `\(R^2\)` values
+
+.pull-left[
+Polynomial of order 2:
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`\(R^2 = 0.573\)`
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`\(R^2 = 0.575\)`
+]
+]
+
+.large[
+.question[
+`\(R^2\)` has increased very slightly -- does that mean that a polynomial of order 3 is a better fit?
+]
+]
+
+---
+
+### `\(R^2\)`
+
+.large[
+`\(R^2\)` **will always increase when you add more parameters to the model.**
+
+Why? Because
+
+`$$R^2 = 1 - \dfrac{SSE}{SSTotal}$$`
+and adding more parameters gives us more flexibility to decrease SSE.
+]
+
+---
+
+### Adjusted `\(R^2\)`
+
+.large[
+We can account for the number of parameters in the model with *adjusted* `\(R^2\)`:
+
+`$$R^2_{adj} = 1 - \dfrac{SSE/(n-p)}{SSTotal/(n-1)}$$`
+]
+
+.large[
+* `\(n =\)` number of observations in data (sample size)
+* `\(p =\)` number of parameters ( `\(\beta\)` terms) in model
+]
+
+---
+
+### Adjusted `\(R^2\)`
+
+.pull-left[
+Polynomial of order 2:
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+SSE = 4992.7
+
+SSTotal = 11703.69
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+SSE = 4971.9
+
+SSTotal = 11703.69
+]
+]
+
+.large[
+.question[
+Why is SSTotal the same for the two models?
+]
+]
+
+---
+
+### Adjusted `\(R^2\)`
+
+.pull-left[
+Polynomial of order 2:
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+SSE = 4992.7
+
+SSTotal = 11703.69
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+SSE = 4971.9
+
+SSTotal = 11703.69
+]
+]
+
+.large[
+`$$R^2_{adj} = 1 - \dfrac{SSE/(n-p)}{SSTotal/(n-1)}$$`
+]
+
+---
+
+### Adjusted `\(R^2\)`
+
+.pull-left[
+Polynomial of order 2:
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`\(R^2_{adj} = 0.56976\)`
+]
+
+]
+
+.pull-right[
+Polynomial of order 3:
+&lt;img src="lecture_16_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+`\(R^2 = 0.56972\)`
+]
+]
+
+---
+
+### Properties of `\(R^2_{adj}\)`
+
+.large[
+* `\(R^2_{adj} &lt; R^2\)` (always)
+* `\(R^2_{adj}\)` accounts for the number of parameters in the model
+* `\(R^2\)` can *never* decrease when predictors are added
+* `\(R^2_{adj}\)` *can* decrease if unhelpful predictors are added
+]
+
+---
+
+### Values in R
+
+.large[
+
+``` r
+penguin_mod &lt;- lm(bill_length_mm ~ species, 
+                  data = penguins)
+summary(penguin_mod)
+```
+
+```
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       38.7914     0.2409  161.05   &lt;2e-16 ***
+speciesChinstrap  10.0424     0.4323   23.23   &lt;2e-16 ***
+speciesGentoo      8.7135     0.3595   24.24   &lt;2e-16 ***
+...
+Multiple R-squared:  0.7078, Adjusted R-squared:  0.7061
+```
+
+
+``` r
+co2_mod &lt;- lm(CO2 ~ poly(Day, 2, raw=TRUE), 
+              data = CO2Germany)
+summary(co2_mod)
+```
+
+```
+...
+Multiple R-squared:  0.5734, Adjusted R-squared:  0.5698
+```
+]
+
+
+
+---
+
+### Class activity
+
+.large[
+* Practice regression with a single categorical predictor, with diamonds data
+* Calculate `\(R^2\)` and `\(R^2_{adj}\)`
+* No need to submit this one on Canvas
+
+[https://sta112-s26.github.io/class_activities/ca_16.html](https://sta112-s26.github.io/class_activities/ca_16.html)
+]
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
