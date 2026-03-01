@@ -1,0 +1,550 @@
+---
+title: Regression and hypothesis testing with a categorical explanatory variable
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+library(palmerpenguins)
+library(tidyverse)
+library(latex2exp)
+library(Stat2Data)
+
+penguins_no_nas <- penguins %>%
+  drop_na()
+
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1.5) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 20))
+```
+
+.large[
+* How do we model the relationship between species and bill length?
+* Can we test for a relationship between bill length and species?
+]
+
+---
+
+### Categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50, 47),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"), 
+                                TeX("$\\beta_0 + \\beta_2"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_segment(aes(x = 2.45, y = 38,
+                   xend = 2.45, yend = 47),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7) +
+  annotate("text", x = 2.3, y = 43, 
+           label = TeX("$\\beta_2", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+$$\text{bill length} = \begin{cases} \beta_0 + \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \varepsilon & \text{species = Gentoo} \end{cases}$$
+
+.question[
+How can I write this more concisely?
+]
+]
+
+---
+
+### Indicator variables
+
+.large[
+$$\text{IsChinstrap} = \begin{cases} 0 & \text{species } \neq \text{Chinstrap} \\ 1 & \text{species = Chinstrap} \end{cases}$$
+
+$$\text{IsGentoo} = \begin{cases} 0 & \text{species } \neq \text{Gentoo} \\ 1 & \text{species = Gentoo} \end{cases}$$
+
+Then:
+
+| Species | IsChinstrap | IsGentoo |
+| --- | --- | --- |
+| Adelie | 0 | 0 |
+| Chinstrap | 1 | 0 |
+| Gentoo | 0 | 1 |
+]
+
+---
+
+### Indicator variables
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=3.5}
+
+set.seed(1)
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(alpha = 0) +
+  theme_classic() +
+  geom_segment(aes(x = 0.6, y = 38, xend = 1.4, yend = 38), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 1.6, y = 50, xend = 2.4, yend = 50), lwd=1.5, color="blue") + 
+  geom_segment(aes(x = 2.6, y = 47, xend = 3.4, yend = 47), lwd=1.5, color="blue") + 
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25)) +
+  theme(axis.title.y = element_blank()) +
+  scale_y_continuous(breaks = c(38, 50, 47),
+                     labels = c(TeX("$\\beta_0"), 
+                                TeX("$\\beta_0 + \\beta_1"), 
+                                TeX("$\\beta_0 + \\beta_2"))) +
+  geom_segment(aes(x = 1.45, y = 38,
+                   xend = 1.45, yend = 50),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_segment(aes(x = 2.45, y = 38,
+                   xend = 2.45, yend = 47),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 1.3, y = 44, 
+           label = TeX("$\\beta_1", output='character'), 
+           parse=TRUE, size = 7) +
+  annotate("text", x = 2.3, y = 43, 
+           label = TeX("$\\beta_2", output='character'), 
+           parse=TRUE, size = 7)
+```
+
+.large[
+$$\text{bill length} = \begin{cases} \beta_0 + \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \varepsilon & \text{species = Gentoo} \end{cases}$$
+
+Or, more concisely:
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+]
+
+---
+
+### Model assumptions
+
+.large[
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+.question[
+What model assumptions do you think we make?
+]
+]
+
+---
+
+### Model assumptions
+
+.large[
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+where $\varepsilon \sim N(0, \sigma_{\varepsilon}^2)$ and the $\varepsilon$ are independent of each other.
+
+* No notion of shape assumption with single categorical predictor
+* Still assume constant variance, normality, independence, and randomness
+
+.question[
+How should we assess each of these assumptions?
+]
+]
+
+---
+
+### Assessing constant variance
+
+.large[
+For a single categorical predictor, we can create a boxplot of residuals for each group, and calculate the standard deviation of residuals in each group.
+]
+
+.pull-left[
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4}
+penguin_lm <- lm(bill_length_mm ~ species, 
+                 data = penguins_no_nas)
+
+penguins_no_nas %>%
+  mutate(resids = residuals(penguin_lm)) %>%
+  ggplot(aes(x = species, y = resids)) +
+  geom_boxplot() +
+  theme_bw() +
+  labs(x = "Species", 
+       y = "Residuals") +
+  theme(text = element_text(size = 25))
+```
+]
+
+.pull-right[
+.large[
+```{r echo=F, message=F, warning=F}
+library(knitr)
+penguins_no_nas %>%
+  mutate(resids = residuals(penguin_lm)) %>%
+  group_by(species) %>%
+  summarize(residual_std_dev = round(sd(resids), 2)) %>%
+  kable()
+```
+]
+]
+
+---
+
+### Assessing constant variance
+
+.pull-left[
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4}
+penguin_lm <- lm(bill_length_mm ~ species, 
+                 data = penguins_no_nas)
+
+penguins_no_nas %>%
+  mutate(resids = residuals(penguin_lm)) %>%
+  ggplot(aes(x = species, y = resids)) +
+  geom_boxplot() +
+  theme_bw() +
+  labs(x = "Species", 
+       y = "Residuals") +
+  theme(text = element_text(size = 25))
+```
+]
+
+.pull-right[
+.large[
+```{r echo=F, message=F, warning=F}
+library(knitr)
+penguins_no_nas %>%
+  mutate(resids = residuals(penguin_lm)) %>%
+  group_by(species) %>%
+  summarize(residual_std_dev = round(sd(resids), 2)) %>%
+  kable()
+```
+]
+]
+
+.large[
+Looking for similar variability between groups. Rule of thumb: not too concerned about constant variance if
+
+$$\dfrac{\text{largest standard deviation}}{\text{smallest standard deviation}} < 2$$
+]
+
+---
+
+### Assessing normality
+
+.large[
+Can use a QQ plot again:
+]
+
+```{r echo=F, fig.align='center', fig.width=6, fig.height=4}
+penguins_no_nas %>%
+  mutate(resids = residuals(penguin_lm)) %>%
+  ggplot(aes(sample = resids)) +
+  geom_qq() +
+  geom_qq_line() +
+  theme_bw() +
+  labs(x = "Theoretical normal quantiles", 
+       y = "Observed residual quantiles") +
+  theme(text = element_text(size = 20))
+```
+
+---
+
+### Statistical inference
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1.5) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 20))
+```
+
+.large[
+.question[
+Does it look like there is a relationship between species and bill length?
+]
+]
+
+---
+
+### Hypothesis testing
+
+.large[
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+We want to know whether there is a relationship between species and bill length.
+
+.question[
+Can I translate this into null and alternative hypotheses about one or more model parameters?
+]
+]
+
+---
+
+### Hypothesis testing
+
+.large[
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+We want to know whether there is a relationship between species and bill length.
+
+.question[
+Can I translate this into null and alternative hypotheses about one or more model parameters?
+]
+]
+
+.large[
+$H_0: \beta_1 = \beta_2 = 0$
+
+$H_A: \text{at least one of } \beta_1, \beta_2 \neq 0$
+]
+
+---
+
+### Full and reduced models
+
+.large[
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+$H_0: \beta_1 = \beta_2 = 0$
+
+$H_A: \text{at least one of } \beta_1, \beta_2 \neq 0$
+
+
+**Reduced model ( $H_0$ ):**
+
+$$\text{bill length} = \beta_0 + \varepsilon$$
+
+**Full model ( $H_A$ ):**
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+.question[
+What do I need to test these hypotheses?
+]
+]
+
+---
+
+### Intuition
+
+.large[
+.question[
+Which of these two plots would show more evidence of a relationship between species and bill length?
+]
+]
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+penguins_no_nas %>%
+  mutate(bill_length_mm = bill_length_mm + 
+           ifelse(species == "Adelie", 0, 
+                  ifelse(species == "Chinstrap", 10, 5))) %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25),
+        axis.text.y = element_blank())
+```
+
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+penguins_no_nas %>%
+  mutate(bill_length_mm = bill_length_mm + 
+           rnorm(nrow(penguins_no_nas), sd=20)) %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25),
+        axis.text.y = element_blank())
+```
+
+]
+
+---
+
+### Intuition
+
+.large[
+More evidence for a relationship when *between-group* variability is larger than *within-group* variability.
+]
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+penguins_no_nas %>%
+  mutate(bill_length_mm = bill_length_mm + 
+           ifelse(species == "Adelie", 0, 
+                  ifelse(species == "Chinstrap", 10, 5))) %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25),
+        axis.text.y = element_blank())
+```
+
+.large[
+Large between-group variability, relative to within-group variability.
+]
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+penguins_no_nas %>%
+  mutate(bill_length_mm = bill_length_mm + 
+           rnorm(nrow(penguins_no_nas), sd=20)) %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25),
+        axis.text.y = element_blank())
+```
+
+.large[
+Small between-group variability, relative to within-group variability.
+]
+]
+
+---
+
+### Between-group vs. within-group variability
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+**Between-group variability:** $\sum \limits_{i=1}^n (\widehat{y}_i - \overline{y})^2$ 
+
+**Within-group variability:** $\sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2$ 
+]
+
+---
+
+### Partitioning variability and degrees of freedom
+
+.large[
+**Variability:** $\hspace{3cm} \sum \limits_{i=1}^n (y_i - \overline{y})^2 = \sum \limits_{i=1}^n (\widehat{y}_i - \overline{y})^2 + \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2$
+
+$\hspace{3cm} SSTotal \hspace{0.5cm} = \hspace{0.5cm} SSModel \hspace{0.5cm} + \hspace{0.5cm} SSE$
+
+**Degrees of freedom:** 
+
+$\hspace{4cm} n-1 \hspace{0.5cm} = \hspace{0.5cm} (p - 1)  \hspace{0.5cm} + \hspace{0.5cm} (n - p)$
+]
+
+---
+
+### Between-group vs. within-group variability
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+**Test statistic:** $F = \dfrac{\text{between group variance}}{\text{within group variance}} = \dfrac{SSModel/(p-1)}{SSE/(n-p)}$
+]
+
+---
+
+### Partitioning variability
+
+.large[
+**Variability:** $\hspace{3cm} \sum \limits_{i=1}^n (y_i - \overline{y})^2 = \sum \limits_{i=1}^n (\widehat{y}_i - \overline{y})^2 + \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2$
+
+$\hspace{3cm} SSTotal \hspace{0.5cm} = \hspace{0.5cm} SSModel \hspace{0.5cm} + \hspace{0.5cm} SSE$
+
+
+**Test statistic:** $F = \dfrac{\frac{1}{p-1} \sum \limits_{i=1}^n (\widehat{y}_i - \overline{y})^2}{\frac{1}{n-p} \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2} = \dfrac{\frac{1}{p-1} SSModel}{\frac{1}{n-p} SSE} = \dfrac{MSModel}{MSE}$ 
+]
+
+---
+
+### Analysis of variance
+
+.large[
+
+**Test statistic:** $F = \dfrac{\frac{1}{p-1} \sum \limits_{i=1}^n (\widehat{y}_i - \overline{y})^2}{\frac{1}{n-p} \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2} = \dfrac{\frac{1}{p-1} SSModel}{\frac{1}{n-p} SSE} = \dfrac{MSModel}{MSE}$ 
+
+**Analysis of variance (ANOVA) table:**
+
+| Source | df | SS | MS | F |
+| --- | --- | --- | --- | --- |
+| Model | $p-1$ | $SSModel$ | $MSModel = \frac{SSModel}{p-1}$ | $F = \frac{MSModel}{MSE}$ |
+| Residual | $n - p$ | $SSE$ | $MSE = \frac{SSE}{n-p}$ | |
+| Total | $n-1$ | $SSTotal$ | | |
+]
+
+---
+
+### Example
+
+.large[
+
+$$\sum \limits_{i=1}^n (\widehat{\text{bill length}}_i - \overline{\text{bill length}})^2 = 7015.4 \hspace{1cm}$$ 
+
+$$\sum \limits_{i=1}^n (\text{bill length}_i - \widehat{\text{bill length}}_i)^2 = 2913.5 \hspace{1cm}$$
+
+| Source | df | SS | MS | F |
+| --- | --- | --- | --- | --- |
+| Model | $\hspace{2cm}$ | $\hspace{4cm}$  | $\hspace{4cm}$ | $\hspace{4cm}$ |
+| Residual | |  |  | |
+| Total |  | | | |
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity (handout).
+]
+
+
+

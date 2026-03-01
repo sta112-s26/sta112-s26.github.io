@@ -1,0 +1,32 @@
+---
+title: "Activity"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+# Diamonds data
+
+In this class activity, we will look at data from AwesomeGems.com on the price and characteristics of 351 diamonds.
+
+In alphabetical order, the levels of clarity in the `Diamonds` data are IF (internally flawless), SI1, SI2, SI3 (slightly included), VS1, VS2 (very slightly included), VVS1, VVS2 (very very slightly included). To be consistent with R, we will use this order for our regression model, with IF the baseline and indicator variables IsSI1, IsSI2, IsSI3, IsVS1, IsVS2, IsVVS1, and IsVVS2. Our model is
+
+\begin{align}
+\text{Price per carat} &= \beta_0 + \beta_1 \ \text{IsSI1} + \beta_2 \ \text{IsSI2} + \beta_3 \ \text{IsSI3} + \beta_4 \ \text{IsVS1} \\
+& \hspace{1cm} + \beta_5 \ \text{IsVS2} + \beta_6 \ \text{IsVVS1} + \beta_7 \ \text{IsVVS2} + \varepsilon
+\end{align}
+
+## ANOVA table
+
+We can use an ANOVA table to summarize the between-group and within-group variance for the Diamonds data. The ANOVA table below has MSModel and MSE filled in:
+
+| Source | df | SS | MS | F |
+| --- | --- | --- | --- | --- |
+| Model | $\hspace{2cm}$ | $\hspace{2cm}$ | 15.49 | $\hspace{2cm}$ |
+| Residual |  |  | 8.24 | |
+| Total |   |  | | |
+
+1. Complete the ANOVA table (remember that there are 351 diamonds in the data).
