@@ -1,0 +1,123 @@
+---
+title: "Class activity: Regression with a categorical predictor"
+format: html
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Instructions:** 
+
+* Work individually or with a neighbor to answer the following questions 
+* To get started, download the [class activity template](https://sta112-s26.github.io/class_activities/ca_20_template.qmd) file
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+## Diamonds data
+
+In this activity, we will continue working with data on the price and characteristics of 351 diamonds. The data are available in the `Diamonds` dataset in the `Stat2Data` package.
+
+**Setup:**
+
+1. Load the `Stat2Data` package and the `Diamonds` data:
+
+```{r, eval=F}
+library(Stat2Data)
+library(tidyverse)
+data("Diamonds")
+```
+
+2. We are interested in modeling the price per carat. The `Diamonds` dataset records price per carat in USD; to make the numbers easier to work with, let's convert the units to 1000s of USD:
+
+```{r, eval=F}
+Diamonds <- Diamonds |>
+  mutate(PricePerCt = PricePerCt/1000)
+```
+
+*(Remember that `mutate` creates a new column, or modifies an existing column)*
+
+## Questions
+
+To start, we will model price per carat using Clarity as the explanatory variable; Clarity is a categorical variable with 8 levels in the data. Our model is:
+
+\begin{align}
+\text{Price per carat} &= \beta_0 + \beta_1 \ \text{IsSI1} + \beta_2 \ \text{IsSI2} + \beta_3 \ \text{IsSI3} + \beta_4 \ \text{IsVS1} \\
+& \hspace{1cm} + \beta_5 \ \text{IsVS2} + \beta_6 \ \text{IsVVS1} + \beta_7 \ \text{IsVVS2} + \varepsilon
+\end{align}
+
+1. Fit the regression model in R, and store it as `diamond_lm`:
+
+```{r, eval=F}
+diamond_lm <- lm(..., data = Diamonds) # fill this in!
+```
+
+Now that we have fit the model, we should check our assumptions. 
+
+2. To check the constant variance assumption, we can use a residual plot. With a categorical predictor, we make a boxplot of the residuals for each level of the categorical variable. Fill in the code below to create this plot:
+
+```{r, eval=F}
+data.frame(Clarity = diamond_lm$model$Clarity,
+           residuals = resid(diamond_lm)) |>
+  ggplot(aes(x = ..., y = ...)) + # fill this in!
+  geom_...() + # fill this in!
+  theme_bw()
+```
+
+3. We can also check the constant variance assumption by computing the standard deviation of the residuals for each level of Clarity:
+
+```{r, eval=F}
+data.frame(Clarity = diamond_lm$model$Clarity,
+           residuals = resid(diamond_lm)) |>
+  group_by(Clarity) |>
+  summarize(resid_sd = sd(residuals))
+```
+
+*(Remember that `group_by` groups the rows of our data by the values of one or more variables, and `summarize` computes a summary statistic for each group)*
+
+4. If we see big differences in the variability of the residuals between groups, we may be concerned about violation of the constant variance assumption. (One possible guideline is to be concerned if the ratio of the largest standard deviation to the smallest standard deviation is > 2). Looking at your answers to questions 2 and 3, do you think the constant variance assumption is reasonable?
+
+5. Create a QQ plot for the fitted model to check the normality assumption. Do you think the residuals follow a normal distribution?
+
+```{r, eval=F}
+data.frame(residuals = resid(diamond_lm)) |>
+  ggplot(aes(sample = residuals)) +
+  geom_qq() +
+  geom_qq_line() +
+  theme_bw() +
+  labs(x = "Theoretical normal quantiles",
+       y = "Observed residual quantiles")
+```
+
+
+### Transformation
+
+When we are concerned about the constant variance and normality assumptions, we can *transform* our response variable. In this case, let's try a log transformation:
+
+\begin{align}
+\log(\text{Price per carat}) &= \beta_0 + \beta_1 \ \text{IsSI1} + \beta_2 \ \text{IsSI2} + \beta_3 \ \text{IsSI3} + \beta_4 \ \text{IsVS1} \\
+& \hspace{1cm} + \beta_5 \ \text{IsVS2} + \beta_6 \ \text{IsVVS1} + \beta_7 \ \text{IsVVS2} + \varepsilon
+\end{align}
+
+6. Re-fit the model with the transformed response.
+
+7. Assess the constant variance and normality assumptions for the transformed response. Do the assumptions seem reasonable now?
+
+### Inference
+
+Now that we have assessed our assumptions (independence and randomness are also reasonable for this dataset), we can do inference. We want to test whether there is a relationship between Clarity and price per carat. If there is a relationship between Clarity and log(price per carat), there is also a relationship between Clarity and price per carat. So, we can address the research question using the model with the log-transformed response.
+
+8. Write down null and alternative hypotheses, in terms of one or more model parameters (i.e. $\beta$s) that allow you to test whether there is a relationship between Clarity and price per carat.
+
+9. Run the code below to calculate the ANOVA table and p-value in R. What are my degrees of freedom for the $F$ distribution? What is the resulting p-value?
+
+```{r eval=F}
+diamond_lm <- lm(log(PricePerCt) ~ Clarity, data = Diamonds)
+anova(diamond_lm)
+```
+
+
+### A different inference question
+
+Our hypothesis test above asks whether there is a relationship between Clarity and Price per carat. Suppose that instead I just want to know whether there is a difference in price per carat between Internally Flawless (IF) diamonds and Very Slightly Included (VF1) diamonds.
+
+10. What would my hypotheses be for this test? How would I perform the test?
+

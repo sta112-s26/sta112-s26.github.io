@@ -1,0 +1,58 @@
+---
+title: "Activity"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+# Diamonds data
+
+In this class activity, we will look at data from AwesomeGems.com on the price and characteristics of 351 diamonds.
+
+Last time we constructed an ANOVA table to look at the relationship between Clarity and Price per carat. There is nothing about an ANOVA table that is restricted to categorical variables, however. Let's see what it looks like when we have a quantitative explanatory variable instead.
+
+Suppose we fit a model with Price per carat as the response, and Depth as the explanatory variable:
+
+\begin{align}
+\text{Price per carat} &= \beta_0 + \beta_1 \text{Depth} + \varepsilon
+\end{align}
+
+Here is the R output:
+
+```{r, eval=F}
+diamond_lm <- lm(PricePerCt ~ Depth, data = Diamonds)
+summary(diamond_lm)
+```
+
+```
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept)  1.80642    1.93822   0.932   0.3520  
+Depth        0.06889    0.03001   2.296   0.0223 *
+```
+
+And here is the ANOVA table:
+
+```{r, eval=F}
+anova(diamond_lm)
+```
+
+```
+           Df  Sum Sq Mean Sq F value  Pr(>F)  
+Depth       1   43.66  43.657  5.2711 0.02227 *
+Residuals 349 2890.53   8.282                  
+```
+
+## Questions
+
+1. Both pieces of R output (the coefficient table and the ANOVA table) provide a p-value for the test $H_0: \beta_1 = 0$ vs. $H_A: \beta_1 \neq 0$. Do those p-values agree?
+
+\vspace{3cm}
+
+2. Compare the squared $t$-statistic from the coefficient table with the $F$-statistic from the ANOVA output.
+
+
+

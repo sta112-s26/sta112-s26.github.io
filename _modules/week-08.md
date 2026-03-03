@@ -11,6 +11,7 @@ March 2
 
 March 4
 : Categorical predictors and ANOVA
+  : [Slides](https://sta112-s26.github.io/slides/lecture_20.pdf), [warmup](https://sta112-s26.github.io/class_activities/ca_20_handout.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_20.html)
 
 March 6
 : Work day

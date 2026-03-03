@@ -1,0 +1,27 @@
+---
+---
+---
+title: "Class activity"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(Stat2Data)
+library(tidyverse)
+data("Diamonds")
+Diamonds <- Diamonds |>
+  mutate(PricePerCt = PricePerCt/1000)
+```
+
+### Exercise 1
+
+```{r}
+
+```
+
+
