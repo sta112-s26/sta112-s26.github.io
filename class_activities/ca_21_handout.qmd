@@ -1,0 +1,47 @@
+---
+title: "Activity: regression with multiple explanatory variables"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+# Sparrows
+
+In this class activity, we will revisit the `Sparrows` dataset, which looks at measurements of sparrows from Kent Island. Researchers measured the weight and wing length of 116 sparrows, under three different nest conditions: control (the researchers didn't change the nest), enlarged (the researchers made the nest bigger), and reduced (the researchers made the nest smaller). The `Sparrows` data is part of the `Stat2Data` package, and contains the following variables:
+
+* `Treatment`: nest condition (control, enlarged, or reduced)
+* `Weight`: sparrow weight (in grams)
+* `WingLength`: sparrow wing length (in mm)
+
+## Questions
+
+1. Write down the population regression model, with weight as the response, and wing length and treatment as the predictors.
+
+\vspace{3cm}
+
+Here is the output of the fitted model in R:
+
+```
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)        1.94244    0.91366   2.126  0.03570 *  
+Treatmentenlarged -0.45838    0.27730  -1.653  0.10113    
+Treatmentreduced   0.89784    0.32874   2.731  0.00733 ** 
+WingLength         0.44543    0.03317  13.427  < 2e-16 ***
+```
+
+2. Write down the equation of the fitted regression model.
+
+\vspace{3cm}
+
+3. What is the average change in weight associated with a 1mm increase in wing length, for sparrows from enlarged nests?
+
+\vspace{3cm}
+
+4. What is the estimated difference in weight for sparrows from enlarged vs. control nests, with the same wing length?
+
+\vspace{3cm}
+

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to multiple linear regression</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Introduction to multiple linear regression
+]
+
+---
+
+
+### Some statistics classes next semester
+
+.large[
+* STA 214 (Applied Generalized Linear Models)
+  * Requires MTH 111 (Calc 1)
+* STA 247 (Design and Sampling)
+* STA 261 (Statistical Computing)
+* STA 279 (Text Data)
+* STA 310 (Probability)
+  * Requires MTH 112 (Calc 2)
+* Also consider MTH 121 (Linear algebra) for upper-level stats courses
+]
+
+---
+
+### Last time
+
+.large[
+`\begin{align}
+\log(\text{Price per carat}) &amp;= \beta_0 + \beta_1 \ \text{IsSI1} + \beta_2 \ \text{IsSI2} + \beta_3 \ \text{IsSI3} \ + \\ &amp; \hspace{1cm} \beta_4 \ \text{IsVS1} + \beta_5 \ \text{IsVS2} + \beta_6 \ \text{IsVVS1} + \\ &amp; \hspace{1cm} \beta_7 \ \text{IsVVS2} + \varepsilon
+\end{align}`
+
+.question[
+ We want to test whether there is a relationship between Clarity and price per carat. What are our null and alternative hypotheses?
+]
+]
+
+---
+
+### Last time
+
+.large[
+`\(H_0: \beta_1 = \beta_2 = \cdots = \beta_7 = 0\)`
+`\(H_A: \text{at least one of } \beta_1, \beta_2, ..., \beta_7 \neq 0\)`
+
+```
+           Df Sum Sq Mean Sq F value  Pr(&gt;F)  
+Clarity     7  3.038 0.43400  2.3832 0.02164 *
+Residuals 343 62.463 0.18211                  
+```
+]
+
+---
+
+### Last time
+
+.large[
+```
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.81518    0.10669  17.014   &lt;2e-16 ***
+ClaritySI1  -0.21875    0.12579  -1.739   0.0829 .  
+ClaritySI2  -0.24783    0.16714  -1.483   0.1391    
+ClaritySI3  -0.82695    0.32006  -2.584   0.0102 *  
+ClarityVS1  -0.01472    0.11347  -0.130   0.8969    
+ClarityVS2  -0.07700    0.11550  -0.667   0.5054    
+ClarityVVS1 -0.02433    0.13136  -0.185   0.8532    
+ClarityVVS2 -0.13451    0.12878  -1.044   0.2970    
+```
+
+.question[
+Suppose that instead I just want to know whether there is a difference in price per carat between Internally Flawless (IF) diamonds and Very Slightly Included (VS1) diamonds. What would my hypotheses be for this test? How would I perform the test?
+]
+]
+
+---
+
+### Relationships between &gt; 2 variables
+
+&lt;img src="lecture_21_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+How can we model the relationship between body mass, species, and bill length?
+]
+]
+
+---
+
+### Regression with a single quantitative predictor
+
+&lt;img src="lecture_21_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+**Model:**
+
+.center[
+`\(\text{bill length} = \beta_0 + \beta_1 \text{body mass} + \varepsilon\)`
+]
+]
+
+---
+
+### Regression with a single categorical predictor
+
+&lt;img src="lecture_21_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+
+.large[
+**Model:**
+
+.center[
+`\(\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon\)`
+]
+]
+
+---
+
+### Regression with `\(&gt; 2\)` variables
+
+.large[
+`\(\text{bill length} = \beta_0 + \beta_1 \text{body mass} + \varepsilon\)`
+
+`\(\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon\)`
+
+.question[
+How can we include both species *and* body mass in the model?
+]
+]
+
+---
+
+## Multiple regression
+
+&lt;img src="lecture_21_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+
+.large[
+**Model:**
+
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}`
+]
+
+---
+
+### Multiple regression model
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}`
+
+**This gives us a separate regression line for each species of penguin.**
+
+.question[
+What is the regression line for Adelie penguins?
+]
+]
+
+---
+
+### Multiple regression model
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}`
+
+**This gives us a separate regression line for each species of penguin.**
+
+.question[
+What is the regression line for Adelie penguins?
+]
+]
+
+.large[
+`\(\text{bill length} = \beta_0 + \beta_3 \text{body mass} + \varepsilon\)`
+
+.question[
+What about for Chinstrap and Gentoo penguins?
+]
+]
+
+---
+
+### Multiple regression model
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}`
+
+**This gives us a separate regression line for each species of penguin:**
+
+`$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{species = Adelie} \\ \beta_0 + \beta_1 + \beta_3 \text{body mass} + \varepsilon &amp; \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{species = Gentoo} \end{cases}$$`
+
+]
+
+---
+
+### Fitted model
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}`
+
+.question[
+How would I interpret `\(\widehat{\beta}_0 = 24.92\)`?
+]
+]
+
+---
+
+### Fitted model
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}`
+
+.question[
+How would I interpret `\(\widehat{\beta}_0 = 24.92\)`?
+]
+]
+
+.large[
+The estimated bill length for an Adelie penguin weighing 0g. (not that meaningful)
+
+.question[
+What about `\(\widehat{\beta}_1 = 9.92\)` and `\(\widehat{\beta}_2 = 3.56\)`?
+]
+]
+
+---
+
+### Interpreting regression coefficients
+
+&lt;img src="lecture_21_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+
+.large[
+
+* `\(9.92 =\)` estimated mean difference in bill length for a Chinstrap and Adelie penguin with the same body mass
+* `\(3.56 =\)` estimated mean difference in bill length for a Gentoo and Adelie penguin with the same body mass
+]
+
+---
+
+### Interpreting regression coefficients
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}`
+
+.question[
+How would I interpret `\(\widehat{\beta}_3 = 0.0037\)`?
+]
+]
+
+---
+
+### Interpreting regression coefficients
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}`
+
+.question[
+How would I interpret `\(\widehat{\beta}_3 = 0.0037\)`?
+]
+]
+
+.large[
+The average change in bill length associated with an increase of 1g in body mass, holding species constant.
+
+*Note that we assume the slope is the same for each species!*
+]
+
+---
+
+### Predictions
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}`
+
+.question[
+What is the predicted bill length for a Gentoo penguin with a body mass of 5000 g?
+]
+]
+
+---
+
+### Predictions
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}`
+
+.question[
+What is the predicted bill length for a Gentoo penguin with a body mass of 5000 g?
+]
+]
+
+.large[
+`\(24.92 + 3.56 + 0.0037(5000) = 46.98\)`
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+
+``` r
+m1 &lt;- lm(bill_length_mm ~ species + body_mass_g, 
+                 data = penguins)
+```
+
+* `bill_length_mm ~ species + body_mass_g` is a `formula` in R
+* Still `response ~ predictor(s)`
+* `+` means "include more variables in the model"
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+
+``` r
+m1 &lt;- lm(bill_length_mm ~ species + body_mass_g, 
+                 data = penguins)
+summary(m1)
+```
+
+```
+...
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      2.492e+01  1.063e+00  23.443  &lt; 2e-16 ***
+## speciesChinstrap 9.921e+00  3.511e-01  28.258  &lt; 2e-16 ***
+## speciesGentoo    3.558e+00  4.858e-01   7.324 1.78e-12 ***
+## body_mass_g      3.749e-03  2.823e-04  13.276  &lt; 2e-16 ***
+...
+```
+
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}`
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity (handout).
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+What is the population regression model?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+What is the population regression model?
+]
+]
+
+.large[
+`\begin{align}
+\text{Weight} &amp;= \beta_0 + \beta_1 \text{IsEnlarged} + \beta_2 \text{IsReduced} + \\
+&amp; \hspace{1cm} \beta_3 \text{WingLength} + \varepsilon
+\end{align}`
+]
+
+---
+
+### Class activity
+
+.large[
+
+`\begin{align}
+\widehat{\text{Weight}} &amp;= 1.94 - 0.46 \text{IsEnlarged} + 0.90 \text{IsReduced} + \\
+&amp; \hspace{1cm} 0.45 \text{WingLength}
+\end{align}`
+
+.question[
+What is the average change in weight associated with a 1mm increase in wing length, for sparrows from enlarged nests?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+
+`\begin{align}
+\widehat{\text{Weight}} &amp;= 1.94 - 0.46 \text{IsEnlarged} + 0.90 \text{IsReduced} + \\
+&amp; \hspace{1cm} 0.45 \text{WingLength}
+\end{align}`
+
+.question[
+What is the average change in weight associated with a 1mm increase in wing length, for sparrows from enlarged nests?
+]
+]
+
+.large[
+Answer: 0.45
+
+(We fit the same slope for each group of sparrows, and it is estimated to be 0.45)
+]
+
+---
+
+### Class activity
+
+.large[
+
+`\begin{align}
+\widehat{\text{Weight}} &amp;= 1.94 - 0.46 \text{IsEnlarged} + 0.90 \text{IsReduced} + \\
+&amp; \hspace{1cm} 0.45 \text{WingLength}
+\end{align}`
+
+.question[
+What is the estimated difference in weight for sparrows from enlarged vs. control nests, with the same wing length?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+
+`\begin{align}
+\widehat{\text{Weight}} &amp;= 1.94 - 0.46 \text{IsEnlarged} + 0.90 \text{IsReduced} + \\
+&amp; \hspace{1cm} 0.45 \text{WingLength}
+\end{align}`
+
+.question[
+What is the estimated difference in weight for sparrows from enlarged vs. control nests, with the same wing length?
+]
+]
+
+.large[
+We estimate that sparrows from enlarged nests weigh 0.46g less, on average, than sparrows from control nests with the same wing length
+]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

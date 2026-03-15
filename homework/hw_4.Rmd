@@ -1,0 +1,124 @@
+---
+title: "Homework 4"
+output: 
+  rmdformats::robobook:
+    css: "homework.css"
+    highlight: pygments
+link-citations: yes
+---
+
+**Due:** Monday, March 23, 11:59pm on Canvas
+
+**Instructions:** 
+
+* A template Quarto file will be provided, with set-up instructions below.
+* When you are done with the assignment, render the Quarto file containing all your code and responses. Submit the rendered HTML file on Canvas.
+* Remember to acknowledge any collaborators, and to cite outside sources
+
+# Setup
+
+1. Download the Quarto template file for this assignment: [hw_04_template.qmd](https://sta112-s26.github.io/homework/hw_04_template.qmd). Save it to your computer, and change the file name to `hw_04_your_name.qmd`
+2. Open `hw_04_your_name.qmd` in RStudio. Change the `author` in YAML to your name.
+3. Fill in answers to the questions below. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
+4. When you are done, render and submit your HTML file on Canvas (Assignments -> Homework 4).
+
+
+# Data
+
+Commuting to and from work can be a time consuming part of the day, and commute times are often longer in major cities with lots of traffic. In this assignment you will compare commute times between four major US cities (Boston, Houston, Minneapolis, and Washington). The data come from the 2007 American Housing Survey, and are available in the `MetroCommutes` dataset in the `Stat2Data` package.
+
+The `MetroCommutes` data contains the following variables, measured on a random sample of commuters in each city:
+
+* `City`: Boston, Houston, Minneapolis, or Washington
+* `Distance`: Distance of commute (in miles)
+* `Time`: Time of commute (in minutes)
+
+### Loading the data
+
+To load the data, run
+
+```r
+library(Stat2Data)
+data("MetroCommutes")
+```
+
+# Questions
+
+A good place to begin is with some exploratory data analysis. Let's look at the distribution of commuting times in each city.
+
+:::{.question}
+#### Question 1
+
+Create side-by-side boxplots showing the distribution of commuting time in each city. Comment on any features of the boxplots, and compare the distributions of commuting time between the four cities.
+:::
+
+We'll want to model the relationship between city and commuting time, but to do so we need to check that there are enough observations from each city (otherwise, it is hard to estimate our model). Recommended sample sizes vary, but it is good to have at least 5 or 10 observations from each category of a categorical predictor (more are needed if you include other variables in the model).
+
+:::{.question}
+#### Question 2
+
+How many observations do we have from each city? 
+:::
+
+Since our sample sizes are large enough, let's proceed with modeling.
+
+:::{.question}
+#### Question 3
+
+Write down the population model for the relationship between city (explanatory variable) and commute time (response), using indicator variables for different cities. Treat Boston as the base level (so $\beta_0$ is the average commute time for Boston residents).
+
+How many parameters are in our model?
+:::
+
+Now let's fit the model in R.
+
+:::{.question}
+#### Question 4
+
+Use the `lm` function to fit the model from Question 3. Write down the equation of your fitted model, and report the estimated mean commute time in each city.
+:::
+
+To use our model, we make assumptions about constant variance, normality, independence, and randomness. 
+
+To assess the constant variance assumption, we can make a boxplot of residuals for each city, and calculate the standard deviation of residuals in each city. We're concerned that the constant variance assumption is violated if the ratio of the largest to smallest standard deviations is > 2.
+
+:::{.question}
+#### Question 5
+
+Assess the constant variance assumption for your fitted model from Question 4.
+:::
+
+To assess the normality assumption, we make a QQ plot as usual.
+
+:::{.question}
+#### Question 6
+
+Assess the normality assumption for your fitted model from Question 4.
+:::
+
+A QQ plot like the one in Question 6 suggests a right-skewed distribution of the residuals. We can try to fit this issue with a transformation.
+
+:::{.question}
+#### Question 7
+
+Re-fit the model, this time using an appropriate transformation of the response variable. Report the equation of your fitted model, and make another QQ plot. How does the normality assumption look now?
+:::
+
+Finally, we'll use the transformed model to test hypotheses (testing whether there is a relationship between city and commute time is equivalent to testing whether there is a relationship between city and the transformed commute time ).
+
+:::{.question}
+#### Question 8
+
+Write down null and alternative hypotheses, in terms of one or more model parameters ( $\beta$s ) that allow you to test whether there is a relationship between city and commute time.
+:::
+
+:::{.question}
+#### Question 9
+
+Test your hypotheses from Question 8. You should:
+
+* Calculate a test statistic (the `anova` function will be useful!)
+* Report the degrees of freedom (for an $F$ statistic, report both the numerator and denominator degrees of freedom)
+* Calculate a p-value
+* Use your p-value to make a conclusion about the relationship between city and commute time
+:::

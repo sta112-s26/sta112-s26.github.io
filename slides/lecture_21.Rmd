@@ -1,0 +1,577 @@
+---
+title: Introduction to multiple linear regression
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Some statistics classes next semester
+
+.large[
+* STA 214 (Applied Generalized Linear Models)
+  * Requires MTH 111 (Calc 1)
+* STA 247 (Design and Sampling)
+* STA 261 (Statistical Computing)
+* STA 279 (Text Data)
+* STA 310 (Probability)
+  * Requires MTH 112 (Calc 2)
+* Also consider MTH 121 (Linear algebra) for upper-level stats courses
+]
+
+---
+
+### Last time
+
+.large[
+\begin{align}
+\log(\text{Price per carat}) &= \beta_0 + \beta_1 \ \text{IsSI1} + \beta_2 \ \text{IsSI2} + \beta_3 \ \text{IsSI3} \ + \\ & \hspace{1cm} \beta_4 \ \text{IsVS1} + \beta_5 \ \text{IsVS2} + \beta_6 \ \text{IsVVS1} + \\ & \hspace{1cm} \beta_7 \ \text{IsVVS2} + \varepsilon
+\end{align}
+
+.question[
+ We want to test whether there is a relationship between Clarity and price per carat. What are our null and alternative hypotheses?
+]
+]
+
+---
+
+### Last time
+
+.large[
+$H_0: \beta_1 = \beta_2 = \cdots = \beta_7 = 0$
+$H_A: \text{at least one of } \beta_1, \beta_2, ..., \beta_7 \neq 0$
+
+```
+           Df Sum Sq Mean Sq F value  Pr(>F)  
+Clarity     7  3.038 0.43400  2.3832 0.02164 *
+Residuals 343 62.463 0.18211                  
+```
+]
+
+---
+
+### Last time
+
+.large[
+```
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  1.81518    0.10669  17.014   <2e-16 ***
+ClaritySI1  -0.21875    0.12579  -1.739   0.0829 .  
+ClaritySI2  -0.24783    0.16714  -1.483   0.1391    
+ClaritySI3  -0.82695    0.32006  -2.584   0.0102 *  
+ClarityVS1  -0.01472    0.11347  -0.130   0.8969    
+ClarityVS2  -0.07700    0.11550  -0.667   0.5054    
+ClarityVVS1 -0.02433    0.13136  -0.185   0.8532    
+ClarityVVS2 -0.13451    0.12878  -1.044   0.2970    
+```
+
+.question[
+Suppose that instead I just want to know whether there is a difference in price per carat between Internally Flawless (IF) diamonds and Very Slightly Included (VS1) diamonds. What would my hypotheses be for this test? How would I perform the test?
+]
+]
+
+---
+
+### Relationships between > 2 variables
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=8, fig.height=5}
+library(palmerpenguins)
+library(tidyverse)
+library(latex2exp)
+library(Stat2Data)
+library(knitr)
+
+penguins %>%
+  drop_na() %>%
+  ggplot(aes(x = body_mass_g,
+             y = bill_length_mm,
+             color = species)) +
+  geom_point(size = 2) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)",
+       color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+
+hook_output <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+   lines <- options$output.lines
+   if (is.null(lines)) {
+     return(hook_output(x, options))  # pass to default hook
+   }
+   x <- unlist(strsplit(x, "\n"))
+   more <- "..."
+   if (length(lines)==1) {        # first n lines
+     if (length(x) > lines) {
+       # truncate the output, but add ....
+       x <- c(head(x, lines), more)
+     }
+   } else {
+     x <- c(more, x[lines], more)
+   }
+   # paste these lines together
+   x <- paste(c(x, ""), collapse = "\n")
+   hook_output(x, options)
+ })
+```
+
+.large[
+.question[
+How can we model the relationship between body mass, species, and bill length?
+]
+]
+
+---
+
+### Regression with a single quantitative predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+penguins %>%
+  drop_na() %>%
+  ggplot(aes(x = body_mass_g,
+             y = bill_length_mm)) +
+  geom_point() +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size = 20))
+```
+
+.large[
+**Model:**
+
+.center[
+$\text{bill length} = \beta_0 + \beta_1 \text{body mass} + \varepsilon$
+]
+]
+
+---
+
+### Regression with a single categorical predictor
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+penguins %>%
+  drop_na() %>%
+  ggplot(aes(x = species,
+             y = bill_length_mm)) +
+  geom_boxplot() +
+  labs(x = "Species",
+       y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size = 20))
+```
+
+
+.large[
+**Model:**
+
+.center[
+$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$
+]
+]
+
+---
+
+### Regression with $> 2$ variables
+
+.large[
+$\text{bill length} = \beta_0 + \beta_1 \text{body mass} + \varepsilon$
+
+$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$
+
+.question[
+How can we include both species *and* body mass in the model?
+]
+]
+
+---
+
+## Multiple regression
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+
+penguins <- penguins |>
+  drop_na(bill_length_mm, species, body_mass_g)
+
+length_lm <- lm(bill_length_mm ~ species + body_mass_g, 
+                data = penguins)
+
+penguins %>%
+  mutate(yhat = predict(length_lm)) %>%
+  ggplot(aes(x = body_mass_g,
+             y = bill_length_mm,
+             color = species)) +
+  geom_point(size = 2, alpha = 0.5) +
+  geom_line(aes(y = yhat), 
+            lwd = 1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)",
+       color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+
+.large[
+**Model:**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+]
+
+---
+
+### Multiple regression model
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**This gives us a separate regression line for each species of penguin.**
+
+.question[
+What is the regression line for Adelie penguins?
+]
+]
+
+---
+
+### Multiple regression model
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**This gives us a separate regression line for each species of penguin.**
+
+.question[
+What is the regression line for Adelie penguins?
+]
+]
+
+.large[
+$\text{bill length} = \beta_0 + \beta_3 \text{body mass} + \varepsilon$
+
+.question[
+What about for Chinstrap and Gentoo penguins?
+]
+]
+
+---
+
+### Multiple regression model
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**This gives us a separate regression line for each species of penguin:**
+
+$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \beta_3 \text{body mass} + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \beta_3 \text{body mass} +  \varepsilon & \text{species = Gentoo} \end{cases}$$
+
+]
+
+---
+
+### Fitted model
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}
+
+.question[
+How would I interpret $\widehat{\beta}_0 = 24.92$?
+]
+]
+
+---
+
+### Fitted model
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}
+
+.question[
+How would I interpret $\widehat{\beta}_0 = 24.92$?
+]
+]
+
+.large[
+The estimated bill length for an Adelie penguin weighing 0g. (not that meaningful)
+
+.question[
+What about $\widehat{\beta}_1 = 9.92$ and $\widehat{\beta}_2 = 3.56$?
+]
+]
+
+---
+
+### Interpreting regression coefficients
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+library(latex2exp)
+penguins %>%
+  mutate(yhat = predict(length_lm)) %>%
+  ggplot(aes(x = body_mass_g,
+             y = bill_length_mm)) +
+  geom_point(size = 2, alpha = 0) +
+  geom_line(aes(y = yhat, color = species), 
+            lwd = 1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)",
+       color = "Species") +
+  geom_segment(aes(x = 3500, y = 38,
+                   xend = 3500, yend = 48),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_segment(aes(x = 4500, y = 42,
+                   xend = 4500, yend = 45),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  annotate("text", x = 3000, y = 41, 
+           label = TeX("$9.92", output='character'), 
+           parse=TRUE, size = 7) +
+  annotate("text", x = 5000, y = 44, 
+           label = TeX("$3.56", output='character'), 
+           parse=TRUE, size = 7) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+
+.large[
+
+* $9.92 =$ estimated mean difference in bill length for a Chinstrap and Adelie penguin with the same body mass
+* $3.56 =$ estimated mean difference in bill length for a Gentoo and Adelie penguin with the same body mass
+]
+
+---
+
+### Interpreting regression coefficients
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}
+
+.question[
+How would I interpret $\widehat{\beta}_3 = 0.0037$?
+]
+]
+
+---
+
+### Interpreting regression coefficients
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}
+
+.question[
+How would I interpret $\widehat{\beta}_3 = 0.0037$?
+]
+]
+
+.large[
+The average change in bill length associated with an increase of 1g in body mass, holding species constant.
+
+*Note that we assume the slope is the same for each species!*
+]
+
+---
+
+### Predictions
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}
+
+.question[
+What is the predicted bill length for a Gentoo penguin with a body mass of 5000 g?
+]
+]
+
+---
+
+### Predictions
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}
+
+.question[
+What is the predicted bill length for a Gentoo penguin with a body mass of 5000 g?
+]
+]
+
+.large[
+$24.92 + 3.56 + 0.0037(5000) = 46.98$
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+```{r}
+m1 <- lm(bill_length_mm ~ species + body_mass_g, 
+                 data = penguins)
+```
+
+* `bill_length_mm ~ species + body_mass_g` is a `formula` in R
+* Still `response ~ predictor(s)`
+* `+` means "include more variables in the model"
+]
+
+---
+
+### Fitting the model in R
+
+.large[
+```{r, output.lines = 10:14}
+m1 <- lm(bill_length_mm ~ species + body_mass_g, 
+                 data = penguins)
+summary(m1)
+```
+
+\begin{align}
+\widehat{\text{bill length}} &= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity (handout).
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+What is the population regression model?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+What is the population regression model?
+]
+]
+
+.large[
+\begin{align}
+\text{Weight} &= \beta_0 + \beta_1 \text{IsEnlarged} + \beta_2 \text{IsReduced} + \\
+& \hspace{1cm} \beta_3 \text{WingLength} + \varepsilon
+\end{align}
+]
+
+---
+
+### Class activity
+
+.large[
+
+\begin{align}
+\widehat{\text{Weight}} &= 1.94 - 0.46 \text{IsEnlarged} + 0.90 \text{IsReduced} + \\
+& \hspace{1cm} 0.45 \text{WingLength}
+\end{align}
+
+.question[
+What is the average change in weight associated with a 1mm increase in wing length, for sparrows from enlarged nests?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+
+\begin{align}
+\widehat{\text{Weight}} &= 1.94 - 0.46 \text{IsEnlarged} + 0.90 \text{IsReduced} + \\
+& \hspace{1cm} 0.45 \text{WingLength}
+\end{align}
+
+.question[
+What is the average change in weight associated with a 1mm increase in wing length, for sparrows from enlarged nests?
+]
+]
+
+.large[
+Answer: 0.45
+
+(We fit the same slope for each group of sparrows, and it is estimated to be 0.45)
+]
+
+---
+
+### Class activity
+
+.large[
+
+\begin{align}
+\widehat{\text{Weight}} &= 1.94 - 0.46 \text{IsEnlarged} + 0.90 \text{IsReduced} + \\
+& \hspace{1cm} 0.45 \text{WingLength}
+\end{align}
+
+.question[
+What is the estimated difference in weight for sparrows from enlarged vs. control nests, with the same wing length?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+
+\begin{align}
+\widehat{\text{Weight}} &= 1.94 - 0.46 \text{IsEnlarged} + 0.90 \text{IsReduced} + \\
+& \hspace{1cm} 0.45 \text{WingLength}
+\end{align}
+
+.question[
+What is the estimated difference in weight for sparrows from enlarged vs. control nests, with the same wing length?
+]
+]
+
+.large[
+We estimate that sparrows from enlarged nests weigh 0.46g less, on average, than sparrows from control nests with the same wing length
+]
+

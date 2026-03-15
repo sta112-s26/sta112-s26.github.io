@@ -1,0 +1,17 @@
+---
+---
+---
+title: "Homework 4"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+### Question 1
+
+(Type your answer to question 1 here)
+
+
+(Add answers to the remaining questions below)
