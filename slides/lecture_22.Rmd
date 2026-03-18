@@ -1,0 +1,593 @@
+---
+title: Introduction to multiple linear regression
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Benefits of multiple linear regression
+
+.large[
+.question[
+What are some benefits of including multiple predictors in my regression model?
+]
+]
+
+---
+
+### Benefits of multiple linear regression
+
+.large[
+.question[
+What are some benefits of including multiple predictors in my regression model?
+]
+]
+
+.large[
+Two main reasons:
+
+* Improve the ability to predict the response
+* Account for other variables that may change the relationship (e.g., penguin species)
+]
+
+---
+
+### Improving model fit
+
+```{r echo=F, message=F, warning=F, fig.width=7, fig.height=4.5, fig.align='center'}
+
+library(palmerpenguins)
+library(tidyverse)
+library(latex2exp)
+library(Stat2Data)
+library(knitr)
+
+penguins <- penguins |>
+  drop_na(bill_length_mm, species, body_mass_g)
+
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(size=2) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+$$\widehat{\text{bill length}} = 27.15 + 0.004 \ \text{body mass}$$
+
+.question[
+How do I measure how well body mass predicts bill length?
+]
+]
+
+---
+
+### Improving model fit
+
+```{r echo=F, message=F, warning=F, fig.width=7, fig.height=4.5, fig.align='center'}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(size=2) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+$$\widehat{\text{bill length}} = 27.15 + 0.004 \ \text{body mass}$$
+
+$R^2 = 0.348$, $R^2_{adj} = 0.346$
+]
+
+---
+
+### Improving model fit
+
+```{r echo=F, message=F, warning=F, fig.width=7, fig.height=4.5, fig.align='center'}
+length_lm <- lm(bill_length_mm ~ species + body_mass_g, 
+                data = penguins)
+
+penguins %>%
+  mutate(yhat = predict(length_lm)) %>%
+  ggplot(aes(x = body_mass_g,
+             y = bill_length_mm,
+             color = species)) +
+  geom_point(size = 2, alpha = 0.5) +
+  geom_line(aes(y = yhat), 
+            lwd = 1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)",
+       color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+But we should probably fit a line for each species...
+
+.question[
+Do you think $R^2_{adj}$ will increase or decrease when we add species to the model?
+]
+]
+
+---
+
+### Improving model fit
+
+```{r echo=F, message=F, warning=F, fig.width=7, fig.height=4.5, fig.align='center'}
+length_lm <- lm(bill_length_mm ~ species + body_mass_g, 
+                data = penguins)
+
+penguins %>%
+  mutate(yhat = predict(length_lm)) %>%
+  ggplot(aes(x = body_mass_g,
+             y = bill_length_mm,
+             color = species)) +
+  geom_point(size = 2, alpha = 0.5) +
+  geom_line(aes(y = yhat), 
+            lwd = 1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)",
+       color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 24.92 + 9.92 \ \text{IsChinstrap} + 3.56 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0037 \ \text{body mass}
+\end{align}
+]
+
+.large[
+$R^2 = 0.806$, $R^2_{adj} = 0.804$
+]
+
+---
+
+### Improving model fit
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(size=2) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+$R^2_{adj} = 0.346$
+]
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+
+penguins %>%
+  mutate(yhat = predict(length_lm)) %>%
+  ggplot(aes(x = body_mass_g,
+             y = bill_length_mm,
+             color = species)) +
+  geom_point(size = 2, alpha = 0.5) +
+  geom_line(aes(y = yhat), 
+            lwd = 1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)",
+       color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+$R^2_{adj} = 0.804$
+]
+]
+
+.large[
+* Our ability to predict bill length increases substantially when we add Species to the model
+* Make sure to compare $R^2_{adj}$ (rather than $R^2$ ) when comparing models
+]
+
+---
+
+### Accounting for other variables
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(size=2) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+
+penguins %>%
+  mutate(yhat = predict(length_lm)) %>%
+  ggplot(aes(x = body_mass_g,
+             y = bill_length_mm,
+             color = species)) +
+  geom_point(size = 2, alpha = 0.5) +
+  geom_line(aes(y = yhat), 
+            lwd = 1.5) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)",
+       color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+]
+
+.large[
+The slope looks pretty similar regardless of whether we add Species to the model. But that isn't always the case...
+]
+
+---
+
+### Accounting for other variables
+
+```{r echo=F, message=F, warning=F, fig.width=7, fig.height=5, fig.align='center'}
+penguins_raw_no_nas <- penguins_raw %>%
+  mutate(species_short = ifelse(Species == "Adelie Penguin (Pygoscelis adeliae)", "Adelie",
+                                ifelse(Species == "Gentoo penguin (Pygoscelis papua)", "Gentoo", "Chinstrap"))) %>%
+  select(`Culmen Length (mm)`, `Culmen Depth (mm)`, species_short) %>%
+  drop_na()
+
+penguins_raw_no_nas %>%
+  ggplot(aes(x = `Culmen Length (mm)`, y = `Culmen Depth (mm)`)) +
+  geom_point(size=2) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+.large[
+There appears to be a weak, negative relationship between culmen length and culmen depth.
+]
+
+---
+
+### Accounting for other variables
+
+```{r echo=F, message=F, warning=F, fig.width=7, fig.height=5, fig.align='center'}
+penguins_raw_no_nas %>%
+  ggplot(aes(x = `Culmen Length (mm)`, y = `Culmen Depth (mm)`,
+             color = species_short)) +
+  geom_point(size=2, alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  labs(color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+.large[
+But when we include Species in the model, we see *positive* relationships between culmen length and culmen depth.
+]
+
+---
+
+### Simpson's paradox
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+
+penguins_raw_no_nas %>%
+  ggplot(aes(x = `Culmen Length (mm)`, y = `Culmen Depth (mm)`)) +
+  geom_point(size=2) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+penguins_raw_no_nas %>%
+  ggplot(aes(x = `Culmen Length (mm)`, y = `Culmen Depth (mm)`,
+             color = species_short)) +
+  geom_point(size=2, alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  labs(color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+]
+
+.large[
+**Simpson's paradox:** The apparent relationship between variables changes when you look within groups
+]
+
+---
+
+### Accounting for other variables
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+
+penguins_raw_no_nas %>%
+  ggplot(aes(x = `Culmen Length (mm)`, y = `Culmen Depth (mm)`)) +
+  geom_point(size=2) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.width=6, fig.height=4, fig.align='center'}
+penguins_raw_no_nas %>%
+  ggplot(aes(x = `Culmen Length (mm)`, y = `Culmen Depth (mm)`,
+             color = species_short)) +
+  geom_point(size=2, alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=1.5) +
+  labs(color = "Species") +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+]
+
+.large[
+* The model *without* Species estimates the relationship between culmen length and culmen depth in the population of all Adelie, Chinstrap, and Gentoo penguins
+* The model *with* Species estimates the relationship between culmen length and culmen depth *after accounting for species*
+]
+
+---
+
+### Two quantitative predictors
+
+.large[
+What if I want to fit a regression model with two *quantitative* predictors, body mass and flipper length?
+
+.question[
+What would the population regression model look like?
+]
+]
+
+---
+
+### Two quantitative predictors
+
+.large[
+What if I want to fit a regression model with two *quantitative* predictors, body mass and flipper length?
+
+.question[
+What would the population regression model look like?
+]
+]
+
+.large[
+$$\text{bill length} = \beta_0 + \beta_1 \text{body mass} + \beta_2 \text{flipper length} + \varepsilon$$
+]
+
+---
+
+### Fitting the model
+
+.large[
+```{r, eval=F, echo=F}
+m1 <- lm(bill_length_mm ~ body_mass_g + 
+           flipper_length_mm,
+         data = penguins)
+summary(m1)
+```
+
+```
+                    Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       -3.4366939  4.5805532  -0.750    0.454    
+body_mass_g        0.0006622  0.0005672   1.168    0.244    
+flipper_length_mm  0.2218655  0.0323484   6.859 3.31e-11 ***
+```
+
+$$\widehat{\text{bill length}} = -3.44 + 0.00066 \ \text{body mass} + 0.222 \ \text{flipper length}$$
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+$$\widehat{\text{bill length}} = -3.44 + 0.00066 \ \text{body mass} + 0.222 \ \text{flipper length}$$
+As with a categorical predictor, we get a separate regression line for each flipper length.
+
+.question[
+Suppose a penguin has a flipper length of 200mm. What is the estimated regression line for the relationship between body mass and bill length?
+]
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+$$\widehat{\text{bill length}} = -3.44 + 0.00066 \ \text{body mass} + 0.222 \ \text{flipper length}$$
+As with a categorical predictor, we get a separate regression line for each flipper length.
+
+.question[
+Suppose a penguin has a flipper length of 200mm. What is the estimated regression line for the relationship between body mass and bill length?
+]
+]
+
+.large[
+The estimated regression line is
+
+\begin{align}
+\widehat{\text{bill length}} &= -3.44 + 0.00066 \ \text{body mass} + 0.222(200) \\
+&= -3.44 + 44.4 + 0.00066 \ \text{body mass} \\
+&= 40.96 + 0.00066 \ \text{body mass}
+\end{align}
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+$$\widehat{\text{bill length}} = -3.44 + 0.00066 \ \text{body mass} + 0.222 \ \text{flipper length}$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(alpha = 0) +
+  geom_abline(intercept = 41.42, slope = 0.00055,
+              color = "blue", lwd=1.2) +
+  geom_abline(intercept = 48.23, slope = 0.00055,
+              color = "blue", lwd=1.2) +
+  labs(x = "Body mass (g)", y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size=25)) +
+  annotate("text", x = 5300, y = 41, 
+           label = c("Flipper length = 200mm"), 
+           parse=F, size = 7) +
+annotate("text", x = 5300, y = 55, 
+           label = c("Flipper length = 230mm"), 
+           parse=F, size = 7)
+```
+
+.large[
+.question[
+Are longer flippers associated with longer or shorter bills?
+]
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+$$\widehat{\text{bill length}} = -3.44 + 0.00066 \ \text{body mass} + 0.222 \ \text{flipper length}$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(alpha = 0) +
+  geom_abline(intercept = 41.42, slope = 0.00055,
+              color = "blue", lwd=1.2) +
+  geom_abline(intercept = 48.23, slope = 0.00055,
+              color = "blue", lwd=1.2) +
+  labs(x = "Body mass (g)", y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size=25)) +
+  annotate("text", x = 5300, y = 41, 
+           label = c("Flipper length = 200mm"), 
+           parse=F, size = 7) +
+  annotate("text", x = 5300, y = 55, 
+           label = c("Flipper length = 230mm"), 
+           parse=F, size = 7) +
+  geom_segment(aes(x = 4000, y = 44.5,
+                   xend = 4000, yend = 49.5),
+               arrow = arrow(length = unit(0.3, "cm")))
+```
+
+.large[
+For a fixed body mass, penguins with longer flippers tend to have longer bills.
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+$$\widehat{\text{bill length}} = -3.44 + 0.00066 \ \text{body mass} + 0.222 \ \text{flipper length}$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(alpha = 0) +
+  geom_abline(intercept = 41.42, slope = 0.00055,
+              color = "blue", lwd=1.2) +
+  geom_abline(intercept = 48.23, slope = 0.00055,
+              color = "blue", lwd=1.2) +
+  labs(x = "Body mass (g)", y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size=25)) +
+  annotate("text", x = 5300, y = 41, 
+           label = c("Flipper length = 200mm"), 
+           parse=F, size = 7) +
+  annotate("text", x = 5300, y = 55, 
+           label = c("Flipper length = 230mm"), 
+           parse=F, size = 7) +
+  geom_segment(aes(x = 4000, y = 44.5,
+                   xend = 4000, yend = 49.5),
+               arrow = arrow(length = unit(0.3, "cm")))
+```
+
+.large[
+.question[
+What does $\widehat{\beta}_2 = 0.222$ mean?
+]
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+$$\widehat{\text{bill length}} = -3.44 + 0.00066 \ \text{body mass} + 0.222 \ \text{flipper length}$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(alpha = 0) +
+  geom_abline(intercept = 41.42, slope = 0.00055,
+              color = "blue", lwd=1.2) +
+  geom_abline(intercept = 41.647, slope = 0.00055,
+              color = "blue", lwd=1.2) +
+  labs(x = "Body mass (g)", y = "Bill length (mm)") +
+  theme_bw() +
+  theme(text = element_text(size=25)) +
+  annotate("text", x = 5300, y = 43.7, 
+           label = c("Flipper length = 200mm"), 
+           parse=F, size = 7) +
+  annotate("text", x = 4900, y =45, 
+           label = c("Flipper length = 201mm"), 
+           parse=F, size = 7) +
+  annotate("text", x = 4000, y =43.5, 
+           label = "0.222", 
+           parse=F, size = 7) +
+  geom_segment(aes(x = 4000, y = 43.6,
+                   xend = 4000, yend = 43.8),
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  scale_y_continuous(limits=c(42.7, 45.2))
+```
+
+.large[
+For a fixed body mass, and increase of 1mm in flipper length is associated with an increase of 0.222mm in bill length.
+]
+
+---
+
+### Class Activity
+
+.large[
+Work on the class activity (handout).
+]
+

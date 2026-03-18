@@ -14,6 +14,7 @@ March 16
 
 March 18
 : Multiple linear regression
+  : [Slides](https://sta112-s26.github.io/slides/lecture_22.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_22_handout.pdf)
 
 : Reading for Friday's class
   : Textbook 3.4

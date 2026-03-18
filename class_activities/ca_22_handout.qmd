@@ -1,0 +1,48 @@
+---
+title: "Activity: regression with multiple explanatory variables"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+# Data
+
+In this class activity, we will try to predict a student's GPA in their first year of college, using their high school GPA and their SAT verbal score. The `FirstYearGPA` dataset, part of the `Stat2Data` package, includes the following variables on 219 students:
+
+* `GPA`: First-year college GPA on a 0.0 to 4.0 scale
+* `HSGPA`: High school GPA on a 0.0 to 4.0 scale
+* `SATV`: Verbal/critical reading SAT score (between 200 and 800)
+
+We are interested in the regression model
+
+$\text{GPA} = \beta_0 + \beta_1 \ \text{HSGPA} + \beta_2 \ \text{SATV} + \varepsilon$
+
+Here is the R output:
+
+```
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 0.6351217  0.2955033   2.149  0.03272 *  
+HSGPA       0.4975320  0.0750569   6.629 2.66e-10 ***
+SATV        0.0012283  0.0003373   3.641  0.00034 ***
+```
+
+## Questions
+
+1. What is the estimated college GPA for a student with a high school GPA of 3.5, and a verbal SAT score of 600?
+
+\vspace{3cm}
+
+2. Is there any verbal SAT score for which we would predict a college GPA of at least 3.5, for a student with a high school GPA of 3.5?
+
+\vspace{4cm}
+
+3. Interpret the estimated slopes 0.498 and 0.0012.
+
+
+
+
+
+
