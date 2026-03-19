@@ -1,0 +1,776 @@
+---
+title: Interactions
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Interactions
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+We get a separate regression line for each species of penguin:
+
+$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \beta_3 \text{body mass} + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \beta_3 \text{body mass} +  \varepsilon & \text{species = Gentoo} \end{cases}$$
+
+]
+
+.large[
+.question[
+What are we assuming about the slopes of these different regression lines?
+]
+]
+
+---
+
+### Interactions
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+We get a separate regression line for each species of penguin:
+
+$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon & \text{species = Adelie} \\ \beta_0 + \beta_1 + \beta_3 \text{body mass} + \varepsilon & \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \beta_3 \text{body mass} +  \varepsilon & \text{species = Gentoo} \end{cases}$$
+
+]
+
+.large[
+.question[
+What are we assuming about the slopes of these different regression lines?
+]
+]
+
+.large[
+That each line has the same slope
+]
+
+---
+
+### Interactions
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+We get a separate regression line for each species of penguin:
+
+$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon & \text{if Adelie} \\ \beta_0 + \beta_1 + \beta_3 \text{body mass} + \varepsilon & \text{if Chinstrap} \\ \beta_0 + \beta_2 + \beta_3 \text{body mass} +  \varepsilon & \text{if Gentoo} \end{cases}$$
+
+]
+
+.large[
+.question[
+How can we modify our regression model to allow a different slope for each species?
+]
+]
+
+---
+
+### Allowing the slope to be different
+
+.large[
+$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon & \text{if Adelie} \\ \beta_0 + \beta_1 + (\beta_3 + \beta_4) \text{body mass} + \varepsilon & \text{if Chinstrap} \\ \beta_0 + \beta_2 + (\beta_3 + \beta_5) \text{body mass} +  \varepsilon & \text{if Gentoo} \end{cases}$$
+]
+
+.large[
+* Slope for Adelie penguins: $\beta_3$
+* Slope for Chinstrap penguins: $\beta_3 + \beta_4$
+* Slope for Gentoo penguins: $\beta_3 + \beta_5$
+]
+
+---
+
+### Allowing the slope to be different
+
+.large[
+$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon & \text{if Adelie} \\ \beta_0 + \beta_1 + (\beta_3 + \beta_4) \text{body mass} + \varepsilon & \text{if Chinstrap} \\ \beta_0 + \beta_2 + (\beta_3 + \beta_5) \text{body mass} +  \varepsilon & \text{if Gentoo} \end{cases}$$
+]
+
+.large[
+Written more concisely:
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}
+]
+
+---
+
+### Interactions
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}
+]
+
+.large[
+* The terms $\text{body mass} \cdot \text{IsChinstrap}$ and $\text{body mass} \cdot \text{IsGentoo}$ denote an *interaction* between body mass and species
+* Interactions allow the slope for body mass to depend on species
+* $\text{body mass} \cdot \text{IsChinstrap}$ literally means multiplication
+]
+
+
+---
+
+
+
+### Activity
+
+.large[
+Work on the class activity (handout).
+]
+
+---
+
+### Activity
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0032 \ \text{body mass} \\
+& \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align}
+]
+
+.large[
+.question[
+What is the estimated bill length of a Gentoo penguin with a body mass of 5000g?
+]
+]
+
+---
+
+### Activity
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0032 \ \text{body mass} \\
+& \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align}
+]
+
+.large[
+.question[
+What is the estimated bill length of a Gentoo penguin with a body mass of 5000g?
+]
+
+]
+
+.large[
+$26.99 − 0.26 + (0.0032 + 0.0010)\cdot5000 = 47.73$
+]
+
+---
+
+### Activity
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0032 \ \text{body mass} \\
+& \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align}
+
+.question[
+What is the estimated slope on body mass, for Chinstrap penguins?
+]
+]
+
+---
+
+### Activity
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo} \\
+& \hspace{0.5cm} + 0.0032 \ \text{body mass} \\
+& \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align}
+
+.question[
+What is the estimated slope on body mass, for Chinstrap penguins?
+]
+]
+
+.large[
+$0.0032 + 0.0013 = 0.0045$
+]
+
+---
+
+### Interactions
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}
+]
+
+.large[
+* The terms $\text{body mass} \cdot \text{IsChinstrap}$ and $\text{body mass} \cdot \text{IsGentoo}$ denote an *interaction* between body mass and species
+* Interactions allow the slope for body mass to depend on species
+* $\text{body mass} \cdot \text{IsChinstrap}$ literally means multiplication
+]
+
+.large[
+.question[
+What are some advantages and disadvantages of adding interaction terms?
+]
+]
+
+---
+
+### Interactions: pros and cons
+
+.large[
+
+**Pros:** Interactions can allow us to
+
+* better capture the true relationships in the data
+* better predict the response
+* answer different research question (e.g., is there a difference in slope for different penguin species?)
+
+**Cons:** Interactions make the model more complex
+
+* often harder to interpret
+* more variability in estimating the model
+]
+
+---
+
+### Do we need an interaction?
+
+.large[
+Ways to decide on interaction terms:
+
+* Visualization
+* Measuring predictive ability (e.g., $R^2_{adj}$)
+* Research question
+]
+
+---
+
+### Visualization
+
+.large[
+For interaction between categorical and quantitative predictors, we can plot the fitted regression lines for each group (with the interaction). Check whether the slopes look different.
+]
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+library(tidyverse)
+library(palmerpenguins)
+library(knitr)
+
+hook_output <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+   lines <- options$output.lines
+   if (is.null(lines)) {
+     return(hook_output(x, options))  # pass to default hook
+   }
+   x <- unlist(strsplit(x, "\n"))
+   more <- "..."
+   if (length(lines)==1) {        # first n lines
+     if (length(x) > lines) {
+       # truncate the output, but add ....
+       x <- c(head(x, lines), more)
+     }
+   } else {
+     x <- c(more, x[lines], more)
+   }
+   # paste these lines together
+   x <- paste(c(x, ""), collapse = "\n")
+   hook_output(x, options)
+ })
+
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_depth_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Body mass (g)",
+       y = "Bill depth (mm)")
+```
+]
+
+.large[
+.question[
+Which plot suggests we might need an interaction?
+]
+]
+
+---
+
+### Visualization
+
+.large[
+For interaction between categorical and quantitative predictors, we can plot the fitted regression lines for each group (with the interaction). Check whether the slopes look different.
+]
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+library(tidyverse)
+library(palmerpenguins)
+library(knitr)
+
+hook_output <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+   lines <- options$output.lines
+   if (is.null(lines)) {
+     return(hook_output(x, options))  # pass to default hook
+   }
+   x <- unlist(strsplit(x, "\n"))
+   more <- "..."
+   if (length(lines)==1) {        # first n lines
+     if (length(x) > lines) {
+       # truncate the output, but add ....
+       x <- c(head(x, lines), more)
+     }
+   } else {
+     x <- c(more, x[lines], more)
+   }
+   # paste these lines together
+   x <- paste(c(x, ""), collapse = "\n")
+   hook_output(x, options)
+ })
+
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_depth_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Body mass (g)",
+       y = "Bill depth (mm)")
+```
+]
+
+.large[
+.question[
+Which plot suggests we might need an interaction?
+]
+]
+
+
+.large[
+The one on the left -- the slopes look different in the different groups
+]
+
+---
+
+### Measuring predictive ability
+
+.large[
+Compare $R^2_{adj}$ with and without the interaction term.
+]
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+library(tidyverse)
+library(palmerpenguins)
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+.large[
+With interaction (different slopes): $R^2_{adj} = 0.782$
+Without interaction (same slopes): $R^2_{adj} = 0.774$
+]
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_depth_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Body mass (g)",
+       y = "Bill depth (mm)")
+```
+
+.large[
+With interaction (different slopes): $R^2_{adj} = 0.8008$
+Without interaction (same slopes): $R^2_{adj} = 0.8012$
+]
+]
+
+---
+
+### Measuring predictive ability
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=3.5, fig.width=6.5}
+library(tidyverse)
+library(palmerpenguins)
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+.large[
+With interaction (different slopes): $R^2_{adj} = 0.782$
+Without interaction (same slopes): $R^2_{adj} = 0.774$
+]
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=3.5, fig.width=6.5}
+penguins %>%
+  ggplot(aes(x = body_mass_g, y = bill_depth_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Body mass (g)",
+       y = "Bill depth (mm)")
+```
+
+.large[
+With interaction (different slopes): $R^2_{adj} = 0.8008$
+Without interaction (same slopes): $R^2_{adj} = 0.8012$
+]
+]
+
+.large[
+.question[
+If the interaction only increases $R^2_{adj}$ by a small amount, we might still prefer the simpler model.
+]
+]
+
+---
+
+### Considering research questions
+
+.large[
+Common types of research questions:
+
+* Description (want to describe the overall relationship between 2 or more variables)
+* Prediction (want to do a good job predicting the response)
+* Inference (want to test hypotheses about the relationship)
+]
+
+---
+
+### Description
+
+.large[
+**Example:** What is the relationship between flipper length and bill length, accounting for species?
+]
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+.large[
+With interaction
+]
+
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+library(moderndive)
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_parallel_slopes(se=F, lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+.large[
+Without interaction
+]
+
+]
+
+.large[
+.question[
+Do we need the interaction to describe the general relationship between flipper length and bill length?
+]
+]
+
+---
+
+### Inference
+
+.large[
+**Example:** Is there a difference in the slope on flipper length, for different species?
+]
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+.large[
+With interaction
+]
+
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+library(moderndive)
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_parallel_slopes(se=F, lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+.large[
+Without interaction
+]
+
+]
+
+.large[
+.question[
+Do we need to include the interaction to answer this question?
+]
+]
+
+---
+
+### Inference
+
+.large[
+**Example:** Is there a difference in the slope on flipper length, for different species?
+]
+
+.pull-left[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+]
+
+.pull-right[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=4, fig.width=6.5}
+library(moderndive)
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_parallel_slopes(se=F, lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+]
+
+.large[
+.question[
+Do we need to include the interaction to answer this question?
+]
+
+Yes -- we can't check if the slopes are different without fitting different slopes!
+]
+
+---
+
+### Fitting the model with interactions
+
+.large[
+```{r message=F}
+m1 <- lm(bill_length_mm ~ species*flipper_length_mm,
+         data = penguins)
+```
+
+* `*` means "include both variables *and* their interaction"
+]
+
+---
+
+### Class activity
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_23.html](https://sta112-s26.github.io/class_activities/ca_23.html)
+]
+
+---
+
+### Class activity
+
+.large[
+\begin{align}
+\widehat{\text{Height}} &= 40.689 - 7.728 \ \text{IsMale} + 0.118 \ \text{Age} \\
+& \hspace{1cm} + 0.064 \ \text{Age} \cdot \text{IsMale}
+\end{align}
+
+.question[
+What is the estimated height for a girl aged 120 months (10 years)?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+\begin{align}
+\widehat{\text{Height}} &= 40.689 - 7.728 \ \text{IsMale} + 0.118 \ \text{Age} \\
+& \hspace{1cm} + 0.064 \ \text{Age} \cdot \text{IsMale}
+\end{align}
+
+.question[
+What is the estimated height for a girl aged 120 months (10 years)?
+]
+]
+
+.large[
+$40.689 + 0.118(120) = 54.85$ inches (about 4 feet 7 inches)
+]
+
+---
+
+### Class activity
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6.5, fig.height=4}
+library(Stat2Data)
+data("Kids198")
+kids <- Kids198 %>%
+  mutate(Sex = ifelse(Sex == 0, "male", "female"))
+
+kids %>%
+  ggplot(aes(x = Age, y = Height, color = Sex)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+With interaction: $R^2_{adj} = 0.763$
+
+Without interaction: $R^2_{adj} = 0.732$
+]
+
+.large[
+.question[
+Do you think an interaction is needed?
+]
+]
+
+---
+
+### Class activity
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7.5, fig.height=4.5}
+library(Stat2Data)
+data("Kids198")
+kids <- Kids198 %>%
+  mutate(Sex = ifelse(Sex == 0, "male", "female"))
+
+kids %>%
+  ggplot(aes(x = Age, y = Height, color = Sex)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+I think an interaction is important
+* slopes look different 
+* captures that boys and girls start off with similar heights, but boys eventually become taller.
+]
+
+

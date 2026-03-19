@@ -1,0 +1,30 @@
+---
+title: "Activity: regression with multiple explanatory variables"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+# Interactions
+
+Here is the equation for a fitted model on the `penguins` data, with bill length as the response, and an interaction between body mass and species:
+
+\begin{align*}
+\widehat{\text{bill length}} &= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo}  + 0.0032 \ \text{body mass} \\
+& \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align*}
+
+## Questions
+
+1. What is the estimated bill length of a Gentoo penguin with a body mass of 5000g?
+
+\vspace{3cm}
+
+2. What is the estimated slope on body mass, for Chinstrap penguins?
+
+
+
+

@@ -21,6 +21,7 @@ March 18
 
 March 20
 : Interactions
+  : [Slides](https://sta112-s26.github.io/slides/lecture_23.pdf), [warmup](https://sta112-s26.github.io/class_activities/ca_23_handout.pdf), [Class activity](https://sta112-s26.github.io/class_activities/ca_23.html)
 
 : Reading for Monday's class
   : Textbok 3.2

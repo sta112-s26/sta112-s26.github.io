@@ -1,0 +1,55 @@
+---
+title: "Class activity: Regression with a categorical predictor"
+format: html
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Instructions:** 
+
+* Work individually or with a neighbor to answer the following questions 
+* To get started, download the [class activity template](https://sta112-s26.github.io/class_activities/ca_23_template.qmd) file
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+In this class activity, we will examine the relationship between Age and Height for children between the ages of 8 and 18. We are also interested in how that relationship differs for boys and girls. The `Kids198` dataset, part of the `Stat2Data` package, includes the following variables on 198 children:
+
+* `Height`: Height (in inches)
+* `Age`: Age (in months)
+* `Sex`: 0=male, 1 = female
+
+## Questions
+
+The original `Kids198` data codes Sex as 0 or 1. Because these are numbers, R will treat Sex as a quantitative, rather than categorical, variable. We therefore need to modify Sex to be categorical before we fit the model.
+
+1. Run the following code to re-code Sex as "male" or "female":
+
+```{r eval=F}
+Kids198 <- Kids198 |>
+  mutate(Sex = ifelse(Sex == 0, "male", "female"))
+```
+
+2. Fit a multiple linear regression model with Height as the response, Age and Sex as predictors, and an interaction between Age and Sex:
+
+```{r eval=F}
+m1 <- lm(Height ~ Sex*Age, data = Kids198)
+summary(m1)
+```
+
+3. What is the estimated height for a girl aged 120 months (10 years)?
+
+Now let's investigate whether an interaction seems important for this data. We will look at a plot, and also compare $R^2_{adj}$.
+
+4. Run the following code to create a plot showing the relationship between Age and Height, with a separate line for each Sex:
+
+```{r eval=F}
+Kids198 |>
+  ggplot(aes(x = Age, y = Height, color = Sex)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw()
+```
+
+5. Fit a multiple linear regression model with Height as the response, and Age and Sex as predictors, but no interaction between Age and Sex. Compare the $R^2_{adj}$ from this new model to the $R^2_{adj}$ from your model in exercise 2.
+
+6. Based on exercises 4 and 5, do you think an interaction is needed?

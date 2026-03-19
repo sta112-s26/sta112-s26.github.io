@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Interactions</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Interactions
+]
+
+---
+
+
+### Interactions
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}`
+
+We get a separate regression line for each species of penguin:
+
+`$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{species = Adelie} \\ \beta_0 + \beta_1 + \beta_3 \text{body mass} + \varepsilon &amp; \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{species = Gentoo} \end{cases}$$`
+
+]
+
+.large[
+.question[
+What are we assuming about the slopes of these different regression lines?
+]
+]
+
+---
+
+### Interactions
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}`
+
+We get a separate regression line for each species of penguin:
+
+`$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{species = Adelie} \\ \beta_0 + \beta_1 + \beta_3 \text{body mass} + \varepsilon &amp; \text{species = Chinstrap} \\ \beta_0 + \beta_2 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{species = Gentoo} \end{cases}$$`
+
+]
+
+.large[
+.question[
+What are we assuming about the slopes of these different regression lines?
+]
+]
+
+.large[
+That each line has the same slope
+]
+
+---
+
+### Interactions
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}`
+
+We get a separate regression line for each species of penguin:
+
+`$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{if Adelie} \\ \beta_0 + \beta_1 + \beta_3 \text{body mass} + \varepsilon &amp; \text{if Chinstrap} \\ \beta_0 + \beta_2 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{if Gentoo} \end{cases}$$`
+
+]
+
+.large[
+.question[
+How can we modify our regression model to allow a different slope for each species?
+]
+]
+
+---
+
+### Allowing the slope to be different
+
+.large[
+`$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{if Adelie} \\ \beta_0 + \beta_1 + (\beta_3 + \beta_4) \text{body mass} + \varepsilon &amp; \text{if Chinstrap} \\ \beta_0 + \beta_2 + (\beta_3 + \beta_5) \text{body mass} +  \varepsilon &amp; \text{if Gentoo} \end{cases}$$`
+]
+
+.large[
+* Slope for Adelie penguins: `\(\beta_3\)`
+* Slope for Chinstrap penguins: `\(\beta_3 + \beta_4\)`
+* Slope for Gentoo penguins: `\(\beta_3 + \beta_5\)`
+]
+
+---
+
+### Allowing the slope to be different
+
+.large[
+`$$\text{bill length} = \begin{cases} \beta_0 + \beta_3 \text{body mass} +  \varepsilon &amp; \text{if Adelie} \\ \beta_0 + \beta_1 + (\beta_3 + \beta_4) \text{body mass} + \varepsilon &amp; \text{if Chinstrap} \\ \beta_0 + \beta_2 + (\beta_3 + \beta_5) \text{body mass} +  \varepsilon &amp; \text{if Gentoo} \end{cases}$$`
+]
+
+.large[
+Written more concisely:
+
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}`
+]
+
+---
+
+### Interactions
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}`
+]
+
+.large[
+* The terms `\(\text{body mass} \cdot \text{IsChinstrap}\)` and `\(\text{body mass} \cdot \text{IsGentoo}\)` denote an *interaction* between body mass and species
+* Interactions allow the slope for body mass to depend on species
+* `\(\text{body mass} \cdot \text{IsChinstrap}\)` literally means multiplication
+]
+
+
+---
+
+
+
+### Activity
+
+.large[
+Work on the class activity (handout).
+]
+
+---
+
+### Activity
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0032 \ \text{body mass} \\
+&amp; \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align}`
+]
+
+.large[
+.question[
+What is the estimated bill length of a Gentoo penguin with a body mass of 5000g?
+]
+]
+
+---
+
+### Activity
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0032 \ \text{body mass} \\
+&amp; \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align}`
+]
+
+.large[
+.question[
+What is the estimated bill length of a Gentoo penguin with a body mass of 5000g?
+]
+
+]
+
+.large[
+`\(26.99 − 0.26 + (0.0032 + 0.0010)\cdot5000 = 47.73\)`
+]
+
+---
+
+### Activity
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0032 \ \text{body mass} \\
+&amp; \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align}`
+
+.question[
+What is the estimated slope on body mass, for Chinstrap penguins?
+]
+]
+
+---
+
+### Activity
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= 26.99 + 5.18 \ \text{IsChinstrap} - 0.26 \ \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + 0.0032 \ \text{body mass} \\
+&amp; \hspace{0.5cm} + 0.0013 \ \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + 0.0010 \ \text{body mass} \cdot \text{IsGentoo}
+\end{align}`
+
+.question[
+What is the estimated slope on body mass, for Chinstrap penguins?
+]
+]
+
+.large[
+`\(0.0032 + 0.0013 = 0.0045\)`
+]
+
+---
+
+### Interactions
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}`
+]
+
+.large[
+* The terms `\(\text{body mass} \cdot \text{IsChinstrap}\)` and `\(\text{body mass} \cdot \text{IsGentoo}\)` denote an *interaction* between body mass and species
+* Interactions allow the slope for body mass to depend on species
+* `\(\text{body mass} \cdot \text{IsChinstrap}\)` literally means multiplication
+]
+
+.large[
+.question[
+What are some advantages and disadvantages of adding interaction terms?
+]
+]
+
+---
+
+### Interactions: pros and cons
+
+.large[
+
+**Pros:** Interactions can allow us to
+
+* better capture the true relationships in the data
+* better predict the response
+* answer different research question (e.g., is there a difference in slope for different penguin species?)
+
+**Cons:** Interactions make the model more complex
+
+* often harder to interpret
+* more variability in estimating the model
+]
+
+---
+
+### Do we need an interaction?
+
+.large[
+Ways to decide on interaction terms:
+
+* Visualization
+* Measuring predictive ability (e.g., `\(R^2_{adj}\)`)
+* Research question
+]
+
+---
+
+### Visualization
+
+.large[
+For interaction between categorical and quantitative predictors, we can plot the fitted regression lines for each group (with the interaction). Check whether the slopes look different.
+]
+
+.pull-left[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.large[
+.question[
+Which plot suggests we might need an interaction?
+]
+]
+
+---
+
+### Visualization
+
+.large[
+For interaction between categorical and quantitative predictors, we can plot the fitted regression lines for each group (with the interaction). Check whether the slopes look different.
+]
+
+.pull-left[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.large[
+.question[
+Which plot suggests we might need an interaction?
+]
+]
+
+
+.large[
+The one on the left -- the slopes look different in the different groups
+]
+
+---
+
+### Measuring predictive ability
+
+.large[
+Compare `\(R^2_{adj}\)` with and without the interaction term.
+]
+
+.pull-left[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+With interaction (different slopes): `\(R^2_{adj} = 0.782\)`
+Without interaction (same slopes): `\(R^2_{adj} = 0.774\)`
+]
+]
+
+.pull-right[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+With interaction (different slopes): `\(R^2_{adj} = 0.8008\)`
+Without interaction (same slopes): `\(R^2_{adj} = 0.8012\)`
+]
+]
+
+---
+
+### Measuring predictive ability
+
+.pull-left[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+With interaction (different slopes): `\(R^2_{adj} = 0.782\)`
+Without interaction (same slopes): `\(R^2_{adj} = 0.774\)`
+]
+]
+
+.pull-right[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+With interaction (different slopes): `\(R^2_{adj} = 0.8008\)`
+Without interaction (same slopes): `\(R^2_{adj} = 0.8012\)`
+]
+]
+
+.large[
+.question[
+If the interaction only increases `\(R^2_{adj}\)` by a small amount, we might still prefer the simpler model.
+]
+]
+
+---
+
+### Considering research questions
+
+.large[
+Common types of research questions:
+
+* Description (want to describe the overall relationship between 2 or more variables)
+* Prediction (want to do a good job predicting the response)
+* Inference (want to test hypotheses about the relationship)
+]
+
+---
+
+### Description
+
+.large[
+**Example:** What is the relationship between flipper length and bill length, accounting for species?
+]
+
+.pull-left[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+With interaction
+]
+
+]
+
+.pull-right[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+Without interaction
+]
+
+]
+
+.large[
+.question[
+Do we need the interaction to describe the general relationship between flipper length and bill length?
+]
+]
+
+---
+
+### Inference
+
+.large[
+**Example:** Is there a difference in the slope on flipper length, for different species?
+]
+
+.pull-left[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+With interaction
+]
+
+]
+
+.pull-right[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+Without interaction
+]
+
+]
+
+.large[
+.question[
+Do we need to include the interaction to answer this question?
+]
+]
+
+---
+
+### Inference
+
+.large[
+**Example:** Is there a difference in the slope on flipper length, for different species?
+]
+
+.pull-left[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+
+]
+
+.large[
+.question[
+Do we need to include the interaction to answer this question?
+]
+
+Yes -- we can't check if the slopes are different without fitting different slopes!
+]
+
+---
+
+### Fitting the model with interactions
+
+.large[
+
+``` r
+m1 &lt;- lm(bill_length_mm ~ species*flipper_length_mm,
+         data = penguins)
+```
+
+* `*` means "include both variables *and* their interaction"
+]
+
+---
+
+### Class activity
+
+.large[
+[https://sta112-s26.github.io/class_activities/ca_23.html](https://sta112-s26.github.io/class_activities/ca_23.html)
+]
+
+---
+
+### Class activity
+
+.large[
+`\begin{align}
+\widehat{\text{Height}} &amp;= 40.689 - 7.728 \ \text{IsMale} + 0.118 \ \text{Age} \\
+&amp; \hspace{1cm} + 0.064 \ \text{Age} \cdot \text{IsMale}
+\end{align}`
+
+.question[
+What is the estimated height for a girl aged 120 months (10 years)?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+`\begin{align}
+\widehat{\text{Height}} &amp;= 40.689 - 7.728 \ \text{IsMale} + 0.118 \ \text{Age} \\
+&amp; \hspace{1cm} + 0.064 \ \text{Age} \cdot \text{IsMale}
+\end{align}`
+
+.question[
+What is the estimated height for a girl aged 120 months (10 years)?
+]
+]
+
+.large[
+`\(40.689 + 0.118(120) = 54.85\)` inches (about 4 feet 7 inches)
+]
+
+---
+
+### Class activity
+
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+With interaction: `\(R^2_{adj} = 0.763\)`
+
+Without interaction: `\(R^2_{adj} = 0.732\)`
+]
+
+.large[
+.question[
+Do you think an interaction is needed?
+]
+]
+
+---
+
+### Class activity
+
+&lt;img src="lecture_23_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+I think an interaction is important
+* slopes look different 
+* captures that boys and girls start off with similar heights, but boys eventually become taller.
+]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
