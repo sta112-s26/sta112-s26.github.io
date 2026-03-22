@@ -1,0 +1,373 @@
+---
+title: Interactions
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=F}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+
+### Last time: Class activity
+
+.large[
+\begin{align}
+\widehat{\text{Height}} &= 40.689 - 7.728 \ \text{IsMale} + 0.118 \ \text{Age} \\
+& \hspace{1cm} + 0.064 \ \text{Age} \cdot \text{IsMale}
+\end{align}
+
+.question[
+What is the estimated height for a girl aged 120 months (10 years)?
+]
+]
+
+---
+
+### Last time: Class activity
+
+.large[
+\begin{align}
+\widehat{\text{Height}} &= 40.689 - 7.728 \ \text{IsMale} + 0.118 \ \text{Age} \\
+& \hspace{1cm} + 0.064 \ \text{Age} \cdot \text{IsMale}
+\end{align}
+
+.question[
+What is the estimated height for a girl aged 120 months (10 years)?
+]
+]
+
+.large[
+$40.689 + 0.118(120) = 54.85$ inches (about 4 feet 7 inches)
+]
+
+---
+
+### Last time: Class activity
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6.5, fig.height=4}
+library(Stat2Data)
+data("Kids198")
+kids <- Kids198 %>%
+  mutate(Sex = ifelse(Sex == 0, "male", "female"))
+
+kids %>%
+  ggplot(aes(x = Age, y = Height, color = Sex)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+With interaction: $R^2_{adj} = 0.763$
+
+Without interaction: $R^2_{adj} = 0.732$
+]
+
+.large[
+.question[
+Do you think an interaction is needed?
+]
+]
+
+---
+
+### Last time: Class activity
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7.5, fig.height=4.5}
+library(Stat2Data)
+data("Kids198")
+kids <- Kids198 %>%
+  mutate(Sex = ifelse(Sex == 0, "male", "female"))
+
+kids %>%
+  ggplot(aes(x = Age, y = Height, color = Sex)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+I think an interaction is important
+* slopes look different 
+* captures that boys and girls start off with similar heights, but boys eventually become taller.
+]
+
+---
+
+### Interactions with a categorical predictor
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}
+]
+
+.large[
+The slope on body mass depends on species:
+
+* Slope for Adelie penguins: $\beta_3$
+* Slope for Chinstrap penguins: $\beta_3 + \beta_4$
+* Slope for Gentoo penguins: $\beta_3 + \beta_5$
+]
+
+---
+
+### Interactions with a categorical predictor
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+& \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}
+]
+
+.large[
+The slope on body mass depends on species:
+
+$\text{slope} = \beta_3 + \beta_4 \ \text{IsChinstrap} + \beta_5 \ \text{IsGentoo}$
+
+.question[
+We can do something similar for two quantitative variables
+]
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+
+Additive model (no interactions):
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{body mass} + \beta_2 \text{flipper length} + \varepsilon$$
+
+* Slope on body mass is $\beta_1$
+* Slope on body mass *does not depend on* flipper length
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+
+$$\text{bill length} = \beta_0 + (\text{slope}) \ \text{body mass} + \beta_2 \text{flipper length} + \varepsilon$$
+
+**Making the slope depend on flipper length:**
+
+slope on body mass = $\beta_1 + \beta_3 \text{flipper length}$
+
+**Substituting:**
+
+\begin{align}
+\text{bill length} &= \beta_0 + (\beta_1 + \beta_3 \text{flipper length}) \ \text{body mass} \\
+& \hspace{1cm} + \beta_2 \text{flipper length} + \varepsilon \\
+&= \beta_0 + \beta_1 \text{body mass} + \beta_2 \text{flipper length} \\
+& \hspace{1cm} + \beta_3 \text{body mass} \cdot \text{flipper length} + \varepsilon
+\end{align}
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{body mass} + \beta_2 \text{flipper length} \\
+& \hspace{1cm} + \beta_3 \text{body mass} \cdot \text{flipper length} + \varepsilon
+\end{align}
+]
+
+.large[
+* $\text{body mass} \cdot \text{flipper length}$ is the *interaction* between body mass and flipper length
+* As before, it literally means multiplication
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+& \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}
+]
+
+.large[
+.question[
+What is the predicted bill length for a penguin with body mass 5000g and flipper length 200mm?
+]
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+& \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}
+]
+
+.large[
+.question[
+What is the predicted bill length for a penguin with body mass 5000g and flipper length 200mm?
+]
+]
+
+.large[
+$-26.75 + 0.0059(5000) + 0.339(200) - 0.000026(5000)(200)$
+
+$= 44.55$
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+& \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}
+]
+
+.large[
+.question[
+What is the change in bill length associated with a 1g increase in body mass, for penguins with flipper length = 200mm?
+]
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+& \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}
+]
+
+.large[
+.question[
+What is the change in bill length associated with a 1g increase in body mass, for penguins with flipper length = 200mm?
+]
+]
+
+.large[
+$0.0059 - 0.000026(200) = 0.0007$
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+& \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}
+]
+
+.large[
+.question[
+Is the slope on body mass higher or lower for penguins with longer flippers?
+]
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+\begin{align}
+\widehat{\text{bill length}} &= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+& \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}
+]
+
+.large[
+.question[
+Is the slope on body mass higher or lower for penguins with longer flippers?
+]
+]
+
+.large[
+Lower, because the coefficient -0.000026 is negative.
+]
+
+---
+
+### Visualizing interactions
+
+.large[
+With a categorical variable, we can fit a different slope for each group:
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=5, fig.width=7}
+penguins %>%
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Flipper length (mm)",
+       y = "Bill length (mm)")
+```
+
+.large[
+.question[
+How would this work with two quantitative variables?
+]
+]
+
+---
+
+### Visualizing interactions
+
+.large[
+**Binarize:**
+
+$$LongFlipper = \begin{cases} 1 & \text{flipper length} > 200 \\ 0 & \text{flipper length} \leq 200 \end{cases}$$
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.height=5, fig.width=7}
+penguins %>%
+  drop_na() %>%
+  mutate(LongFlipper = ifelse(flipper_length_mm > 200, "1", "0")) %>%
+  ggplot(aes(x = body_mass_g, y = bill_length_mm, color = LongFlipper)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se=F, method="lm", lwd=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(x = "Body mass (g)",
+       y = "Bill length (mm)")
+```
+
+---
+
+### Homework work time
+
+
+.large[
+Homework 5 involves a research question with an interaction between two quantitative variables. Spend the remainder of the class period getting started on HW 5.
+]
+

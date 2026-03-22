@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Interactions</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Interactions
+]
+
+---
+
+
+
+
+
+### Last time: Class activity
+
+.large[
+`\begin{align}
+\widehat{\text{Height}} &amp;= 40.689 - 7.728 \ \text{IsMale} + 0.118 \ \text{Age} \\
+&amp; \hspace{1cm} + 0.064 \ \text{Age} \cdot \text{IsMale}
+\end{align}`
+
+.question[
+What is the estimated height for a girl aged 120 months (10 years)?
+]
+]
+
+---
+
+### Last time: Class activity
+
+.large[
+`\begin{align}
+\widehat{\text{Height}} &amp;= 40.689 - 7.728 \ \text{IsMale} + 0.118 \ \text{Age} \\
+&amp; \hspace{1cm} + 0.064 \ \text{Age} \cdot \text{IsMale}
+\end{align}`
+
+.question[
+What is the estimated height for a girl aged 120 months (10 years)?
+]
+]
+
+.large[
+`\(40.689 + 0.118(120) = 54.85\)` inches (about 4 feet 7 inches)
+]
+
+---
+
+### Last time: Class activity
+
+&lt;img src="lecture_24_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+With interaction: `\(R^2_{adj} = 0.763\)`
+
+Without interaction: `\(R^2_{adj} = 0.732\)`
+]
+
+.large[
+.question[
+Do you think an interaction is needed?
+]
+]
+
+---
+
+### Last time: Class activity
+
+&lt;img src="lecture_24_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+I think an interaction is important
+* slopes look different 
+* captures that boys and girls start off with similar heights, but boys eventually become taller.
+]
+
+---
+
+### Interactions with a categorical predictor
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}`
+]
+
+.large[
+The slope on body mass depends on species:
+
+* Slope for Adelie penguins: `\(\beta_3\)`
+* Slope for Chinstrap penguins: `\(\beta_3 + \beta_4\)`
+* Slope for Gentoo penguins: `\(\beta_3 + \beta_5\)`
+]
+
+---
+
+### Interactions with a categorical predictor
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\
+&amp; \hspace{0.5cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+&amp; \hspace{0.5cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}`
+]
+
+.large[
+The slope on body mass depends on species:
+
+`\(\text{slope} = \beta_3 + \beta_4 \ \text{IsChinstrap} + \beta_5 \ \text{IsGentoo}\)`
+
+.question[
+We can do something similar for two quantitative variables
+]
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+
+Additive model (no interactions):
+
+`$$\text{bill length} = \beta_0 + \beta_1 \text{body mass} + \beta_2 \text{flipper length} + \varepsilon$$`
+
+* Slope on body mass is `\(\beta_1\)`
+* Slope on body mass *does not depend on* flipper length
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+
+`$$\text{bill length} = \beta_0 + (\text{slope}) \ \text{body mass} + \beta_2 \text{flipper length} + \varepsilon$$`
+
+**Making the slope depend on flipper length:**
+
+slope on body mass = `\(\beta_1 + \beta_3 \text{flipper length}\)`
+
+**Substituting:**
+
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + (\beta_1 + \beta_3 \text{flipper length}) \ \text{body mass} \\
+&amp; \hspace{1cm} + \beta_2 \text{flipper length} + \varepsilon \\
+&amp;= \beta_0 + \beta_1 \text{body mass} + \beta_2 \text{flipper length} \\
+&amp; \hspace{1cm} + \beta_3 \text{body mass} \cdot \text{flipper length} + \varepsilon
+\end{align}`
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+`\begin{align}
+\text{bill length} &amp;= \beta_0 + \beta_1 \text{body mass} + \beta_2 \text{flipper length} \\
+&amp; \hspace{1cm} + \beta_3 \text{body mass} \cdot \text{flipper length} + \varepsilon
+\end{align}`
+]
+
+.large[
+* `\(\text{body mass} \cdot \text{flipper length}\)` is the *interaction* between body mass and flipper length
+* As before, it literally means multiplication
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+&amp; \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}`
+]
+
+.large[
+.question[
+What is the predicted bill length for a penguin with body mass 5000g and flipper length 200mm?
+]
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+&amp; \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}`
+]
+
+.large[
+.question[
+What is the predicted bill length for a penguin with body mass 5000g and flipper length 200mm?
+]
+]
+
+.large[
+`\(-26.75 + 0.0059(5000) + 0.339(200) - 0.000026(5000)(200)\)`
+
+`\(= 44.55\)`
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+&amp; \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}`
+]
+
+.large[
+.question[
+What is the change in bill length associated with a 1g increase in body mass, for penguins with flipper length = 200mm?
+]
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+&amp; \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}`
+]
+
+.large[
+.question[
+What is the change in bill length associated with a 1g increase in body mass, for penguins with flipper length = 200mm?
+]
+]
+
+.large[
+`\(0.0059 - 0.000026(200) = 0.0007\)`
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+&amp; \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}`
+]
+
+.large[
+.question[
+Is the slope on body mass higher or lower for penguins with longer flippers?
+]
+]
+
+---
+
+### Interactions with two quantitative variables
+
+.large[
+`\begin{align}
+\widehat{\text{bill length}} &amp;= -26.75 + 0.0059 \ \text{body mass} + 0.339 \ \text{flipper length} \\
+&amp; \hspace{1cm} - 0.000026 \ \text{body mass} \cdot \text{flipper length}
+\end{align}`
+]
+
+.large[
+.question[
+Is the slope on body mass higher or lower for penguins with longer flippers?
+]
+]
+
+.large[
+Lower, because the coefficient -0.000026 is negative.
+]
+
+---
+
+### Visualizing interactions
+
+.large[
+With a categorical variable, we can fit a different slope for each group:
+]
+
+&lt;img src="lecture_24_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+How would this work with two quantitative variables?
+]
+]
+
+---
+
+### Visualizing interactions
+
+.large[
+**Binarize:**
+
+`$$LongFlipper = \begin{cases} 1 &amp; \text{flipper length} &gt; 200 \\ 0 &amp; \text{flipper length} \leq 200 \end{cases}$$`
+]
+
+&lt;img src="lecture_24_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Homework work time
+
+
+.large[
+Homework 5 involves a research question with an interaction between two quantitative variables. Spend the remainder of the class period getting started on HW 5.
+]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

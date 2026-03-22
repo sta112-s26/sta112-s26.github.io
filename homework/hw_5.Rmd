@@ -1,0 +1,124 @@
+---
+title: "Homework 5"
+output: 
+  rmdformats::robobook:
+    css: "homework.css"
+    highlight: pygments
+link-citations: yes
+---
+
+**Due:** Monday, March 30, 11:59pm on Canvas
+
+**Instructions:** 
+
+* A template Quarto file will be provided, with set-up instructions below.
+* When you are done with the assignment, render the Quarto file containing all your code and responses. Submit the rendered HTML file on Canvas.
+* Remember to acknowledge any collaborators, and to cite outside sources
+
+# Setup
+
+1. Download the Quarto template file for this assignment: [hw_05_template.qmd](https://sta112-s26.github.io/homework/hw_05_template.qmd). Save it to your computer, and change the file name to `hw_05_your_name.qmd`
+2. Open `hw_05_your_name.qmd` in RStudio. Change the `author` in YAML to your name.
+3. Fill in answers to the questions below. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
+4. When you are done, render and submit your HTML file on Canvas (Assignments -> Homework 5).
+
+# Data
+
+When a group works together to accomplish a task, a variety of factors may be related to their success. How do diversity and hormone levels impact group performance? The study of group dynamics in the social sciences has often examined these group characteristics, but it is also of interest to explore how they interact. In the paper ["Hormone-Diversity Fit: Collective Testosterone Moderates the Effect of Diversity on Group Performance"](https://journals.sagepub.com/doi/pdf/10.1177/0956797617744282) (Akinola *et al.* 2018, *Psychological Science*), the authors hypothesize that increased group diversity is positively associated with performance when group testosterone levels are low, but increased diversity is negatively associated with performance when testosterone levels are high. Their reasoning is that low-testosterone groups are better at cooperating than high-testosterone groups, so diverse perspectives are beneficial for low-testosterone groups but not for high-testosterone groups.
+
+To investigate their hypothesis, the researchers collected data on 74 groups of MBA students at Columbia University. Each group had 3--6 members, and was tasked with completing a week-long project on maximizing financial performance of a fictional blood-testing laboratory. The data here represents a subset of the data made available by the researchers. Each row in the data represents one group, with the following information:
+
+* *performance*: the final performance of the group in the project
+* *size*: the number of group members (between 3 and 6)
+* *females*: the number of female group members
+* *diversity*: a measure of group diversity that summarizes information on the gender, ethnicity, and country of origin for the group members. Takes on values between 0 and 1 (in this data, the values range from 0.25 to 0.65). Higher diversity scores mean the group is more diverse.
+* *testosterone*: the average testosterone levels (in pg/mL) for the group members
+
+The researchers want to look at the relationship between performance, diversity, and testosterone. Because group size and the number of female group members are potential confounding variables, the researchers will also include *size* and *females* as predictors in their model.
+
+### Loading the data
+
+To load the data, run
+
+```r
+team_data <- read_csv("https://sta112-s26.github.io/homework/team_data.csv")
+```
+
+# Questions
+
+Let's begin by fitting a multiple linear regression model without interaction terms.
+
+Our initial model is
+
+$\text{performance} = \beta_0 + \beta_1 \text{size} + \beta_2 \text{females} + \beta_3 \text{diversity} + \beta_4 \text{testosterone} + \varepsilon$
+
+:::{.question}
+#### Question 1
+
+Fit this model in R, using the following code:
+
+```{r eval=F}
+
+performance_lm_additive <- lm(performance ~ size + females + 
+                       diversity + testosterone, 
+                     data = team_data)
+```
+:::
+
+:::{.question}
+#### Question 2
+
+Report the equation of the fitted model, and the $R^2_{adj}$.
+:::
+
+:::{.question}
+#### Question 3
+
+The researchers are interested in the relationship between diversity and group performance, and the relationship between testosterone and group performance. Interpret the parameter estimate $\widehat{\beta}_3$ and $\widehat{\beta}_4$ from your fitted model.
+:::
+
+The researchers hypothesize that increased group diversity is positively associated with performance when group testosterone levels are low, but increased diversity is negatively associated with performance when testosterone levels are high.
+
+:::{.question}
+#### Question 4
+
+Explain why the model you fit in Question 1 does not allow the researchers to test their hypothesis.
+:::
+
+To investigate their hypothesis, the researchers add an interaction term:
+
+$\text{performance} = \beta_0 + \beta_1 \text{size} + \beta_2 \text{females} + \beta_3 \text{diversity} + \beta_4 \text{testosterone} \\ \hspace{3cm} + \beta_5 \text{diversity} \cdot \text{testosterone} + \varepsilon$
+
+:::{.question}
+#### Question 5
+
+Explain why the model with the interaction term *does* allow the researchers to investigate their hypothesis.
+:::
+
+:::{.question}
+#### Question 6
+
+Fit the model with the interaction term, and report the equation of the fitted model. Compare the $R^2_{adj}$ to your fitted model from Question 1. How much additional variability in team performance do you explain by adding the interaction term?
+:::
+
+Now let's think about what the interaction term tells us.
+
+:::{.question}
+#### Question 7
+
+Group testosterone varies from about 50 pg/mL for some groups, to about 200 pg/mL for others. Using the equation of the fitted model from Question 6, what is the estimated slope for the relationship between diversity and performance when group testosterone is 70 pg/mL (and *size* and *females* are held fixed)? What about when group testosterone is 160 pg/mL?
+:::
+
+:::{.question}
+#### Question 8
+
+Does the fitted model (and your answer to Question 7) support the researchers' hypothesis? Explain why or why not.
+:::
+
+:::{.question}
+#### Question 9
+
+Using the fitted model, perform a hypothesis test to address the researchers' question. Write down the null and alternative hypotheses in terms of model parameters, give the test statistic and p-value, and make a conclusion in context.
+:::
+
+
