@@ -1,0 +1,747 @@
+---
+title: Hypothesis testing with multiple regression
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+### Hypothesis testing with a categorical predictor
+
+.large[
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+We want to know whether there is a relationship between species and bill length.
+
+.question[
+Can I translate this into null and alternative hypotheses about one or more model parameters?
+]
+]
+
+---
+
+### Hypothesis testing with a categorical predictor
+
+.large[
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+We want to know whether there is a relationship between species and bill length.
+
+.question[
+Can I translate this into null and alternative hypotheses about one or more model parameters?
+]
+]
+
+.large[
+$H_0: \beta_1 = \beta_2 = 0$
+
+$H_A: \text{at least one of } \beta_1, \beta_2 \neq 0$
+]
+
+---
+
+### Full and reduced models
+
+.large[
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+$H_0: \beta_1 = \beta_2 = 0$
+
+$H_A: \text{at least one of } \beta_1, \beta_2 \neq 0$
+
+
+**Reduced model ( $H_0$ ):**
+
+$$\text{bill length} = \beta_0 + \varepsilon$$
+
+**Full model ( $H_A$ ):**
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+.question[
+What test did we use to test these hypotheses?
+]
+]
+
+---
+
+### F test
+
+.large[
+**Variability:** $\hspace{3cm} \sum \limits_{i=1}^n (y_i - \overline{y})^2 = \sum \limits_{i=1}^n (\widehat{y}_i - \overline{y})^2 + \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2$
+
+$\hspace{3cm} SSTotal \hspace{0.5cm} = \hspace{0.5cm} SSModel \hspace{0.5cm} + \hspace{0.5cm} SSE$
+
+**Degrees of freedom:** 
+
+$\hspace{4cm} n-1 \hspace{0.5cm} = \hspace{0.5cm} (p - 1)  \hspace{0.5cm} + \hspace{0.5cm} (n - p)$
+
+( $n =$ number of observations, $p =$ number of parameters in full model)
+
+**Test statistic:** $F = \dfrac{\text{between group variance}}{\text{within group variance}} = \dfrac{SSModel/(p-1)}{SSE/(n-p)}$
+
+]
+
+---
+
+### F test
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4}
+library(tidyverse)
+library(palmerpenguins)
+
+penguins_no_nas <- penguins %>%
+  drop_na()
+
+penguins_no_nas %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(lwd=1.5) +
+  theme_classic() +
+  labs(x = "Species", 
+       y = "Bill length (mm)") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+**Test statistic:** $F = \dfrac{\text{between group variance}}{\text{within group variance}} = \dfrac{SSModel/(p-1)}{SSE/(n-p)} = 397.3$
+
+.question[
+How do I calculate a p-value?
+]
+]
+
+---
+
+### Calculating p-values
+
+.large[
+
+If $H_0$ is true, $F = \dfrac{SSModel/(p-1)}{SSE/(n-p)} \ \sim \ F_{p-1, \ n-p}$
+
+**Degrees of freedom:** $p - 1 = 2$, $n - p = 330$
+
+$F_{2, \ 330}$ distribution:
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=3.5}
+data.frame(x = seq(0, 10, 0.1),
+           y = df(seq(0, 10, 0.1), 2, 330)) %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_line(lwd = 1.5) +
+  labs(x = "", y = "density") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+**p-value** =  $P(F_{2, \ 330} > 397.3) \approx 0$
+]
+
+---
+
+### Summary so far
+
+.large[
+Our F test compares two *nested* models:
+
+**Reduced model ( $H_0$ ):**
+
+$$\text{bill length} = \beta_0 + \varepsilon$$
+
+**Full model ( $H_A$ ):**
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+**Test statistic:** $F = \dfrac{SSModel/(p-1)}{SSE/(n-p)} \ \sim \ F_{p-1, \ n-p}$
+
+.question[
+What if I want to test other hypotheses?
+]
+]
+
+---
+
+### Hypotheses for multiple regression
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Research question:** Is there any relationship between the predictors (species and body mass) and the response (bill length)?
+
+.question[
+How do I turn this question into hypotheses about one or more model parameters?
+]
+]
+
+---
+
+### Hypotheses for multiple regression
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Research question:** Is there any relationship between the predictors (species and body mass) and the response (bill length)?
+
+.question[
+How do I turn this question into hypotheses about one or more model parameters?
+]
+]
+
+
+.large[
+$H_0: \beta_1 = \beta_2 = \beta_3 = 0 \hspace{1cm} H_A: \text{at least one of } \beta_1, \beta_2, \beta_3 \neq 0$
+
+.question[
+What are the full and reduced models?
+]
+]
+
+---
+
+### Full and reduced models
+
+.large[
+
+$H_0: \beta_1 = \beta_2 = \beta_3 = 0 \hspace{1cm} H_A: \text{at least one of } \beta_1, \beta_2, \beta_3 \neq 0$
+
+**Full model ( $H_A$ ):**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Reduced model ( $H_0$ ):**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \varepsilon
+\end{align}
+
+.question[
+Note that the reduced model is *nested* inside the full model.
+]
+]
+
+---
+
+### Hypotheses for multiple regression
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Research question:** After accounting for species, is there a relationship between body mass and bill length?
+
+.question[
+How do I turn this question into hypotheses about one or more model parameters?
+]
+]
+
+---
+
+### Hypotheses for multiple regression
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Research question:** After accounting for species, is there a relationship between body mass and bill length?
+
+.question[
+How do I turn this question into hypotheses about one or more model parameters?
+]
+]
+
+
+.large[
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 \neq 0$
+
+.question[
+What are the full and reduced models?
+]
+]
+
+---
+
+### Full and reduced models
+
+.large[
+
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 \neq 0$
+
+**Full model ( $H_A$ ):**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Reduced model ( $H_0$ ):**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon
+\end{align}
+
+.question[
+Note that the reduced model is *nested* inside the full model.
+]
+]
+
+---
+
+### Hypotheses for multiple regression
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Research question:** After accounting for body mass, is there a relationship between species and bill length?
+
+.question[
+How do I turn this question into hypotheses about one or more model parameters?
+]
+]
+
+---
+
+### Hypotheses for multiple regression
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Research question:** After accounting for body mass, is there a relationship between species and bill length?
+
+.question[
+How do I turn this question into hypotheses about one or more model parameters?
+]
+]
+
+.large[
+$H_0: \beta_1, \beta_2 = 0 \hspace{1cm} H_A: \text{at least one of } \beta_1, \beta_2 \neq 0$
+
+.question[
+What are the full and reduced models?
+]
+]
+
+---
+
+### Full and reduced models
+
+.large[
+
+$H_0: \beta_1, \beta_2 = 0 \hspace{1cm} H_A: \text{at least one of } \beta_1, \beta_2 \neq 0$
+
+**Full model ( $H_A$ ):**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Reduced model ( $H_0$ ):**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{body mass} + \varepsilon
+\end{align}
+
+.question[
+Note that the reduced model is *nested* inside the full model.
+]
+]
+
+---
+
+### Hypotheses for multiple regression
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Research question:** Is the slope on body mass different for different species?
+
+.question[
+Can I test this research question with this model?
+]
+]
+
+---
+
+### Hypotheses for multiple regression
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+**Research question:** Is the slope on body mass different for different species?
+
+.question[
+Can I test this research question with this model?
+]
+]
+
+.large[
+No -- the model assumes that the slope is the same for each species!
+
+.question[
+How can I change the model to test this research question?
+]
+]
+
+---
+
+### Adding interaction terms
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{1cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}
+
+**Research question:** Is the slope on body mass different for different species?
+
+.question[
+How do I turn this question into hypotheses about one or more model parameters?
+]
+]
+
+---
+
+### Adding interaction terms
+
+.large[
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{1cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}
+
+**Research question:** Is the slope on body mass different for different species?
+
+.question[
+How do I turn this question into hypotheses about one or more model parameters?
+]
+]
+
+.large[
+$H_0: \beta_4, \beta_5 = 0 \hspace{1cm} H_A: \text{at least one of } \beta_4, \beta_5 \neq 0$
+
+.question[
+What are the full and reduced models?
+]
+]
+
+---
+
+### Testing interaction terms
+
+.large[
+
+$H_0: \beta_4, \beta_5 = 0 \hspace{1cm} H_A: \text{at least one of } \beta_4, \beta_5 \neq 0$
+
+**Full model ( $H_A$ ):**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \beta_4 \text{body mass} \cdot \text{IsChinstrap} \\
+& \hspace{1cm} + \beta_5 \text{body mass} \cdot \text{IsGentoo} + \varepsilon
+\end{align}
+
+**Reduced model ( $H_0$ ):**
+
+\begin{align}
+\text{bill length} &= \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} \\ 
+& \hspace{1cm} + \beta_3 \text{body mass} + \varepsilon
+\end{align}
+
+.question[
+Note that the reduced model is *nested* inside the full model.
+]
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity (handout).
+]
+
+---
+
+### Class activity
+
+.large[
+**Research question:** Is the slope on Age the same for both boys and girls?
+
+.question[
+What model should the researchers use to test this research question?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+**Research question:** Is the slope on Age the same for both boys and girls?
+
+.question[
+What model should the researchers use to test this research question?
+]
+]
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+.question[
+What are the full and reduced models that the researchers will compare?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+**Full model:** 
+
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Reduced model:** 
+
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \varepsilon$$
+]
+
+---
+
+### Class activity
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**New research question:** Is there *any* relationship between Age and Height, after accounting for gender?
+
+.question[
+What are the full and reduced models that the researchers will compare?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+**New research question:** Is there *any* relationship between Age and Height, after accounting for gender?
+
+**Full model:** 
+
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Reduced model:** 
+
+$$\text{Height} = \beta_0 + \beta_1 \text{IsMale} + \varepsilon$$
+
+]
+
+---
+
+### What we've done so far
+
+.large[
+* Specifying hypotheses for multiple regression models
+* Hypotheses imply full and reduced models
+
+.question[
+How do we compare full and reduced models with a hypothesis test?
+]
+]
+
+---
+
+### When our reduced model is intercept-only
+
+.large[
+We've already done this for one categorical predictor!
+
+**Reduced model ( $H_0$ ):**
+
+$$\text{bill length} = \beta_0 + \varepsilon$$
+
+**Full model ( $H_A$ ):**
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+**Test statistic:** $F = \dfrac{SSModel/(p-1)}{SSE/(n-p)} \ \sim \ F_{p-1, \ n-p}$
+
+.question[
+What if I want to compare different nested models?
+]
+]
+
+---
+
+### Decomposing sums of squares
+
+.large[
+
+$F = \dfrac{SSModel/(p-1)}{SSE/(n-p)}$
+
+* SSModel and SSE really refer to the *full* model ( $\widehat{y}_i$ are predictions from the *full* model, not the reduced model)
+* So let's add subscripts to make that clear
+
+$\hspace{3cm} \sum \limits_{i=1}^n (y_i - \overline{y})^2 = \sum \limits_{i=1}^n (\widehat{y}_{i, full} - \overline{y})^2 + \sum \limits_{i=1}^n (y_i - \widehat{y}_{i, full})^2$
+
+$\hspace{3cm} SSTotal \hspace{0.5cm} = \hspace{0.5cm} SSModel_{full} \hspace{0.5cm} + \hspace{0.5cm} SSE_{full}$
+
+$F = \dfrac{SSModel_{full}/(p-1)}{SSE_{full}/(n-p)} = \dfrac{(SSTotal - SSE_{full})/(p-1)}{SSE_{full}/(n-p)}$
+]
+
+---
+
+### Decomposing sums of squares
+
+.large[
+$F = \dfrac{(SSTotal - SSE_{full})/(p-1)}{SSE_{full}/(n-p)}$
+
+We can decompose sums of squares for the reduced model too:
+
+$\hspace{3cm} \sum \limits_{i=1}^n (y_i - \overline{y})^2 = \sum \limits_{i=1}^n (\widehat{y}_{i, reduced} - \overline{y})^2 + \sum \limits_{i=1}^n (y_i - \widehat{y}_{i, reduced})^2$
+
+$\hspace{3cm} SSTotal \hspace{0.5cm} = \hspace{0.5cm} SSModel_{reduced} \hspace{0.5cm} + \hspace{0.5cm} SSE_{reduced}$
+
+.question[
+For this test, the reduced model is 
+
+$$\text{bill length} = \beta_0 + \varepsilon$$
+
+What are the predictions $\widehat{y}_{i, reduced}$ for this intercept-only model?
+]
+]
+
+---
+
+### Decomposing sums of squares
+
+.large[
+$F = \dfrac{(SSTotal - SSE_{full})/(p-1)}{SSE_{full}/(n-p)}$
+
+We can decompose sums of squares for the reduced model too:
+
+$\hspace{3cm} \sum \limits_{i=1}^n (y_i - \overline{y})^2 = \sum \limits_{i=1}^n (\widehat{y}_{i, reduced} - \overline{y})^2 + \sum \limits_{i=1}^n (y_i - \widehat{y}_{i, reduced})^2$
+
+$\hspace{3cm} SSTotal \hspace{0.5cm} = \hspace{0.5cm} SSModel_{reduced} \hspace{0.5cm} + \hspace{0.5cm} SSE_{reduced}$
+
+**Reduced model:**  $\text{bill length} = \beta_0 + \varepsilon$
+
+**Predictions:** $\widehat{y}_{i,reduced} = \overline{y}$
+
+.question[
+If $\widehat{y}_{i,reduced} = \overline{y}$, what are $SSModel_{reduced}$ and $SSE_{reduced}$ ?
+]
+]
+
+
+---
+
+### Decomposing sums of squares
+
+.large[
+$F = \dfrac{(SSTotal - SSE_{full})/(p-1)}{SSE_{full}/(n-p)}$
+
+We can decompose sums of squares for the reduced model too:
+
+$\hspace{3cm} \sum \limits_{i=1}^n (y_i - \overline{y})^2 = \sum \limits_{i=1}^n (\widehat{y}_{i, reduced} - \overline{y})^2 + \sum \limits_{i=1}^n (y_i - \widehat{y}_{i, reduced})^2$
+
+$\hspace{3cm} SSTotal \hspace{0.5cm} = \hspace{0.5cm} SSModel_{reduced} \hspace{0.5cm} + \hspace{0.5cm} SSE_{reduced}$
+
+**Reduced model:**  $\text{bill length} = \beta_0 + \varepsilon$
+
+**Predictions:** $\widehat{y}_{i,reduced} = \overline{y}$
+
+$SSModel_{reduced} = 0 \hspace{2cm} SSE_{reduced} = SSTotal$
+
+]
+
+---
+
+### Decomposing sums of squares
+
+.large[
+
+$\hspace{3cm} \sum \limits_{i=1}^n (y_i - \overline{y})^2 = \sum \limits_{i=1}^n (\widehat{y}_{i, reduced} - \overline{y})^2 + \sum \limits_{i=1}^n (y_i - \widehat{y}_{i, reduced})^2$
+
+$\hspace{3cm} SSTotal \hspace{0.5cm} = \hspace{0.5cm} SSModel_{reduced} \hspace{0.5cm} + \hspace{0.5cm} SSE_{reduced}$
+
+**Reduced model:**  $\text{bill length} = \beta_0 + \varepsilon$
+
+**Predictions:** $\widehat{y}_{i,reduced} = \overline{y}$
+
+$SSModel_{reduced} = 0 \hspace{2cm} SSE_{reduced} = SSTotal$
+
+\begin{align}
+F &= \dfrac{(SSTotal - SSE_{full})/(p-1)}{SSE_{full}/(n-p)} \\ 
+&= \dfrac{(SSE_{reduced} - SSE_{full})/(p-1)}{SSE_{full}/(n-p)}
+\end{align}
+
+]
+
+---
+
+### Re-writing our F test
+
+.large[
+Our F test compares two *nested* models:
+
+**Reduced model ( $H_0$ ):**
+
+$$\text{bill length} = \beta_0 + \varepsilon$$
+
+**Full model ( $H_A$ ):**
+
+$$\text{bill length} = \beta_0 + \beta_1 \text{IsChinstrap} + \beta_2 \text{IsGentoo} + \varepsilon$$
+
+**Test statistic:** $F = \dfrac{(SSE_{reduced} - SSE_{full})/(p-1)}{SSE_{full}/(n-p)} \ \sim \ F_{p-1, \ n-p}$
+
+* $p - 1 =$ difference in number of parameters between models
+* $p =$ number of parameters in full model
+]
+
+---
+
+### Nested F test
+
+.large[
+To compare *any* two **nested** models:
+
+**Test statistic:** $F = \dfrac{\frac{1}{\# \ \text{parameters tested}}(SSE_{reduced} - SSE_{full})}{\frac{1}{n-p} SSE_{full}}$
+
+**Distribution:** $F_{\# \ \text{parameters tested}, \ n-p}$
+
+* $n =$ number of observations in data
+* $p =$ number of parameters in full model
+]

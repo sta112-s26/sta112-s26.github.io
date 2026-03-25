@@ -14,6 +14,7 @@ March 23
 
 March 25
 : Hypothesis tests
+  : [Slides](https://sta112-s26.github.io/slides/lecture_25.pdf), [activity 1](https://sta112-s26.github.io/class_activities/ca_25_handout.pdf), [activity 2](https://sta112-s26.github.io/class_activities/ca_25_handout_2.pdf)
 
 March 27
 : Hypothesis tests and confidence intervals

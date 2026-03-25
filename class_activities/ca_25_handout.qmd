@@ -1,0 +1,33 @@
+---
+title: "Activity: nested hypothesis tests"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+In this class activity, we will continue working with the `Kids198` data from the `Stat2Data` package, which examines the relationship between Age and Height for children between the ages of 8 and 18. We are also interested in how that relationship differs for boys and girls. The `Kids198` dataset includes the following variables on 198 children:
+
+* `Height`: Height (in inches)
+* `Age`: Age (in months)
+* `Sex`: 0=male, 1 = female
+
+## Questions
+
+Researchers will treat Height as the response, and Age and Sex as the predictors. They want to know whether the slope on Age (i.e., the increase in Height associated with a one-month increase in Age) is the same for boys and girls.
+
+1. What model should the researchers use to test this research question?
+
+\vspace{3cm}
+
+2. What are the full and reduced models that the researchers will compare to test their question?
+
+\vspace{3cm}
+
+Now the researchers want to know whether there is *any* relationship between Age and Height, after accounting for Sex. They want to test this relationship, using the interaction model from exercise 1 (in case the relationship is different for boys and girls).
+
+3. What are the full and reduced models that the researchers will compare to test their new question?
+
+

@@ -1,0 +1,56 @@
+---
+title: "Activity: nested hypothesis tests"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+In this class activity, we will continue working with the `Kids198` data from the `Stat2Data` package, which examines the relationship between Age and Height for children between the ages of 8 and 18. We are also interested in how that relationship differs for boys and girls. The `Kids198` dataset includes the following variables on 198 children:
+
+* `Height`: Height (in inches)
+* `Age`: Age (in months)
+* `Sex`: 0=male, 1 = female
+
+Researchers want to know whether there is *any* relationship between Age and Height, after accounting for Sex. They believe that the relationship between Age and Height depends on Sex, so they fit the model
+
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+## Questions
+
+To investigate their research question, the researchers fit the full and reduced models and calculate ANOVA tables for each model. Note that in the R output, the $SSModel$ component is broken up between the different explanatory variables. The `Residuals` line in the ANOVA table is what corresponds to $SSE$.
+
+```{r eval=F}
+library(Stat2Data)
+data(Kids198)
+m1 <- lm(Height ~ Age*Sex, data = Kids198)
+m2 <- lm(Height ~ Sex, data = Kids198)
+```
+
+```{r, eval=F}
+anova(m1)
+```
+
+```
+Response: Height
+           Df Sum Sq Mean Sq F value    Pr(>F)    
+Age         1 5005.2  5005.2 575.820 < 2.2e-16 ***
+Sex         1  295.8   295.8  34.035 2.235e-08 ***
+Age:Sex     1  227.2   227.2  26.136 7.599e-07 ***
+Residuals 194 1686.3     8.7                      
+```
+
+```{r, eval=F}
+anova(m2)
+```
+
+```
+Response: Height
+           Df Sum Sq Mean Sq F value    Pr(>F)    
+Sex         1  480.7  480.67   13.99 0.0002412 ***
+Residuals 196 6733.9   34.36                      
+```
+
+1. Using the R output, calculate the F-statistic for the researchers' hypothesis test. What are the degrees of freedom for the corresponding F distribution?
