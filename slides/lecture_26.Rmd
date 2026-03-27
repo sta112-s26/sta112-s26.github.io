@@ -73,6 +73,123 @@ To compare *any* two **nested** models:
 ### Class activity
 
 .large[
+Work on the class activity (R).
+]
+
+---
+
+### Class activity
+
+$$\text{Full model:} \hspace{0.5cm} \text{body mass} = \beta_0 + \beta_1 \text{flipper length} + \beta_2 \text{IsChinstrap} + \beta_3 \text{IsGentoo} + \varepsilon$$
+
+$$\text{Reduced model:} \hspace{0.5cm} \text{body mass} = \beta_0 + \beta_1 \text{flipper length} + \varepsilon$$
+
+```{r, message=F, warning=F, echo=F, fig.width=7, fig.height=5}
+library(palmerpenguins)
+library(tidyverse)
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(size=2) +
+  labs(x = "Flipper length", y = "Body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 20))
+```
+
+.large[
+$$SSE_{reduced} - SSE_{full} = 52854796 - 47666988 = 5187808$$
+]
+
+---
+
+### Class activity
+
+.pull-left[
+```{r, message=F, warning=F, echo=F, fig.width=7, fig.height=5}
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(size=2) +
+  labs(x = "Flipper length", y = "Body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 20)) +
+  labs(title = "Observed data")
+```
+
+$SSE_{reduced} - SSE_{full} = 5187808$
+
+$F = 18.393$
+]
+
+.pull-right[
+```{r, message=F, warning=F, echo=F, fig.width=7, fig.height=5}
+penguins_permuted <- penguins |>
+  mutate(species = sample(species, n(), replace=F))
+
+penguins_permuted |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(size=2) +
+  labs(x = "Flipper length", y = "Body mass") +
+  theme_bw() +
+  theme(text = element_text(size = 20)) +
+  labs(title = "Permuted data")
+```
+
+$SSE_{reduced} - SSE_{full} = 10176$
+
+$F = 0.0325$
+]
+
+---
+
+### Class activity
+
+```{r, echo=F, message=F, warning=F, fig.width=7, fig.height=5}
+nsim <- 1000
+f_stats <- rep(NA, nsim)
+for(i in 1:nsim){
+  penguins_permuted <- penguins |>
+  mutate(species = sample(species, n(), replace=F))
+  
+  m_full <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins_permuted)
+  m_reduced <- lm(body_mass_g ~ flipper_length_mm, data = penguins_permuted)
+  f_stats[i] <- anova(m_reduced, m_full)$F[2]
+}
+
+hist(f_stats, xlab = "F", main = "Distribution of F statistic under null H0")
+```
+
+
+.large[
+Observed test statistic (original data): $F = 18.393$
+]
+
+---
+
+### Class activity
+
+.large[
+**IF** $H_0$ is true, $F \sim F_{p_{full} - p_{reduced}, n - p_{full}}$
+]
+
+.pull-left[
+```{r, echo=F, message=F, warning=F, fig.width=7, fig.height=5}
+hist(f_stats, xlab = "F", main = "Permutation samples")
+```
+
+]
+
+.pull-right[
+```{r, echo=F, message=F, warning=F, fig.width=7, fig.height=5}
+# example sample from F distribution
+f_samp <- rf(1000, 2, 338)
+hist(f_samp, xlab = "F", main = "Samples from F distribution")
+```
+]
+
+---
+
+### Class activity
+
+.large[
 Work on the class activity (handout).
 ]
 
