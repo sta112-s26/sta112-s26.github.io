@@ -1,0 +1,437 @@
+---
+title: Hypothesis testing with multiple regression
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+### Recap: hypothesis tests and nested models
+
+.large[
+**Data:** Height, age, and gender for 198 children between the ages of 8 and 18. Researchers think the relationship between age and height might depend on gender.
+
+**Research question:** Is there *any* relationship between Age and Height, after accounting for gender?
+
+**Full model:** 
+
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Reduced model:** 
+
+$$\text{Height} = \beta_0 + \beta_1 \text{IsMale} + \varepsilon$$
+
+]
+
+---
+
+### Recap: hypothesis tests and nested models
+
+.large[
+**Data:** Height, age, and gender for 198 children between the ages of 8 and 18. Researchers think the relationship between age and height might depend on gender.
+
+
+**Research question:** Is the slope on Age the same for both boys and girls?
+
+**Full model:** 
+
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Reduced model:** 
+
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \varepsilon$$
+]
+
+---
+
+### Nested F test
+
+.large[
+To compare *any* two **nested** models:
+
+**Test statistic:** $F = \dfrac{\frac{1}{\# \ \text{parameters tested}}(SSE_{reduced} - SSE_{full})}{\frac{1}{n-p} SSE_{full}}$
+
+**Distribution:** $F_{\# \ \text{parameters tested}, \ n-p}$
+
+* $n =$ number of observations in data
+* $p =$ number of parameters in full model
+]
+
+.large[
+**Intuition:**  $SSE_{reduced} - SSE_{full}$ is large when the full model fits the data better than the reduced model
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity (handout).
+]
+
+---
+
+### Class activity
+
+```{r, eval=F}
+anova(m1)
+```
+
+```
+Response: Height
+           Df Sum Sq Mean Sq F value    Pr(>F)    
+Age         1 5005.2  5005.2 575.820 < 2.2e-16 ***
+Sex         1  295.8   295.8  34.035 2.235e-08 ***
+Age:Sex     1  227.2   227.2  26.136 7.599e-07 ***
+Residuals 194 1686.3     8.7                      
+```
+
+```{r, eval=F}
+anova(m2)
+```
+
+```
+Response: Height
+           Df Sum Sq Mean Sq F value    Pr(>F)    
+Sex         1  480.7  480.67   13.99 0.0002412 ***
+Residuals 196 6733.9   34.36                      
+```
+
+.large[
+$F = \dfrac{\frac{1}{\# \ \text{parameters tested}}(SSE_{reduced} - SSE_{full})}{\frac{1}{n-p} SSE_{full}}$
+
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+What is the p-value for this test?
+]
+
+```{r}
+pf(290.35, df1 = 2, df2 = 194, lower.tail=F)
+```
+
+The p-value is basically 0, so we have strong evidence that there is a relationship between Age and Height, after accounting for Sex.
+]
+
+---
+
+```{r include=F}
+library(Stat2Data)
+library(tidyverse)
+data(Kids198)
+```
+
+
+### Testing in R
+
+.large[
+We can do comparisons between nested models a little more efficiently:
+
+```{r}
+m1 <- lm(Height ~ Age*Sex, data = Kids198)
+m2 <- lm(Height ~ Sex, data = Kids198)
+
+anova(m2, m1)
+```
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 \neq 0$
+
+.question[
+How did we test a single coefficient in simple linear regression?
+]
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 \neq 0$
+
+.question[
+How did we test a single coefficient in simple linear regression?
+]
+]
+
+.large[
+With a t-test!
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 \neq 0$
+
+$t = \dfrac{\widehat{\beta}_3 - 0}{SE_{\widehat{\beta}_3}}$
+
+Under $H_0$, this test statistic follows a $t$ distribution.
+
+.question[
+What do you think should be the degrees of freedom of the $t$ distribution?
+]
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 \neq 0$
+
+$t = \dfrac{\widehat{\beta}_3 - 0}{SE_{\widehat{\beta}_3}}$
+
+Under $H_0$, this test statistic follows a $t$ distribution.
+
+.question[
+What do you think should be the degrees of freedom of the $t$ distribution?
+]
+]
+
+.large[
+$n - p$
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 \neq 0$
+
+$t = \dfrac{\widehat{\beta}_3 - 0}{SE_{\widehat{\beta}_3}}$
+
+Under $H_0$, this test statistic follows a $t_{n-p}$ distribution.
+
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+```{r}
+m1 <- lm(Height ~ Age*Sex, data = Kids198)
+```
+
+```
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 32.960916   1.537781  21.434  < 2e-16 ***
+Age          0.182543   0.009383  19.454  < 2e-16 ***
+Sex          7.727846   2.034957   3.798 0.000195 ***
+Age:Sex     -0.064134   0.012545  -5.112  7.6e-07 ***
+```
+
+$t = \dfrac{\widehat{\beta}_3 - 0}{SE_{\widehat{\beta}_3}} = \dfrac{0.0641}{0.0125} = 5.112$
+
+p-value = $7.6 \times 10^{-7}$
+]
+
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Research question:** Is the slope on Age *larger* for boys than for girls?
+
+.question[
+What hypotheses could I test to answer this research question?
+]
+
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Research question:** Is the slope on Age *larger* for boys than for girls?
+
+.question[
+What hypotheses could I test to answer this research question?
+]
+
+]
+
+.large[
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 > 0$
+
+**Test statistic:** $t = \dfrac{\widehat{\beta}_3 - 0}{SE_{\widehat{\beta}_3}} = 5.112$
+
+.question[
+Which tail do I use to calculate the p-value?
+]
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Research question:** Is the slope on Age *larger* for boys than for girls?
+
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 > 0$
+
+**Test statistic:** $t = \dfrac{\widehat{\beta}_3 - 0}{SE_{\widehat{\beta}_3}} = 5.112$
+
+```{r}
+pt(5.112, df = 194, lower.tail=F)
+```
+
+p-value = $3.8 \times 10^{-7}$, so we have strong evidence that the slope on Age is larger for boys than for girls.
+]
+
+---
+
+### Testing a single parameter
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Research question:** Is the slope on Age *larger* for boys than for girls?
+
+$H_0: \beta_3 = 0 \hspace{1cm} H_A: \beta_3 > 0$
+
+.question[
+Can I use a nested F test here?
+]
+
+]
+
+.large[
+No -- a nested F test doesn't let me test a specific direction ( $\beta_3 > 0$ )
+]
+
+---
+
+### t tests vs. nested F tests
+
+.large[
+
+.pull-left[
+**t test:** test a single parameter
+
+Some example hypotheses:
+* $H_0: \beta_3 = 0 \hspace{0.5cm} H_A: \beta_3 \neq 0$
+* $H_0: \beta_3 = 0 \hspace{0.5cm} H_A: \beta_3 > 0$
+* $H_0: \beta_3 = 1 \hspace{0.5cm} H_A: \beta_3 < 1$
+]
+
+.pull-right[
+**nested F test:** test one or more parameters
+
+Some example hypotheses:
+
+$H_0: \beta_1 = \beta_2 = 0$
+$H_A: \text{at least one of } \beta_1, \beta_2 \neq 0$
+]
+
+]
+
+---
+
+### Confidence intervals
+
+.large[
+Just like with simple linear regression, we can construct confidence intervals for single parameters.
+
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+Confidence interval for $\beta_3$:
+
+$$\widehat{\beta}_3 \pm t^* SE_{\widehat{\beta}_3}$$
+
+where $t^*$ is the critical value for a $t_{n-p}$ distribution.
+]
+
+---
+
+### Confidence intervals
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Confidence interval:** $\hspace{1cm} \widehat{\beta}_3 \pm t^* SE_{\widehat{\beta}_3}$
+
+.question[
+Suppose I want to calculate a 99% confidence interval. How do I find the critical value $t^*$?
+]
+]
+
+---
+
+### Confidence intervals
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Confidence interval:** $\hspace{1cm} \widehat{\beta}_3 \pm t^* SE_{\widehat{\beta}_3}$
+
+.question[
+Suppose I want to calculate a 99% confidence interval. How do I find the critical value $t^*$?
+]
+]
+
+.large[
+```{r}
+qt(0.005, df=194, lower.tail=F)
+```
+
+$t^* = 2.60$
+]
+
+---
+
+### Confidence intervals
+
+.large[
+$$\text{Height} = \beta_0 + \beta_1 Age + \beta_2 \text{IsMale} + \beta_3 \text{Age} \cdot \text{IsMale} + \varepsilon$$
+
+**Confidence interval:** $\hspace{1cm} \widehat{\beta}_3 \pm t^* SE_{\widehat{\beta}_3}$
+
+$$0.0641 \pm 2.60 \cdot 0.0125 = (0.0316, 0.0966)$$
+
+So we are 99% confident that a one-month increase in age is associated with an change in height that is between 0.0316 and 0.0966 inches greater for boys than for girls.
+]
+
+
+
+
+
+
