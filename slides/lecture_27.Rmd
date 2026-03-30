@@ -65,6 +65,7 @@ The p-value is basically 0, so we have strong evidence that there is a relations
 library(Stat2Data)
 library(tidyverse)
 data(Kids198)
+Kids198$Sex = 1 - Kids198$Sex
 ```
 
 
@@ -181,8 +182,8 @@ m1 <- lm(Height ~ Age*Sex, data = Kids198)
              Estimate Std. Error t value Pr(>|t|)    
 (Intercept) 32.960916   1.537781  21.434  < 2e-16 ***
 Age          0.182543   0.009383  19.454  < 2e-16 ***
-Sex          7.727846   2.034957   3.798 0.000195 ***
-Age:Sex     -0.064134   0.012545  -5.112  7.6e-07 ***
+Sex         -7.727846   2.034957  -3.798 0.000195 ***
+Age:Sex      0.064134   0.012545   5.112  7.6e-07 ***
 ```
 
 $t = \dfrac{\widehat{\beta}_3 - 0}{SE_{\widehat{\beta}_3}} = \dfrac{0.0641}{0.0125} = 5.112$
