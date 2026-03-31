@@ -1,0 +1,752 @@
+---
+title: Assumptions, diagnostics, and multicollinearity
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+### Data
+
+.large[
+Data on the number of doctors, hospitals, and beds in 53 randomly selected US counties. Variables include:
+
+* `MDs`: number of doctors in the county
+* `Hospitals`: number of hospitals in the county
+* `Beds`: number of beds in the hospitals
+
+**Goal:** Predict the number of doctors using the number of hospitals and the number of beds
+]
+
+---
+
+### Multiple regression model
+
+.large[
+```{r include=F}
+library(tidyverse)
+library(Stat2Data)
+data("CountyHealth")
+```
+
+$$\text{MDs} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$
+.question[
+What assumptions does our multiple regression model make?
+]
+]
+
+---
+
+### Multiple regression model
+
+.large[
+```{r include=F}
+library(tidyverse)
+library(Stat2Data)
+data("CountyHealth")
+```
+
+$$\text{MDs} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$
+.question[
+What assumptions does our multiple regression model make?
+]
+]
+
+.large[
+The same assumptions as before:
+
+* Shape
+* Constant variance
+* Normality
+* Independence
+* Randomness
+]
+
+---
+
+### Shape and constant variance
+
+.large[
+$$\text{MDs} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$
+
+**Shape:** the shape of the regression model is at least approximately correct
+  * In this case, the number of doctors has a linear relationship with the number of hospitals and the number of beds
+  
+**Constant variance:** The variance of the noise term $\varepsilon$ is the same for all numbers of hospitals and beds
+
+.question[
+How do we assess the shape and constant variance assumptions?
+]
+]
+
+---
+
+### Shape and constant variance
+
+.large[
+$$\text{MDs} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$
+
+**Shape:** the shape of the regression model is at least approximately correct
+  * In this case, the number of doctors has a linear relationship with the number of hospitals and the number of beds
+  
+**Constant variance:** The variance of the noise term $\varepsilon$ is the same for all numbers of hospitals and beds
+
+.question[
+How do we assess the shape and constant variance assumptions?
+]
+]
+
+.large[
+A residual plot!
+]
+
+---
+
+### Residual plot
+
+.large[
+$\widehat{\text{MDs}} = -472.08 + 117.40 \ \text{Hospitals} + 1.26 \ \text{Beds}$
+
+.question[
+What goes on the x and y axes of my residual plot?
+]
+]
+
+---
+
+### Residual plot
+
+.large[
+$\widehat{\text{MDs}} = -472.08 + 117.40 \ \text{Hospitals} + 1.26 \ \text{Beds}$
+
+.question[
+What goes on the x and y axes of my residual plot?
+]
+]
+
+.large[
+* x axis: the predicted response ( $\widehat{\text{MDs}}$ )
+* y axis: the residuals ( $\text{MDs} - \widehat{\text{MDs}}$ )
+]
+
+---
+
+### Residual plot
+
+.large[
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(MDs ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(preds = predict(m1),
+         resids = residuals(m1)) %>%
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point(size=2.5) +
+  geom_abline(slope = 0, intercept = 0, color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Predicted number of doctors", 
+       y = "Residual") +
+  theme(text = element_text(size = 25))
+```
+
+.question[
+How do the shape and constant variance assumptions look?
+]
+]
+
+---
+
+### Residual plot
+
+.large[
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(MDs ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(preds = predict(m1),
+         resids = residuals(m1)) %>%
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point(size=2.5) +
+  geom_abline(slope = 0, intercept = 0, color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Predicted number of doctors", 
+       y = "Residual") +
+  theme(text = element_text(size = 25))
+```
+
+.question[
+How do the shape and constant variance assumptions look?
+]
+]
+
+.large[
+Not good -- violations to both shape and constant variance
+]
+
+---
+
+### Residual plot
+
+.large[
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(MDs ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(preds = predict(m1),
+         resids = residuals(m1)) %>%
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point(size=2.5) +
+  geom_abline(slope = 0, intercept = 0, color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Predicted number of doctors", 
+       y = "Residual") +
+  theme(text = element_text(size = 25))
+```
+
+.question[
+How do we address violations of shape and constant variance?
+]
+]
+
+---
+
+### Residual plot
+
+.large[
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(MDs ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(preds = predict(m1),
+         resids = residuals(m1)) %>%
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point(size=2.5) +
+  geom_abline(slope = 0, intercept = 0, color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Predicted number of doctors", 
+       y = "Residual") +
+  theme(text = element_text(size = 25))
+```
+
+.question[
+How do we address violations of shape and constant variance?
+]
+]
+
+.large[
+Transformations!
+]
+
+---
+
+### Residual plot
+
+.large[
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(MDs ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(preds = predict(m1),
+         resids = residuals(m1)) %>%
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point(size=2.5) +
+  geom_abline(slope = 0, intercept = 0, color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Predicted number of doctors", 
+       y = "Residual") +
+  theme(text = element_text(size = 25))
+```
+
+.question[
+What transformation would you recommend?
+]
+]
+
+---
+
+### Residual plot
+
+.large[
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(MDs ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(preds = predict(m1),
+         resids = residuals(m1)) %>%
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point(size=2.5) +
+  geom_abline(slope = 0, intercept = 0, color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Predicted number of doctors", 
+       y = "Residual") +
+  theme(text = element_text(size = 25))
+```
+
+.question[
+What transformation would you recommend?
+]
+]
+
+.large[
+Maybe log or square root the response
+]
+
+---
+
+### Transforming the data
+
+.large[
+$\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}$
+
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(sqrt(MDs) ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(preds = predict(m1),
+         resids = residuals(m1)) %>%
+  ggplot(aes(x = preds, y = resids)) +
+  geom_point(size=2.5) +
+  geom_abline(slope = 0, intercept = 0, color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Predicted number of doctors", 
+       y = "Residual") +
+  theme(text = element_text(size = 25))
+```
+
+This looks better!
+]
+
+---
+
+### Normality
+
+.large[
+$$\sqrt{\text{MDs}} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$
+
+**Normality assumption:** the noise term $\varepsilon$ follows a normal distribution
+
+.question[
+How do we assess the normality assumption?
+]
+]
+
+---
+
+### Normality
+
+.large[
+$$\sqrt{\text{MDs}} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$
+
+**Normality assumption:** the noise term $\varepsilon$ follows a normal distribution
+
+.question[
+How do we assess the normality assumption?
+]
+]
+
+.large[
+With a QQ plot!
+]
+
+---
+
+### QQ plot
+
+.large[
+$\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}$
+
+.question[
+What goes on the x and y axes of my QQ plot?
+]
+]
+
+---
+
+### QQ plot
+
+.large[
+$\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}$
+
+.question[
+What goes on the x and y axes of my QQ plot?
+]
+]
+
+.large[
+* x axis: theoretical normal quantiles
+* y axis: observed residual quantiles
+]
+
+---
+
+### QQ plot
+
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(sqrt(MDs) ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(resids = residuals(m1)) %>%
+  ggplot(aes(sample = resids)) +
+  geom_qq(size=2.5) +
+  geom_qq_line(color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Theoretical normal quantiles", 
+       y = "Observed residual quantiles") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+How does the QQ plot look?
+]
+]
+
+---
+
+### QQ plot
+
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=4.5}
+m1 <- lm(sqrt(MDs) ~ Hospitals + Beds, data = CountyHealth)
+
+CountyHealth %>%
+  mutate(resids = residuals(m1)) %>%
+  ggplot(aes(sample = resids)) +
+  geom_qq(size=2.5) +
+  geom_qq_line(color="blue", lwd=1.2) +
+  theme_bw() +
+  labs(x = "Theoretical normal quantiles", 
+       y = "Observed residual quantiles") +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+.question[
+How does the QQ plot look?
+]
+]
+
+.large[
+Pretty good!
+]
+
+---
+
+### Independence and randomness
+
+.large[
+$$\sqrt{\text{MDs}} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$
+
+**Independence assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+**Randomness assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.question[
+How do we assess the independence and randomness assumptions?
+]
+]
+
+---
+
+### Independence and randomness
+
+.large[
+$$\sqrt{\text{MDs}} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$
+
+**Independence assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+**Randomness assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.question[
+How do we assess the independence and randomness assumptions?
+]
+]
+
+
+.large[
+Think about the data generating process (can't check these assumptions with plots)
+]
+
+---
+
+### Independence and randomness
+
+.large[
+
+**Independence assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+**Randomness assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.question[
+Do independence and randomness seem reasonable for the county health data?
+]
+]
+
+---
+
+### Independence and randomness
+
+.large[
+
+**Independence assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+**Randomness assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.question[
+Do independence and randomness seem reasonable for the county health data?
+]
+]
+
+.large[
+* Independence: reasonable to assume the number of hospitals/doctors for one county doesn't affect the number of hospitals/doctors for another county
+* Randomness: we are told the data come from a random sample
+]
+
+---
+
+### Comparing models
+
+.large[
+With both variables:
+
+* $\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}$
+* $R^2_{adj} = 0.919$
+
+With just Beds:
+
+* $\widehat{\sqrt{\text{MDs}}} = 8.49 + 0.018 \ \text{Beds}$
+* $R^2_{adj} = 0.899$
+
+With just Hospitals:
+
+* $\widehat{\sqrt{\text{MDs}}} = -2.75 + 6.88 \ \text{Hospitals}$
+* $R^2_{adj} = 0.849$
+
+]
+
+---
+
+### Comparing models
+
+.large[
+.question[
+Each variable is strongly associated with the response, but using both in the model doesn't improve the $R^2_{adj}$ by much. Why the small change?
+]
+]
+
+---
+
+### Comparing models
+
+.large[
+.question[
+Each variable is strongly associated with the response, but using both in the model doesn't improve the $R^2_{adj}$ by much. Why the small change?
+]
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6.5, fig.height=4.5}
+CountyHealth %>%
+  ggplot(aes(x = Beds, y = Hospitals)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+---
+
+### Multicollinearity
+
+.large[
+Beds and Hospitals are strongly related, so using both doesn't provide much more information than using just one.
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6.5, fig.height=4}
+CountyHealth %>%
+  ggplot(aes(x = Beds, y = Hospitals)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+.question[
+**Multicollinearity:** one or more predictors is strongly correlated with some combination of the other predictors.
+]
+
+]
+
+---
+
+### Multicollinearity
+
+.large[
+.question[
+**Multicollinearity:** one or more predictors is strongly correlated with some combination of the other predictors.
+]
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6.5, fig.height=4}
+CountyHealth %>%
+  ggplot(aes(x = Beds, y = Hospitals)) +
+  geom_point(size = 2.5) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+$r = 0.91$ (correlation between Beds and Hospitals)
+]
+
+---
+
+### Measuring multicollinearity
+
+.large[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6.5, fig.height=4}
+CountyHealth %>%
+  ggplot(aes(x = Beds, y = Hospitals)) +
+  geom_point(size = 2.5) +
+  geom_smooth(method = "lm", se=F, lwd=1.2) +
+  theme_bw() +
+  theme(text = element_text(size=25))
+```
+
+$\widehat{\text{Beds}} = -514.68 + 349.15 \ \text{Hospitals}$
+
+$R^2 = 0.82$ (for predicting Beds from Hospitals)
+
+**Variance inflation factor:** $VIF = \dfrac{1}{1 - R^2} = \dfrac{1}{1 - 0.82} = 5.56$
+]
+
+---
+
+### Variance inflation factors
+
+.large[
+**Motivation:** High multicollinearity means a predictor can be estimated well by some combination of other predictors
+
+**Variance inflation factor:** Let $X_i$ be a predictor in the model, and $R_i^2$ the coefficient of determination for a model estimating $X_i$ from the other predictors. The *variance inflation factor* of $X_i$ is
+
+$$VIF_i = \dfrac{1}{1 - R_i^2}$$
+* Higher VIF means more multicollinearity
+* Rule of thumb: worried when $VIF_i > 5$ (i.e. $R_i^2 > 0.8$ )
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity. Submit your rendered HTML file at the end of class.
+]
+
+---
+
+### Class activity
+
+.large[
+* $\widehat{\text{Hgt97}} = 40.59 + 1.10 \ \text{Hgt96} \hspace{1cm} R^2_{adj} =$
+]
+
+---
+
+### Class activity
+
+.large[
+* $\widehat{\text{Hgt97}} = 40.59 + 1.10 \ \text{Hgt96} \hspace{1cm} R^2_{adj} = 0.949$
+* $\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96} \hspace{1cm} R^2_{adj} =$
+]
+
+---
+
+### Class activity
+
+.large[
+* $\widehat{\text{Hgt97}} = 40.59 + 1.10 \ \text{Hgt96} \hspace{1cm} R^2_{adj} = 0.949$
+* $\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96} \hspace{1cm} R^2_{adj} = 0.942$
+
+.question[
+Why doesn't $R^2_{adj}$ increase when I add diameter to the model?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+Why doesn't $R^2_{adj}$ increase when I add diameter to the model?
+]
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+data("Pines")
+Pines %>%
+  ggplot(aes(x = Diam96, y = Hgt96)) +
+  geom_point(size=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+Because diameter and height in 1996 are so correlated.
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96}$$
+.question[
+What is the variance inflation factor for Diam96?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96}$$
+.question[
+What is the variance inflation factor for Diam96?
+]
+]
+
+.large[
+```{r}
+m1 <- lm(Diam96 ~ Hgt96, data = Pines)
+summary(m1)$r.squared
+```
+
+$VIF = \dfrac{1}{1 - 0.813} = 5.35$
+]
+
+---
+
+### Why is multicollinearity a problem?
+
+.large[
+* Inflates variability of estimated coefficients
+* Interpretation of individual terms is difficult
+
+$$\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}$$
+
+**Usual interpretation:** Holding Beds fixed, an increase of 1 hospital is associated with an increase of 2.58 units in $\sqrt{\text{MDs}}$
+
+**Problem:** When Beds and Hospitals are highly correlated, doesn't make sense to fix one and change the other. (Can't really change the number of hospitals without changing the number of beds)
+
+]
+

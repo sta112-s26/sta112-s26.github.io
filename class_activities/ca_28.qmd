@@ -1,0 +1,42 @@
+---
+title: "Class activity"
+format: html
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Instructions:** 
+
+* Work individually or with a neighbor to answer the following questions 
+* To get started, download the [class activity template](https://sta112-s26.github.io/class_activities/ca_28_template.qmd) file
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+In this activity, we will work with data from the biology department at Kenyon College. The biology department planted 1000 pine trees in 1990, and measured their size in 1990, 1996, and 1997. How well do measurements this year predict measurements next year? In this activity, we will use tree diameter in 1996 (Diam96) and tree height in 1996 (Hgt96) to predict tree height in 1997 (Hgt97). The data are contained in the `Pines` dataset in the Stat2Data package.
+
+## Questions
+
+1. Can we predict the tree's height in 1997 from its height in 1996? Fill in the code to fit the simple linear regression model $\text{Hgt97} = \beta_0 + \beta_1 \text{Hgt96} + \varepsilon$. Report $R^2_{adj}$ for the fitted model. 
+
+```{r, eval=F}
+library(Stat2Data)
+data("Pines")
+
+m1 <- lm(..., data = Pines)
+```
+
+
+2. What if we add diameter to the model? Fit the multiple regression model $\text{Hgt97} = \beta_0 + \beta_1 \text{Diam96} + \beta_2 \text{Hgt96} + \varepsilon$. How does your $R^2_{adj}$ compare to the model in exercise 1?
+
+```{r, eval=F}
+m2 <- lm(..., data = Pines)
+```
+
+
+3. Plot height in 1996 against diameter in 1996. What do you notice?
+
+4. Now let's calculate a variance inflation factor for Diam96 in the model. Fit the regression model $\text{Diam96} = \beta_0 + \beta_1 \text{Hgt96} + \varepsilon$, and use the $R^2$ from the fitted model to calculate the variance inflation factor.
+
+```{r, eval=F}
+m3 <- lm(..., data = Pines)
+```

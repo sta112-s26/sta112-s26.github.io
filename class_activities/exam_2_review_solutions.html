@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exam 2 review questions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="exam_2_review_solutions_files/libs/clipboard/clipboard.min.js"></script>
+<script src="exam_2_review_solutions_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="exam_2_review_solutions_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="exam_2_review_solutions_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="exam_2_review_solutions_files/libs/quarto-html/popper.min.js"></script>
+<script src="exam_2_review_solutions_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="exam_2_review_solutions_files/libs/quarto-html/anchor.min.js"></script>
+<link href="exam_2_review_solutions_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="exam_2_review_solutions_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="exam_2_review_solutions_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="exam_2_review_solutions_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="exam_2_review_solutions_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exam 2 review questions</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Below are questions to help you study for Exam 2. These are some examples of the kinds of questions I might ask.</p>
+<ul>
+<li>This is not a practice exam.</li>
+<li>The questions cover most, but not all, possible material for the exam.</li>
+<li>The distribution of questions here is not necessarily reflective of the distribution of questions on the actual exam.</li>
+</ul>
+<section id="multiple-choice-questions" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-choice-questions">Multiple choice questions</h2>
+<ol type="1">
+<li>Which of the following is the correct formula for <span class="math inline">\(R^2\)</span>?
+<ol type="a">
+<li><span class="math inline">\(R^2 = \dfrac{\sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{\sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R^2 = 1 - \dfrac{\sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{\sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R^2 = \dfrac{\frac{1}{n-p}  \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{ \frac{1}{n-1} \sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R^2 = 1 - \dfrac{\frac{1}{n-p}  \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{ \frac{1}{n-1} \sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R^2 = \dfrac{\frac{1}{p-1}  \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{ \frac{1}{n-1} \sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R^2 = 1 - \dfrac{\frac{1}{p-1}  \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{ \frac{1}{n-p} \sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+</ol></li>
+</ol>
+<p><strong>Solution:</strong> (b)</p>
+<ol start="2" type="1">
+<li>Which of the following is the correct formula for <span class="math inline">\(R_{adj}^2\)</span>?
+<ol type="a">
+<li><span class="math inline">\(R_{adj}^2 = \dfrac{\sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{\sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R_{adj}^2 = 1 - \dfrac{\sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{\sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R_{adj}^2 = \dfrac{\frac{1}{n-p}  \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{ \frac{1}{n-1} \sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R_{adj}^2 = 1 - \dfrac{\frac{1}{n-p}  \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{ \frac{1}{n-1} \sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R_{adj}^2 = \dfrac{\frac{1}{p-1}  \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{ \frac{1}{n-1} \sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+<li><span class="math inline">\(R_{adj}^2 = 1 - \dfrac{\frac{1}{p-1}  \sum \limits_{i=1}^n (y_i - \widehat{y}_i)^2}{ \frac{1}{n-p} \sum \limits_{i=1}^n (y_i - \overline{y})^2}\)</span></li>
+</ol></li>
+</ol>
+<p><strong>Solution:</strong> (d)</p>
+<ol start="3" type="1">
+<li>How are the <span class="math inline">\(F\)</span> and <span class="math inline">\(t\)</span> distributions related?
+<ol type="a">
+<li>If <span class="math inline">\(t \sim t_d\)</span>, then <span class="math inline">\(t^2 \sim F_{d, 1}\)</span></li>
+<li>If <span class="math inline">\(t \sim t_d\)</span>, then <span class="math inline">\(t^2 \sim F_{1, d}\)</span></li>
+<li>If <span class="math inline">\(F \sim F_{1,d}\)</span> then <span class="math inline">\(F^2 \sim t_d\)</span></li>
+<li>If <span class="math inline">\(F \sim F_{d, 1}\)</span> then <span class="math inline">\(F^2 \sim t_d\)</span></li>
+</ol></li>
+</ol>
+<p><strong>Solution:</strong> (b)</p>
+</section>
+<section id="short-answer-questions" class="level2">
+<h2 class="anchored" data-anchor-id="short-answer-questions">Short answer questions</h2>
+<ol start="4" type="1">
+<li>Can <span class="math inline">\(R^2\)</span> decrease when additional variables are added to a model? Explain. What about <span class="math inline">\(R^2_{adj}\)</span>?</li>
+</ol>
+<p><strong>Solution:</strong> <span class="math inline">\(R^2\)</span> can never decrease when additional variables are added. Remember that we are estimating our linear model coefficients by minimizing the SSE. If adding additional variables can decrease the SSE even a little, then the <span class="math inline">\(R^2\)</span> will increase. In the worst case, the SSE will stay exactly the same.</p>
+<p>On the other hand, <span class="math inline">\(R^2_{adj}\)</span> <em>can</em> decrease when variables are added, because it includes a penalty for the number of parameters in the model. If the additional variables do not add much to our ability to predict the response, then <span class="math inline">\(R^2_{adj}\)</span> may decrease because the change in SSE does not outweigh the penalty for having additional parameters in the model.</p>
+<ol start="5" type="1">
+<li>How should we handle potential outliers with a studentized residual <span class="math inline">\(&lt; -3\)</span> or <span class="math inline">\(&gt; 3\)</span>?</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>If the outliers are a clear error, or clearly come from a different population than the population of interest, then we can remove them from the data</li>
+<li>Otherwise, we fit the model both with and without the potential outliers, and report our conclusions with both models</li>
+</ul>
+<ol start="6" type="1">
+<li>A multiple regression model has response <span class="math inline">\(Y\)</span> and two quantitative explanatory variables, <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>:</li>
+</ol>
+<p><span class="math display">\[Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon\]</span> The sample correlation between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> is <span class="math inline">\(r = 0.6\)</span>. Calculate the variance inflation factors (VIFs) for <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>.</p>
+<p><strong>Solution:</strong> In this case, we have just two explanatory variables, so the VIF for both variables will be the same. The same correlation between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> is <span class="math inline">\(r = 0.6\)</span>, so the coefficient of determination for predicting <span class="math inline">\(X_1\)</span> from <span class="math inline">\(X_2\)</span> (or vice-versa) is <span class="math inline">\(R^2 = r^2 = 0.36\)</span>. Then, <span class="math inline">\(VIF = 1/(1 - R^2) = 1/(1 - 0.36) = 1.56\)</span></p>
+<ol start="7" type="1">
+<li>A multiple regression model has response <span class="math inline">\(Y\)</span> and three quantitative explanatory variables, <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>, and <span class="math inline">\(X_3\)</span>:</li>
+</ol>
+<p><span class="math display">\[Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \varepsilon\]</span></p>
+<p>The variance inflation factor (VIF) for <span class="math inline">\(X_1\)</span> is 4. Calculate the <span class="math inline">\(R^2\)</span> for the regression of <span class="math inline">\(X_1\)</span> on <span class="math inline">\(X_2\)</span> and <span class="math inline">\(X_3\)</span>.</p>
+<p><strong>Solution:</strong> <span class="math inline">\(VIF = 1/(1 - R^2)\)</span>. So, <span class="math inline">\(4 = 1/(1 - R^2)\)</span>, and solving for <span class="math inline">\(R^2\)</span> we get <span class="math inline">\(R^2 = 0.75\)</span>.</p>
+<ol start="8" type="1">
+<li>What is Simpson’s paradox?</li>
+</ol>
+<p><strong>Solution:</strong> The apparent relationship between variables changes when additional variables are included in the model</p>
+<ol start="9" type="1">
+<li>What are some benefits of including multiple explanatory variables in a regression model?</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>Improve the ability to predict the response</li>
+<li>Account for other variables that may change the relationship</li>
+</ul>
+<ol start="10" type="1">
+<li>True or False: any hypotheses which can be tested with a nested F-test (comparing full and reduced models) can also be tested with a t-test. Explain your answer.</li>
+</ol>
+<p><strong>Solution:</strong> False. A nested F-test compares nested (full and reduced) models. Written in terms of model parameters, this is equivalent to hypotheses like</p>
+<p><span class="math inline">\(H_0: \beta_1 = \beta_2 = \beta_3 = 0\)</span></p>
+<p>(It doesn’t have to be three parameters tested, this is just an example). The key is that the null hypothesis is always about removing one or more terms from the model. If we are testing a <em>single</em> <span class="math inline">\(\beta\)</span>, then we can also do the test with a <span class="math inline">\(t\)</span>-test. But we can’t use a <span class="math inline">\(t\)</span>-test to simultaneously test multiple <span class="math inline">\(\beta\)</span>s.</p>
+</section>
+<section id="anova-table-practice" class="level2">
+<h2 class="anchored" data-anchor-id="anova-table-practice">ANOVA table practice</h2>
+<p>The commonly accepted explanation for the extinction of the dinosaurs is a colossal asteroid strike. To support this hypothesis, we can look for iridium, a rare metal which is more common in asteroids, in rock samples. A sudden increase in iridium at some point in time supports the asteroid hypothesis.</p>
+<p>We have data on 28 rock samples, recording the concentration of iridium (in ppb) for each sample, and the type of rock (Limestone or Shale). We use the model</p>
+<p><span class="math display">\[Iridium = \beta_0 + \beta_1 IsShale + \varepsilon\]</span></p>
+<p>We can use an ANOVA table to explore differences between these types of rock. Here is a partial ANOVA table for the model described above:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>df</th>
+<th>SS</th>
+<th>MS</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Model</td>
+<td></td>
+<td>88363</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Residual</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Total</td>
+<td></td>
+<td>1252331</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol start="11" type="1">
+<li>Fill in the remainder of the ANOVA table.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>df</th>
+<th>SS</th>
+<th>MS</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Model</td>
+<td>1</td>
+<td>88363</td>
+<td>88363</td>
+<td>1.97</td>
+</tr>
+<tr class="even">
+<td>Residual</td>
+<td>26</td>
+<td>1163968</td>
+<td>44768</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Total</td>
+<td>27</td>
+<td>1252331</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="example-data-questions" class="level2">
+<h2 class="anchored" data-anchor-id="example-data-questions">Example data questions</h2>
+<p>How does stress impact animals’ oxygen consumption? To investigate this question, biologists exposed 100 crabs to either 7.5 minutes of loud ship noise, or 7.5 minutes of normal ocean noise, and recorded their oxygen consumption. The data contain the following variables.</p>
+<ul>
+<li><code>Mass</code>: crab mass (g)</li>
+<li><code>Oxygen</code>: rate of oxygen consumption (micromoles per hour)</li>
+<li><code>Noise</code>: type of noise (either <code>ocean</code> or <code>ship</code>)</li>
+</ul>
+<p>The researchers are interested in the relationship between mass and oxygen consumption, and the impact of noise on this relationship. They make the following scatterplot:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="exam_2_review_solutions_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>They consider three different models for this relationship (<span class="math inline">\(\text{IsShip}\)</span> is an indicator variable which is 1 for ship noise, and 0 for ocean noise):</p>
+<p><span class="math inline">\((1) \hspace{1cm} \text{oxygen} = \beta_0 + \beta_1 \text{mass} + \varepsilon\)</span></p>
+<p><span class="math inline">\((2) \hspace{1cm} \text{oxygen} = \beta_0 + \beta_1 \text{IsShip} + \beta_2 \text{mass} + \varepsilon\)</span></p>
+<p><span class="math inline">\((3) \hspace{1cm} \text{oxygen} = \beta_0 + \beta_1 \text{IsShip} + \beta_2 \text{mass} + \beta_3 \text{IsShip} \cdot \text{mass} +  \varepsilon\)</span></p>
+<p>The estimated equations for these models are</p>
+<p><span class="math inline">\((1) \hspace{1cm} \widehat{\text{oxygen}} = 161.29 + 0.23 \ \text{mass}\)</span></p>
+<p><span class="math inline">\((2) \hspace{1cm} \widehat{\text{oxygen}} = 143.72 + 53.68 \ \text{IsShip} + 0.05 \ \text{mass}\)</span></p>
+<p><span class="math inline">\((3) \hspace{1cm} \widehat{\text{oxygen}} = 52.06 + 257.38 \ \text{IsShip} + 1.92 \ \text{mass} - 4.05 \ \text{IsShip} \cdot \text{mass}\)</span></p>
+<ol start="12" type="1">
+<li>Based on the scatterplot, which of these three models do you think is most appropriate? Explain your reasoning.</li>
+</ol>
+<p><strong>Solution:</strong> Model 3 is the most appropriate. From the scatterplot, we can see a clear difference in the slopes for the ocean vs.&nbsp;ship noise groups. The only way to allow a difference in the slope is to include an interaction term.</p>
+<ol start="13" type="1">
+<li><p>For each of the <em>other</em> two models, draw a scatterplot that would encourage you to choose that model, instead of the model selected in Question 12.</p></li>
+<li><p>Using the estimated equation for the model you chose in question 12, what is the predicted rate of oxygen consumption for a 40g crab exposed to ocean noise? What about for a 40g crab exposed to ship noise?</p></li>
+</ol>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>40g crab exposed to ocean noise: <span class="math inline">\(52.06 + 1.92\cdot40 = 128.86\)</span></li>
+<li>40g crab exposed to ship noise: <span class="math inline">\(52.06 + 257.38 + (1.92 - 4.05)\cdot40 = 224.24\)</span></li>
+</ul>
+<ol start="15" type="1">
+<li>What is the estimated change in oxygen consumption associated with a 1g increase in Mass, for crabs exposed to ship noise?</li>
+</ol>
+<p><strong>Solution:</strong> <span class="math inline">\(1.92 - 4.05 = -2.13\)</span>, so a 1g increase in Mass is associated with a decrease of 2.13 micromoles per hour in oxygen consumption, for crabs exposed to ship noise.</p>
+<ol start="16" type="1">
+<li>The researchers want to test whether there is any relationship between ship noise and oxygen consumption, after accounting for mass. Write down a null and alternative hypothesis for this test, in terms of one or more parameters from the model.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<p><span class="math display">\[H_0: \beta_1 = \beta_3 = 0 \hspace{1cm} H_A: \text{at least one of } \beta_1, \beta_3 \neq 0\]</span></p>
+<ol start="17" type="1">
+<li>What test can the researchers use to test their hypotheses? Explain your reasoning, and provide the degrees of freedom.</li>
+</ol>
+<p><strong>Solution:</strong> We are simultaneously testing more than one coefficient, so we need to use a nested F-test. Remember that the F distribution is parameterized by the numerator and denominator degrees of freedom. Here the numerator degrees of freedom is 2 (we are testing two parameters, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_3\)</span>), and the denominator degrees of freedom is <span class="math inline">\(n - p = 100 - 4 = 96\)</span> (where <span class="math inline">\(p\)</span> is the number of parameters in the full model).</p>
+<ol start="18" type="1">
+<li>Below are the ANOVA tables for the three fitted models. Use these tables to calculate a test statistic for the hypotheses in Question 16.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Oxygen <span class="sc">~</span> Mass, <span class="at">data =</span> crabs)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: Oxygen
+          Df Sum Sq Mean Sq F value Pr(&gt;F)
+Mass       1    895  894.52  0.5351 0.4662
+Residuals 98 163817 1671.61               </code></pre>
+</div>
+</div>
+<p><br></p>
+<p><br></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Oxygen <span class="sc">~</span> Mass <span class="sc">+</span> Noise, <span class="at">data =</span> crabs)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: Oxygen
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+Mass       1    895     895  0.9398   0.3347    
+Noise      1  71489   71489 75.1070 1.01e-13 ***
+Residuals 97  92328     952                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p><br></p>
+<p><br></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Oxygen <span class="sc">~</span> Mass<span class="sc">*</span>Noise, <span class="at">data =</span> crabs)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: Oxygen
+           Df Sum Sq Mean Sq  F value  Pr(&gt;F)    
+Mass        1    895     895   3.2786 0.07332 .  
+Noise       1  71489   71489 262.0215 &lt; 2e-16 ***
+Mass:Noise  1  66135   66135 242.3981 &lt; 2e-16 ***
+Residuals  96  26192     273                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p><strong>Solution:</strong></p>
+<p><span class="math display">\[F = \dfrac{(SSE_{reduced} - SSE_{full})/(df_{reduced} - df_{full})}{SSE_{full}/df_{full}} = \dfrac{(163817 - 26192)/2}{26192/96} = 252.2\]</span></p>
+<ol start="19" type="1">
+<li>Below is a picture of the distribution used to calculate a p-value with the test statistic in the previous question. Is the observed test statistic <em>usual</em> or <em>unusual</em> under the null hypothesis?</li>
+</ol>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="exam_2_review_solutions_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Solution:</strong> Very unusual</p>
+</section>
+<section id="more-data-practice" class="level2">
+<h2 class="anchored" data-anchor-id="more-data-practice">More data practice</h2>
+<p>A Saint Olaf College student, undertook a study of the archery scores of students at the college who were enrolled in an archery course. Students taking the course record a score for each day they attend class from the first until the last day. We have the following data for each student in the class:</p>
+<ul>
+<li><code>Attendance</code>: Number of days in class</li>
+<li><code>Day1</code>: Archery score on first day</li>
+<li><code>LastDay</code>: Archery score on last day</li>
+</ul>
+<p>The student fits the following regression model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m_archery <span class="ot">&lt;-</span> <span class="fu">lm</span>(LastDay <span class="sc">~</span> Day1 <span class="sc">+</span> Attendance, <span class="at">data =</span> ArcheryData)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_archery)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<pre><code>            Estimate Std. Error 
+(Intercept) 113.1278   174.6178  
+Day1          0.7578     0.2046  
+Attendance   -1.3973     7.9871 
+
+Multiple R-squared:  0.5127,    Adjusted R-squared:  0.4477 </code></pre>
+<ol start="20" type="1">
+<li>Interpret each of the coefficients in the fitted model, in context of the data.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>The estimated score on the last day of class, for a student with a score of 0 on the first day and who never attended class, is 113.13</li>
+<li>We estimate that a one-point increase in archery score on the first day of class is associated with an average increase of 0.76 points in final day score, holding attendance constant</li>
+<li>We estimate that a one-day increase in attendance is associated with an average decrease of 1.40 points in final day score, holding first day score constant</li>
+</ul>
+<ol start="21" type="1">
+<li>Interpret the <span class="math inline">\(R^2\)</span> for the model.</li>
+</ol>
+<p><strong>Solution:</strong> About 51.3% of the variability in final day score is explained by the regression on first day score and attendance.</p>
+<ol start="22" type="1">
+<li>Calculate and interpret a 97% confidence interval for the change in archery score on the last day associated with a 1-point increase in archery score on the first day, holding attendance fixed. The critical value is <span class="math inline">\(t^* = 2.40\)</span>.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<p><span class="math inline">\(0.7578 \pm 2.40(0.2046) = (0.267, 1.249)\)</span></p>
+<p>We are 97% confident that a 1-point increase in archery score is associated with an average increase in the last-day score of between 0.267 and 1.249 points, holding attendance fixed.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

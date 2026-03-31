@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Assumptions, diagnostics, and multicollinearity</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Assumptions, diagnostics, and multicollinearity
+]
+
+---
+
+
+
+### Data
+
+.large[
+Data on the number of doctors, hospitals, and beds in 53 randomly selected US counties. Variables include:
+
+* `MDs`: number of doctors in the county
+* `Hospitals`: number of hospitals in the county
+* `Beds`: number of beds in the hospitals
+
+**Goal:** Predict the number of doctors using the number of hospitals and the number of beds
+]
+
+---
+
+### Multiple regression model
+
+.large[
+
+
+`$$\text{MDs} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$`
+.question[
+What assumptions does our multiple regression model make?
+]
+]
+
+---
+
+### Multiple regression model
+
+.large[
+
+
+`$$\text{MDs} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$`
+.question[
+What assumptions does our multiple regression model make?
+]
+]
+
+.large[
+The same assumptions as before:
+
+* Shape
+* Constant variance
+* Normality
+* Independence
+* Randomness
+]
+
+---
+
+### Shape and constant variance
+
+.large[
+`$$\text{MDs} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$`
+
+**Shape:** the shape of the regression model is at least approximately correct
+  * In this case, the number of doctors has a linear relationship with the number of hospitals and the number of beds
+  
+**Constant variance:** The variance of the noise term `\(\varepsilon\)` is the same for all numbers of hospitals and beds
+
+.question[
+How do we assess the shape and constant variance assumptions?
+]
+]
+
+---
+
+### Shape and constant variance
+
+.large[
+`$$\text{MDs} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$`
+
+**Shape:** the shape of the regression model is at least approximately correct
+  * In this case, the number of doctors has a linear relationship with the number of hospitals and the number of beds
+  
+**Constant variance:** The variance of the noise term `\(\varepsilon\)` is the same for all numbers of hospitals and beds
+
+.question[
+How do we assess the shape and constant variance assumptions?
+]
+]
+
+.large[
+A residual plot!
+]
+
+---
+
+### Residual plot
+
+.large[
+`\(\widehat{\text{MDs}} = -472.08 + 117.40 \ \text{Hospitals} + 1.26 \ \text{Beds}\)`
+
+.question[
+What goes on the x and y axes of my residual plot?
+]
+]
+
+---
+
+### Residual plot
+
+.large[
+`\(\widehat{\text{MDs}} = -472.08 + 117.40 \ \text{Hospitals} + 1.26 \ \text{Beds}\)`
+
+.question[
+What goes on the x and y axes of my residual plot?
+]
+]
+
+.large[
+* x axis: the predicted response ( `\(\widehat{\text{MDs}}\)` )
+* y axis: the residuals ( `\(\text{MDs} - \widehat{\text{MDs}}\)` )
+]
+
+---
+
+### Residual plot
+
+.large[
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+.question[
+How do the shape and constant variance assumptions look?
+]
+]
+
+---
+
+### Residual plot
+
+.large[
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+.question[
+How do the shape and constant variance assumptions look?
+]
+]
+
+.large[
+Not good -- violations to both shape and constant variance
+]
+
+---
+
+### Residual plot
+
+.large[
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+.question[
+How do we address violations of shape and constant variance?
+]
+]
+
+---
+
+### Residual plot
+
+.large[
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+.question[
+How do we address violations of shape and constant variance?
+]
+]
+
+.large[
+Transformations!
+]
+
+---
+
+### Residual plot
+
+.large[
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+.question[
+What transformation would you recommend?
+]
+]
+
+---
+
+### Residual plot
+
+.large[
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+.question[
+What transformation would you recommend?
+]
+]
+
+.large[
+Maybe log or square root the response
+]
+
+---
+
+### Transforming the data
+
+.large[
+`\(\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}\)`
+
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+This looks better!
+]
+
+---
+
+### Normality
+
+.large[
+`$$\sqrt{\text{MDs}} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$`
+
+**Normality assumption:** the noise term `\(\varepsilon\)` follows a normal distribution
+
+.question[
+How do we assess the normality assumption?
+]
+]
+
+---
+
+### Normality
+
+.large[
+`$$\sqrt{\text{MDs}} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$`
+
+**Normality assumption:** the noise term `\(\varepsilon\)` follows a normal distribution
+
+.question[
+How do we assess the normality assumption?
+]
+]
+
+.large[
+With a QQ plot!
+]
+
+---
+
+### QQ plot
+
+.large[
+`\(\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}\)`
+
+.question[
+What goes on the x and y axes of my QQ plot?
+]
+]
+
+---
+
+### QQ plot
+
+.large[
+`\(\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}\)`
+
+.question[
+What goes on the x and y axes of my QQ plot?
+]
+]
+
+.large[
+* x axis: theoretical normal quantiles
+* y axis: observed residual quantiles
+]
+
+---
+
+### QQ plot
+
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+How does the QQ plot look?
+]
+]
+
+---
+
+### QQ plot
+
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+.question[
+How does the QQ plot look?
+]
+]
+
+.large[
+Pretty good!
+]
+
+---
+
+### Independence and randomness
+
+.large[
+`$$\sqrt{\text{MDs}} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$`
+
+**Independence assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+**Randomness assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.question[
+How do we assess the independence and randomness assumptions?
+]
+]
+
+---
+
+### Independence and randomness
+
+.large[
+`$$\sqrt{\text{MDs}} = \beta_0 + \beta_1 \ \text{Hospitals} + \beta_2 \ \text{Beds} + \varepsilon$$`
+
+**Independence assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+**Randomness assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.question[
+How do we assess the independence and randomness assumptions?
+]
+]
+
+
+.large[
+Think about the data generating process (can't check these assumptions with plots)
+]
+
+---
+
+### Independence and randomness
+
+.large[
+
+**Independence assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+**Randomness assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.question[
+Do independence and randomness seem reasonable for the county health data?
+]
+]
+
+---
+
+### Independence and randomness
+
+.large[
+
+**Independence assumption:** Observations are independent -- one point falling above or below the line has no influence on the location of another point
+
+**Randomness assumption:** The data are obtained using a random process, such as a random sample or randomized experiment
+
+.question[
+Do independence and randomness seem reasonable for the county health data?
+]
+]
+
+.large[
+* Independence: reasonable to assume the number of hospitals/doctors for one county doesn't affect the number of hospitals/doctors for another county
+* Randomness: we are told the data come from a random sample
+]
+
+---
+
+### Comparing models
+
+.large[
+With both variables:
+
+* `\(\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}\)`
+* `\(R^2_{adj} = 0.919\)`
+
+With just Beds:
+
+* `\(\widehat{\sqrt{\text{MDs}}} = 8.49 + 0.018 \ \text{Beds}\)`
+* `\(R^2_{adj} = 0.899\)`
+
+With just Hospitals:
+
+* `\(\widehat{\sqrt{\text{MDs}}} = -2.75 + 6.88 \ \text{Hospitals}\)`
+* `\(R^2_{adj} = 0.849\)`
+
+]
+
+---
+
+### Comparing models
+
+.large[
+.question[
+Each variable is strongly associated with the response, but using both in the model doesn't improve the `\(R^2_{adj}\)` by much. Why the small change?
+]
+]
+
+---
+
+### Comparing models
+
+.large[
+.question[
+Each variable is strongly associated with the response, but using both in the model doesn't improve the `\(R^2_{adj}\)` by much. Why the small change?
+]
+]
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Multicollinearity
+
+.large[
+Beds and Hospitals are strongly related, so using both doesn't provide much more information than using just one.
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+
+.question[
+**Multicollinearity:** one or more predictors is strongly correlated with some combination of the other predictors.
+]
+
+]
+
+---
+
+### Multicollinearity
+
+.large[
+.question[
+**Multicollinearity:** one or more predictors is strongly correlated with some combination of the other predictors.
+]
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+
+`\(r = 0.91\)` (correlation between Beds and Hospitals)
+]
+
+---
+
+### Measuring multicollinearity
+
+.large[
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+`\(\widehat{\text{Beds}} = -514.68 + 349.15 \ \text{Hospitals}\)`
+
+`\(R^2 = 0.82\)` (for predicting Beds from Hospitals)
+
+**Variance inflation factor:** `\(VIF = \dfrac{1}{1 - R^2} = \dfrac{1}{1 - 0.82} = 5.56\)`
+]
+
+---
+
+### Variance inflation factors
+
+.large[
+**Motivation:** High multicollinearity means a predictor can be estimated well by some combination of other predictors
+
+**Variance inflation factor:** Let `\(X_i\)` be a predictor in the model, and `\(R_i^2\)` the coefficient of determination for a model estimating `\(X_i\)` from the other predictors. The *variance inflation factor* of `\(X_i\)` is
+
+`$$VIF_i = \dfrac{1}{1 - R_i^2}$$`
+* Higher VIF means more multicollinearity
+* Rule of thumb: worried when `\(VIF_i &gt; 5\)` (i.e. `\(R_i^2 &gt; 0.8\)` )
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity. Submit your rendered HTML file at the end of class.
+]
+
+---
+
+### Class activity
+
+.large[
+* `\(\widehat{\text{Hgt97}} = 40.59 + 1.10 \ \text{Hgt96} \hspace{1cm} R^2_{adj} =\)`
+]
+
+---
+
+### Class activity
+
+.large[
+* `\(\widehat{\text{Hgt97}} = 40.59 + 1.10 \ \text{Hgt96} \hspace{1cm} R^2_{adj} = 0.949\)`
+* `\(\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96} \hspace{1cm} R^2_{adj} =\)`
+]
+
+---
+
+### Class activity
+
+.large[
+* `\(\widehat{\text{Hgt97}} = 40.59 + 1.10 \ \text{Hgt96} \hspace{1cm} R^2_{adj} = 0.949\)`
+* `\(\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96} \hspace{1cm} R^2_{adj} = 0.942\)`
+
+.question[
+Why doesn't `\(R^2_{adj}\)` increase when I add diameter to the model?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+Why doesn't `\(R^2_{adj}\)` increase when I add diameter to the model?
+]
+]
+
+&lt;img src="lecture_28_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+.large[
+Because diameter and height in 1996 are so correlated.
+]
+
+---
+
+### Class activity
+
+.large[
+`$$\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96}$$`
+.question[
+What is the variance inflation factor for Diam96?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+`$$\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96}$$`
+.question[
+What is the variance inflation factor for Diam96?
+]
+]
+
+.large[
+
+``` r
+m1 &lt;- lm(Diam96 ~ Hgt96, data = Pines)
+summary(m1)$r.squared
+```
+
+```
+## [1] 0.8134518
+```
+
+`\(VIF = \dfrac{1}{1 - 0.813} = 5.35\)`
+]
+
+---
+
+### Why is multicollinearity a problem?
+
+.large[
+* Inflates variability of estimated coefficients
+* Interpretation of individual terms is difficult
+
+`$$\widehat{\sqrt{\text{MDs}}} = 3.58 + 2.58 \ \text{Hospitals} + 0.012 \ \text{Beds}$$`
+
+**Usual interpretation:** Holding Beds fixed, an increase of 1 hospital is associated with an increase of 2.58 units in `\(\sqrt{\text{MDs}}\)`
+
+**Problem:** When Beds and Hospitals are highly correlated, doesn't make sense to fix one and change the other. (Can't really change the number of hospitals without changing the number of beds)
+
+]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
