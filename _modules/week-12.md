@@ -15,3 +15,4 @@ April 1
 
 April 3
 : Model diagnostics and multicollinearity
+  : [Slides](https://sta112-s26.github.io/slides/lecture_29.pdf), [activity](https://sta112-s26.github.io/class_activities/ca_29.html)
