@@ -1,0 +1,485 @@
+---
+title: Assumptions, diagnostics, and multicollinearity
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=F}
+library(tidyverse)
+library(Stat2Data)
+data(Pines)
+```
+
+
+### Last time: Variance inflation factors
+
+.large[
+**Motivation:** High multicollinearity means a predictor can be estimated well by some combination of other predictors
+
+**Variance inflation factor:** Let $X_i$ be a predictor in the model, and $R_i^2$ the coefficient of determination for a model estimating $X_i$ from the other predictors. The *variance inflation factor* of $X_i$ is
+
+$$VIF_i = \dfrac{1}{1 - R_i^2}$$
+* Higher VIF means more multicollinearity
+* Rule of thumb: worried when $VIF_i > 5$ (i.e. $R_i^2 > 0.8$ )
+]
+
+---
+
+
+### Class activity
+
+.large[
+* $\widehat{\text{Hgt97}} = 40.59 + 1.10 \ \text{Hgt96} \hspace{1cm} R^2_{adj} = 0.949$
+* $\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96} \hspace{1cm} R^2_{adj} = 0.942$
+
+.question[
+Why doesn't $R^2_{adj}$ increase when I add diameter to the model?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.question[
+Why doesn't $R^2_{adj}$ increase when I add diameter to the model?
+]
+]
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+data("Pines")
+Pines %>%
+  ggplot(aes(x = Diam96, y = Hgt96)) +
+  geom_point(size=2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.large[
+Because diameter and height in 1996 are so correlated.
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96}$$
+.question[
+What is the variance inflation factor for Diam96?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$$\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96}$$
+.question[
+What is the variance inflation factor for Diam96?
+]
+]
+
+.large[
+```{r}
+m1 <- lm(Diam96 ~ Hgt96, data = Pines)
+summary(m1)$r.squared
+```
+
+$VIF = \dfrac{1}{1 - 0.813} = 5.35$
+]
+
+---
+
+### Why is multicollinearity a problem?
+
+.large[
+Interpretation of individual terms is difficult!
+
+$$\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96}$$
+
+.question[
+Does this mean that tree diameter is negatively associated with height?
+]
+]
+
+---
+
+### Why is multicollinearity a problem?
+
+.large[
+Interpretation of individual terms is difficult!
+
+$$\widehat{\text{Hgt97}} = 40.24 − 1.26 \ \text{Diam96} + 1.12 \ \text{Hgt96}$$
+
+.question[
+Does this mean that tree diameter is negatively associated with height?
+]
+
+No! Model with just diameter:
+
+$$\widehat{\text{Hgt97}} = 161.77 + 46.13 \ \text{Diam96}$$
+
+**Problem:** Diameter and Height in 1996 are strongly correlated; doesn't make sense to fix one and change the other.
+]
+
+---
+
+### Why is multicollinearity a problem?
+
+.large[
+It is hard to estimate the coefficients!
+]
+
+---
+
+### Why is multicollinearity a problem?
+
+.large[
+It is hard to estimate the coefficients!
+
+Model with just height in 1996:
+
+```{r, echo=F}
+m1 <- lm(Hgt97 ~ Hgt96, data = Pines)
+summary(m1)$coefficients
+```
+
+Model with both height and diameter in 1996:
+
+```{r, echo=F}
+m2 <- lm(Hgt97 ~ Hgt96 + Diam96, data = Pines)
+summary(m2)$coefficients
+```
+
+]
+
+---
+
+### Project data
+
+.large[
+
+* `MED_EARNINGS`: median earnings for graduates from each university
+* `CONTROL`: whether the school is public or private
+* `SATVRMID`: midpoint of SAT critical reading scores of students attending the school
+* `SATMTMID`: midpoint of SAT math scores
+* `SATWRMID`: midpoint of SAT writing scores
+* `ACTCMMID`: midpoint of the ACT cumulative scores
+* `ACTENMID`: midpoint of ACT English scores
+* `ACTMTMID`: midpoint of ACT math scores
+* `+` others...
+
+.question[
+Which variables might exhibit multicollinearity?
+]
+]
+
+---
+
+### Project data
+
+.large[
+
+* `MED_EARNINGS`: median earnings for graduates from each university
+* `CONTROL`: whether the school is public or private
+* `SATVRMID`: midpoint of SAT critical reading scores of students attending the school
+* `SATMTMID`: midpoint of SAT math scores
+* `SATWRMID`: midpoint of SAT writing scores
+* `ACTCMMID`: midpoint of the ACT cumulative scores
+* `ACTENMID`: midpoint of ACT English scores
+* `ACTMTMID`: midpoint of ACT math scores
+* `+` others...
+
+There is probably multicollinearity with all the test score variables
+]
+
+---
+
+### Project data
+
+.large[
+
+* `MED_EARNINGS`: median earnings for graduates from each university
+* `CONTROL`: whether the school is public or private
+* `SATVRMID`: midpoint of SAT critical reading scores of students attending the school
+* `SATMTMID`: midpoint of SAT math scores
+* `SATWRMID`: midpoint of SAT writing scores
+* `ACTCMMID`: midpoint of the ACT cumulative scores
+* `ACTENMID`: midpoint of ACT English scores
+* `ACTMTMID`: midpoint of ACT math scores
+* `+` others...
+
+.question[
+How can we visually investigate correlated predictors?
+]
+]
+
+---
+
+### Project data
+
+.pull-left[
+```{r, echo=F, message=F, fig.width=6, fig.height=4}
+
+scorecard <- read_csv("~/Documents/Teaching/sta112/sta112-s22.github.io/projects/scorecard.csv")
+
+scorecard <- scorecard |>
+  rename(MED_EARNINGS = MD_EARN_WNE_P10)
+
+scorecard |>
+  ggplot(aes(x = SATVRMID, y = SATMTMID)) +
+  geom_point() +
+  theme_bw()
+```
+
+.large[
+$r = 0.95$
+]
+]
+
+.pull-right[
+
+```{r, echo=F, message=F, fig.width=6, fig.height=4}
+
+scorecard |>
+  ggplot(aes(x = ACTMTMID, y = SATMTMID)) +
+  geom_point() +
+  theme_bw()
+```
+
+.large[
+$r = 0.94$
+]
+]
+
+---
+
+### VIFs in R
+
+.large[
+Fortunately, R makes it easy to calculate VIFs:
+
+```{r message=F, warning=F}
+library(car)
+m1 <- lm(MED_EARNINGS ~ SATVRMID + SATMTMID + 
+           SATWRMID + ACTCMMID + ACTENMID + 
+           ACTMTMID + ACTWRMID,
+         data = scorecard)
+vif(m1)
+```
+
+* The `vif` function (from the `car` package) calculates a VIF for each predictor
+* The variance inflation factor for SAT verbal score is 29.78, e.g.
+]
+
+---
+
+### Handling multicollinearity
+
+.large[
+We have a few options for handling multicollinearity:
+
+* Remove variables
+  * Example: just pick one of the test score variables, and discard the rest, since they are so highly correlated
+]
+
+---
+
+### Handling multicollinearity
+
+.large[
+We have a few options for handling multicollinearity:
+
+* Remove variables
+  * Example: just pick one of the test score variables, and discard the rest, since they are so highly correlated
+* Create a new variable
+  * Example: take an average or sum of the test score variables, instead of using all of them individually
+]
+
+---
+
+### Handling multicollinearity
+
+.large[
+We have a few options for handling multicollinearity:
+
+* Remove variables
+  * Example: just pick one of the test score variables, and discard the rest, since they are so highly correlated
+* Create a new variable
+  * Example: take an average or sum of the test score variables, instead of using all of them individually
+* Ignore it
+  * If we don't care about interpreting coefficients or doing inference, multicollinearity doesn't matter as much
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity (in R).
+]
+
+---
+
+### Class activity
+
+```{r, include=F}
+set.seed(3)
+n <- 100
+```
+
+
+.large[
+```{r}
+rho <- 0
+X <- MASS::mvrnorm(n, mu = c(0, 0), Sigma = matrix(c(1, rho, rho, 1), nrow=2))
+x1 <-X[,1]
+x2 <- X[,2]
+
+y <- 1 + x1 + x2 + rnorm(n)
+m1 <- lm(y ~ x1)
+m2 <- lm(y ~ x1 + x2)
+coef(m1)
+coef(m2)
+```
+
+]
+
+---
+
+### Class activity
+
+```{r, include=F}
+set.seed(4)
+n <- 100
+```
+
+
+.large[
+```{r}
+rho <- 0.9
+X <- MASS::mvrnorm(n, mu = c(0, 0), Sigma = matrix(c(1, rho, rho, 1), nrow=2))
+x1 <-X[,1]
+x2 <- X[,2]
+
+y <- 1 + x1 + x2 + rnorm(n)
+m1 <- lm(y ~ x1)
+m2 <- lm(y ~ x1 + x2)
+coef(m1)
+coef(m2)
+```
+
+]
+
+---
+
+### Class activity
+
+.large[
+When correlation = 0:
+]
+
+.pull-left[
+```{r, echo=F}
+rho <- 0 # correlation between x1 and x2
+n <- 100
+
+# generate x1 and x2
+X <- MASS::mvrnorm(n, mu = c(0, 0), Sigma = matrix(c(1, rho, rho, 1), nrow=2))
+x1 <-X[,1]
+x2 <- X[,2]
+
+beta0 <- 1
+beta1 <- 1
+beta2 <- 1
+
+nsim <- 1000 # number of simulations
+beta1_m1 <- rep(NA, nsim) # to store estimates from smaller model
+beta1_m2 <- rep(NA, nsim) # to store estimates from larger model
+for(i in 1:nsim){
+  # generate y and fit both models
+  y <- beta0 + beta1*x1 + beta2*x2 + rnorm(n)
+  m1 <- lm(y ~ x1)
+  m2 <- lm(y ~ x1 + x2)
+  
+  # save the coefficients
+  beta1_m1[i] <- coef(m1)[2]
+  beta1_m2[i] <- coef(m2)[2]
+}
+hist(beta1_m1, xlab = "estimated slope", 
+     main = "B1 estimates with small model (X1 only)")
+```
+]
+
+.pull-right[
+```{r, echo=F}
+hist(beta1_m2, xlab = "estimated slope", 
+     main = "B1 estimates with larger model (X1 and X2)")
+```
+
+]
+
+---
+
+### Class activity
+
+
+.large[
+When correlation = 0.9:
+]
+
+.pull-left[
+```{r, echo=F}
+rho <- 0.9 # correlation between x1 and x2
+n <- 100
+
+# generate x1 and x2
+X <- MASS::mvrnorm(n, mu = c(0, 0), Sigma = matrix(c(1, rho, rho, 1), nrow=2))
+x1 <-X[,1]
+x2 <- X[,2]
+
+beta0 <- 1
+beta1 <- 1
+beta2 <- 1
+
+nsim <- 1000 # number of simulations
+beta1_m1 <- rep(NA, nsim) # to store estimates from smaller model
+beta1_m2 <- rep(NA, nsim) # to store estimates from larger model
+for(i in 1:nsim){
+  # generate y and fit both models
+  y <- beta0 + beta1*x1 + beta2*x2 + rnorm(n)
+  m1 <- lm(y ~ x1)
+  m2 <- lm(y ~ x1 + x2)
+  
+  # save the coefficients
+  beta1_m1[i] <- coef(m1)[2]
+  beta1_m2[i] <- coef(m2)[2]
+}
+hist(beta1_m1, xlab = "estimated slope", 
+     main = "B1 estimates with small model (X1 only)",
+     xlim = c(0.3, 2.3))
+```
+]
+
+.pull-right[
+```{r, echo=F}
+hist(beta1_m2, xlab = "estimated slope", 
+     main = "B1 estimates with larger model (X1 and X2)",
+     xlim = c(0.3, 2.3))
+```
+
+]
+
+
+

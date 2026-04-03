@@ -1,0 +1,128 @@
+---
+title: "Class activity"
+format: html
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Instructions:** 
+
+* Work individually or with a neighbor to answer the following questions 
+* To get started, download the [class activity template](https://sta112-s26.github.io/class_activities/ca_29_template.qmd) file
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+## The impact of multicollinearity
+
+In class, we talked about high multicollinearity between explanatory variables posing a problem in multiple regression models, for several reasons. First, it changes the meaning and interpretation of the coefficients in the fitted model -- how can we think of holding one variable fixed, and changing the other, if the variables are strongly correlated? Second, highly correlated variables cause an increase in the variability of the fitted regression coefficients. We can measure the degree to which the variability increases with a *variance inflation factor*.
+
+In this activity, you will work with some simulations to explore the effect of correlation on the estimated regression coefficients.
+
+### Simulation
+
+The following code generates `n = 100` observations from the linear regression model
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon$$
+
+*Note*: You will need to install the `MASS` package, if it is not already installed on your computer! This can be done in the console with `install.packages("MASS")`
+
+```{r}
+rho <- 0 # correlation between x1 and x2
+n <- 100
+
+# generate x1 and x2
+X <- MASS::mvrnorm(n, mu = c(0, 0), Sigma = matrix(c(1, rho, rho, 1), nrow=2))
+x1 <-X[,1]
+x2 <- X[,2]
+
+# generate y
+beta0 <- 1
+beta1 <- 1
+beta2 <- 1
+y <- beta0 + beta1*x1 + beta2*x2 + rnorm(n)
+```
+
+The parameter `rho` controls the correlation between $X_1$ and $X_2$. Higher degrees of correlation mean higher multicollinearity!
+
+We then fit two linear models: the first only includes $X_1$, and the second includes both $X_1$ and $X_2$:
+
+```{r}
+m1 <- lm(y ~ x1)
+m2 <- lm(y ~ x1 + x2)
+```
+
+1. **Question:** How do the estimated coefficients $\widehat{\beta}_1$ compare between the two models, when `rho = 0` (no correlation between $X_1$ and $X_2$)?
+
+2. **Question:** Now change the correlation to `rho = 0.9`, and re-run the code. How do the estimated coefficients $\widehat{\beta}_1$ compare between the two models now? Why does that happen?
+
+### Repeating many times
+
+Next, let's take a look at the variability of the coefficient estimates $\widehat{\beta}_1$ from sample to sample. To do this, we need to (1) create many samples, and (2) compute $\widehat{\beta}_1$ for each sample.
+
+The code below does this for us `nsim = 1000` times, when the correlation is `rho = 0`. We store the estimates of $\beta_1$ from the first model (using only $X_1$) in `beta1_m1`, and the estimates of $\beta_1$ from the second model (using both $X_1$ and $X_2$) in `beta1_m2`.
+
+```{r}
+rho <- 0 # correlation between x1 and x2
+n <- 100
+
+# generate x1 and x2
+X <- MASS::mvrnorm(n, mu = c(0, 0), Sigma = matrix(c(1, rho, rho, 1), nrow=2))
+x1 <-X[,1]
+x2 <- X[,2]
+
+beta0 <- 1
+beta1 <- 1
+beta2 <- 1
+
+nsim <- 1000 # number of simulations
+beta1_m1 <- rep(NA, nsim) # to store estimates from smaller model
+beta1_m2 <- rep(NA, nsim) # to store estimates from larger model
+for(i in 1:nsim){
+  # generate y and fit both models
+  y <- beta0 + beta1*x1 + beta2*x2 + rnorm(n)
+  m1 <- lm(y ~ x1)
+  m2 <- lm(y ~ x1 + x2)
+  
+  # save the coefficients
+  beta1_m1[i] <- coef(m1)[2]
+  beta1_m2[i] <- coef(m2)[2]
+}
+```
+
+3. **Question:** Run the code that repeats the simulation 1000 times with `rho = 0`. Then, create a histogram of the resulting estimates and calculate their variances:
+
+```{r, eval=F}
+hist(beta1_m1, xlab = "estimated slope", 
+     main = "B1 estimates with small model (X1 only)")
+hist(beta1_m2, xlab = "estimated slope", 
+     main = "B1 estimates with larger model (X1 and X2)")
+var(beta1_m1)
+var(beta1_m2)
+```
+
+4. **Question:** How do the distributions and variances compare?
+
+5. **Question:** Repeat questions 3 and 4, but this time set the correlation to be `rho = 0.9` when you re-run the code. How do the distributions and variances compare now?
+
+### VIF
+
+Let's look at the ratio of the variances:
+
+```{r, eval=F}
+var(beta1_m2)/var(beta1_m1)
+```
+
+This tells us *how many times larger* the variance of $\widehat{\beta}_1$ is when both $X_1$ and $X_2$ are in the model. This is exactly the same information captured by the *variance inflation factor*, which we can compute in R for this simulated data with:
+
+```{r, eval=F}
+1/(1 - cor(x1, x2)^2)
+```
+
+6. **Question:** Run both of these lines of code, and verify that you get similar results (the numbers won't be identical, but they should be close!)
+
+
+
+
+
+
+
