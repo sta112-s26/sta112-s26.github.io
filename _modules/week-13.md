@@ -11,6 +11,7 @@ April 6
 
 April 8
 : Exam 2 review
+  : [review 1](https://sta112-s26.github.io/slides/exam_2_review_1.html), [review 2](https://sta112-s26.github.io/slides/exam_2_review_2.html)
 
 April 10
 : **Exam 2**{: .label .label-red}
