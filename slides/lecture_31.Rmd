@@ -1,0 +1,841 @@
+---
+title: Introduction to logistic regression
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Agenda
+
+.large[
+* Project Part 3 due on Wednesday
+* Today: begin logistic regression
+]
+
+---
+
+### Data
+
+.large[
+55 students applying to medical school, with the following information on each student:
+* `Acceptance`: whether the student was accepted to medical school (1 = accepted, 0 = denied)
+* `GPA`: the student's college GPA
+* `MCAT`: the student's MCAT score
+]
+
+---
+
+### Linear regression
+
+.large[
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+library(tidyverse)
+library(Stat2Data)
+data("MedGPA")
+
+MedGPA %>%
+  ggplot(aes(x = GPA, y = MCAT)) +
+  geom_point(size=2.5) +
+  geom_smooth(method = "lm", se=F, lwd = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+$$MCAT = \beta_0 + \beta_1 GPA + \varepsilon$$
+.question[
+What if our response isn't quantitative?
+]
+
+]
+
+---
+
+### Binary response
+
+.large[
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+library(tidyverse)
+library(Stat2Data)
+data("MedGPA")
+
+MedGPA %>%
+  ggplot(aes(x = GPA, y = Acceptance)) +
+  geom_point(size=2.5) +
+  geom_smooth(method = "lm", se=F, lwd = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+$$Acceptance \overset{?}{=} \beta_0 + \beta_1 GPA + \varepsilon$$
+.question[
+What are the issues with this model?
+]
+
+]
+
+---
+
+### Issues with a binary response
+
+.large[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+library(tidyverse)
+library(Stat2Data)
+data("MedGPA")
+
+MedGPA %>%
+  ggplot(aes(x = GPA, y = Acceptance)) +
+  geom_point(size=2.5) +
+  geom_smooth(method = "lm", se=F, lwd = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+* Acceptance is either 0 or 1 -- we can't have any other values
+
+.question[
+How could we change the model to address this issue?
+]
+]
+
+---
+
+### Working with probabilities
+
+.large[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+library(Stat2Data)
+data("MedGPA")
+
+MedGPA %>%
+  ggplot(aes(x = GPA, y = Acceptance)) +
+  geom_point(size=2.5) +
+  geom_smooth(method = "lm", se=F, lwd = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(y = "P(Acceptance = 1)")
+```
+
+* $P(Acceptance = 1)$ = probability student is accepted
+* $P(Acceptance = 1) \overset{?}{=} \beta_0 + \beta_1 GPA$
+
+.question[
+Does this fix our issues with the model?
+]
+]
+
+---
+
+### Issues with probabilities
+
+.large[
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+library(Stat2Data)
+data("MedGPA")
+
+MedGPA %>%
+  ggplot(aes(x = GPA, y = Acceptance)) +
+  geom_point(size=2.5) +
+  geom_smooth(method = "lm", se=F, lwd = 1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 25)) +
+  labs(y = "P(Acceptance = 1)")
+```
+
+* probabilities (e.g., $P(Acceptance = 1)$ ) are between 0 and 1
+* Lines are never constrained, unless the slope is 0
+]
+
+---
+
+### Exploring binary outcomes
+
+.large[
+.question[
+How can I summarize binary variables?
+]
+
+* Probabilities
+* Odds
+* Odds ratios
+]
+
+---
+
+### Probabilities
+
+.large[
+.pull-left[
+.center[
+| | TMS | Placebo | Total |
+| --- | --- | --- | --- |
+| Pain free two hours later | 39 | 22 | 61 |
+| Not pain free two hours later | 61 | 78 | 139 |
+| Total | 100 | 100 | 200 |
+]
+]
+
+.pull-right[
+What is the probability a TMS patient was pain free after two hours?
+]
+]
+
+---
+
+### Probabilities
+
+.large[
+.pull-left[
+.center[
+| | TMS | Placebo | Total |
+| --- | --- | --- | --- |
+| Pain free two hours later | 39 | 22 | 61 |
+| Not pain free two hours later | 61 | 78 | 139 |
+| Total | 100 | 100 | 200 |
+]
+]
+
+.pull-right[
+What is the probability a TMS patient was pain free after two hours?
+]
+]
+
+.large[
+
+39/100 = 0.39
+]
+
+---
+
+### Odds
+
+.large[
+.center[
+| | TMS | Placebo | Total |
+| --- | --- | --- | --- |
+| Pain free two hours later | 39 | 22 | 61 |
+| Not pain free two hours later | 61 | 78 | 139 |
+| Total | 100 | 100 | 200 |
+]
+
+Comparing probability of being pain free to probability of not being pain free:
+]
+
+.large[
+* $P(\text{TMS patient is pain free}) = 0.39$
+* $P(\text{TMS patient is not pain free}) = 0.61$
+
+**Odds** that a TMS patient is pain free after two hours: $$\dfrac{0.39}{0.61} = 0.64$$
+]
+
+---
+
+### Odds
+
+.large[
+.center[
+| | TMS | Placebo | Total |
+| --- | --- | --- | --- |
+| Pain free two hours later | 39 | 22 | 61 |
+| Not pain free two hours later | 61 | 78 | 139 |
+| Total | 100 | 100 | 200 |
+]
+]
+
+.large[
+**Odds** that a TMS patient is pain free after two hours: $$\dfrac{0.39}{0.61} = 0.64$$
+
+* The probability of being pain free is 0.64 times the probability of not being pain free, for TMS patients 
+]
+
+---
+
+### Odds
+
+.large[
+.center[
+| | TMS | Placebo | Total |
+| --- | --- | --- | --- |
+| Pain free two hours later | 39 | 22 | 61 |
+| Not pain free two hours later | 61 | 78 | 139 |
+| Total | 100 | 100 | 200 |
+]
+]
+
+.large[
+**Odds** that a TMS patient is pain free after two hours: $$\dfrac{0.39}{0.61} = 0.64$$
+
+* Odds of being pain free = $\dfrac{\text{probability pain free}}{1 - \text{probability pain free}}$
+]
+
+---
+
+### Odds
+
+.large[
+**Definition:** Let $\pi$ denote the probability an event happens (e.g., $\pi = P(Acceptance = 1)$ ). Then the *odds* are
+
+$$\dfrac{\pi}{1 - \pi}$$
+
+* Note that here $\pi$ is a probability, not the number 3.14159...
+]
+
+---
+
+### Odds
+
+.large[
+.pull-left[
+.center[
+| | TMS | Placebo | Total |
+| --- | --- | --- | --- |
+| Pain free two hours later | 39 | 22 | 61 |
+| Not pain free two hours later | 61 | 78 | 139 |
+| Total | 100 | 100 | 200 |
+]
+]
+
+.pull-right[
+What are the odds a placebo patient was pain free after 2 hours?
+]
+]
+
+---
+
+### Odds
+
+.large[
+.pull-left[
+.center[
+| | TMS | Placebo | Total |
+| --- | --- | --- | --- |
+| Pain free two hours later | 39 | 22 | 61 |
+| Not pain free two hours later | 61 | 78 | 139 |
+| Total | 100 | 100 | 200 |
+]
+]
+
+.pull-right[
+What are the odds a placebo patient was pain free after 2 hours?
+]
+]
+
+.large[
+$\dfrac{0.22}{1 - 0.22} = \dfrac{0.22}{0.78} = 0.28$
+]
+
+---
+
+
+
+### Odds ratios
+
+.large[
+.center[
+| | TMS | Placebo | Total |
+| --- | --- | --- | --- |
+| Pain free two hours later | 39 | 22 | 61 |
+| Not pain free two hours later | 61 | 78 | 139 |
+| Total | 100 | 100 | 200 |
+]
+]
+
+.large[
+Comparings odds:
+
+* Odds that a TMS patient is pain free after 2 hours: 0.64
+* Odds that a placebo patient is pain free after 2 hours: 0.28
+
+**Odds ratio:** $\dfrac{0.64}{0.28} = 2.29$
+
+* The odds of being pain free after 2 hours are 2.29 times as high for TMS patients as for placebo patients
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity (handout).
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+| | First class | Second and third class | Total |
+| --- | --- | --- | --- |
+| Survived | 136 | 206 | 342 |
+| Did not survive | 80 | 469 | 549 |
+| Total | 216 | 675 | 891 |
+]
+
+.question[
+What was the probability of survival for first class passengers?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+| | First class | Second and third class | Total |
+| --- | --- | --- | --- |
+| Survived | 136 | 206 | 342 |
+| Did not survive | 80 | 469 | 549 |
+| Total | 216 | 675 | 891 |
+]
+
+.question[
+What was the probability of survival for first class passengers?
+]
+]
+
+.large[
+$$136/216=0.63$$
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+| | First class | Second and third class | Total |
+| --- | --- | --- | --- |
+| Survived | 136 | 206 | 342 |
+| Did not survive | 80 | 469 | 549 |
+| Total | 216 | 675 | 891 |
+]
+
+.question[
+What were the odds of survival for first-class passengers?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+| | First class | Second and third class | Total |
+| --- | --- | --- | --- |
+| Survived | 136 | 206 | 342 |
+| Did not survive | 80 | 469 | 549 |
+| Total | 216 | 675 | 891 |
+]
+
+.question[
+What were the odds of survival for first-class passengers?
+]
+]
+
+.large[
+$$(136/216)/(80/216)=136/80=1.7$$
+
+.question[
+How would I interpret these odds?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+| | First class | Second and third class | Total |
+| --- | --- | --- | --- |
+| Survived | 136 | 206 | 342 |
+| Did not survive | 80 | 469 | 549 |
+| Total | 216 | 675 | 891 |
+]
+
+.question[
+What were the odds of survival for first-class passengers?
+]
+]
+
+.large[
+$$(136/216)/(80/216)=136/80=1.7$$
+
+.question[
+How would I interpret these odds?
+]
+]
+
+.large[
+For first class passengers, the probability of survival was 1.7 times the probability of not surviving.
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+| | First class | Second and third class | Total |
+| --- | --- | --- | --- |
+| Survived | 136 | 206 | 342 |
+| Did not survive | 80 | 469 | 549 |
+| Total | 216 | 675 | 891 |
+]
+
+.question[
+Calculate the odds ratio comparing odds of survival for first-class passengers to odds of survival for second and third class passengers.
+]
+]
+
+---
+
+### Class activity
+
+.large[
+.center[
+| | First class | Second and third class | Total |
+| --- | --- | --- | --- |
+| Survived | 136 | 206 | 342 |
+| Did not survive | 80 | 469 | 549 |
+| Total | 216 | 675 | 891 |
+]
+
+.question[
+Calculate the odds ratio comparing odds of survival for first-class passengers to odds of survival for second and third class passengers.
+]
+]
+
+.large[
+$$1.7/0.44=3.86$$
+
+So the odds of survival are 3.86 times higher for first-class passengers than for second and third class passengers
+]
+
+---
+
+### Odds and probabilities
+
+.large[
+**Definition:** Let $\pi$ denote the probability an event happens (e.g., $\pi = P(Acceptance = 1)$ ). Then the *odds* are
+
+$$\dfrac{\pi}{1 - \pi}$$
+
+* Note that here $\pi$ is a probability, not the number 3.14159...
+
+.question[
+If the probability of an event is $> 0.5$, what is true about the odds?
+]
+
+.abox[
+(A) Odds $> 0.5$
+]
+
+.bbox[
+(B) Odds $> 0$
+]
+
+.cbox[
+(C) Odds $> 1$
+]
+]
+
+---
+
+### Odds and probabilities
+
+.large[
+**Definition:** Let $\pi$ denote the probability an event happens (e.g., $\pi = P(Acceptance = 1)$ ). Then the *odds* are
+
+$$\dfrac{\pi}{1 - \pi}$$
+
+.question[
+If the probability of an event is $> 0.5$, what is true about the odds?
+]
+
+.abox[
+(A) Odds $> 0.5$
+]
+
+.bbox[
+(B) Odds $> 0$
+]
+
+.cbox[
+(C) Odds $> 1$
+]
+
+**Answer:** Odds > 1
+]
+
+---
+
+### Odds and probabilities
+
+.large[
+**Definition:** Let $\pi$ denote the probability an event happens (e.g., $\pi = P(Acceptance = 1)$ ). Then the *odds* are
+
+$$\dfrac{\pi}{1 - \pi}$$
+
+.question[
+True or false: the odds increase when the probability increases.
+]
+
+]
+
+---
+
+### Odds and probabilities
+
+.large[
+**Definition:** Let $\pi$ denote the probability an event happens (e.g., $\pi = P(Acceptance = 1)$ ). Then the *odds* are
+
+$$\dfrac{\pi}{1 - \pi}$$
+
+.question[
+True or false: the odds increase when the probability increases.
+]
+
+]
+
+.large[
+**Answer:** True
+]
+
+---
+
+### Odds as a function of probability
+
+.large[
+$$\text{Odds} = \dfrac{\pi}{1 - \pi}$$
+]
+
+```{r echo=F, message=F, fig.align='center', fig.width=7, fig.height=5}
+probs <- seq(0.1, 0.9, 0.001)
+data.frame(Probability = probs,
+           Odds = probs/(1 - probs)) %>%
+  ggplot(aes(x = Probability, y = Odds)) +
+  geom_line(lwd=1.2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+---
+
+### Odds
+
+.large[
+$$\text{Odds} = \dfrac{\pi}{1 - \pi}$$
+
+.question[
+Probabilities are between 0 and 1. What range of values can odds take?
+]
+
+.abox[
+(A) between 0 and 1
+]
+
+.bbox[
+(B) between 0 and $\infty$
+]
+
+.cbox[
+(C) between $-\infty$ and $\infty$
+]
+]
+
+---
+
+### Odds
+
+.large[
+$$\text{Odds} = \dfrac{\pi}{1 - \pi}$$
+
+.question[
+Probabilities are between 0 and 1. What range of values can odds take?
+]
+
+.abox[
+(A) between 0 and 1
+]
+
+.bbox[
+(B) between 0 and $\infty$
+]
+
+.cbox[
+(C) between $-\infty$ and $\infty$
+]
+]
+
+.large[
+**Answer:** between 0 and $\infty$
+]
+
+---
+
+### Log odds
+
+.large[
+**Definition:** Let $\pi$ denote the probability an event happens (e.g., $\pi = P(Acceptance = 1)$ ). Then the *log odds* are
+
+$$\log \left(\dfrac{\pi}{1 - \pi}\right)$$
+
+.question[
+What range of values can log odds take?
+]
+
+.abox[
+(A) between 0 and 1
+]
+
+.bbox[
+(B) between 0 and $\infty$
+]
+
+.cbox[
+(C) between $-\infty$ and $\infty$
+]
+]
+
+---
+
+### Log odds
+
+.large[
+**Definition:** Let $\pi$ denote the probability an event happens (e.g., $\pi = P(Acceptance = 1)$ ). Then the *log odds* are
+
+$$\log \left(\dfrac{\pi}{1 - \pi}\right)$$
+
+.question[
+What range of values can log odds take?
+]
+
+.abox[
+(A) between 0 and 1
+]
+
+.bbox[
+(B) between 0 and $\infty$
+]
+
+.cbox[
+(C) between $-\infty$ and $\infty$
+]
+]
+
+.large[
+**Answer:** between $-\infty$ and $\infty$
+]
+
+---
+
+### Logistic regression
+
+.large[
+**Logistic regression model:**
+
+$\pi = P(Acceptance = 1)$
+
+$\log \left(\dfrac{\pi}{1 - \pi}\right) = \beta_0 + \beta_1 GPA$
+
+* log odds are between $-\infty$ and $\infty$, so we can use a line!
+
+.question[
+Where did the $\varepsilon$ term go?
+]
+]
+
+---
+
+### Logistic regression
+
+.large[
+**Logistic regression model:**
+
+$\pi = P(Acceptance = 1)$
+
+$\log \left(\dfrac{\pi}{1 - \pi}\right) = \beta_0 + \beta_1 GPA$
+
+* log odds are between $-\infty$ and $\infty$, so we can use a line!
+
+.question[
+Where did the $\varepsilon$ term go?
+]
+]
+
+.large[
+* The $\varepsilon$ term is used to include randomness in the model
+* The probability $\pi$ *already* incorporates randomness 
+* The probability and log odds are not random themselves; they describe randomness for the response
+]
+
+---
+
+### Fitted regression model
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+What are the estimated log odds of acceptance for a student with a 3.0 GPA?
+]
+]
+
+---
+
+### Fitted regression model
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+What are the estimated log odds of acceptance for a student with a 3.0 GPA?
+]
+]
+
+.large[
+**Answer:** $-19.21 + 5.45 \cdot 3 = -2.86$
+]
+
+---
+
+### Fitted regression model
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+What are the estimated *odds* of acceptance for a student with a 3.0 GPA?
+]
+]
+
+---
+
+### Fitted regression model
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+What are the estimated *odds* of acceptance for a student with a 3.0 GPA?
+]
+]
+
+.large[
+**Answer:** $\exp\{ -2.86 \} = 0.0573$
+]
