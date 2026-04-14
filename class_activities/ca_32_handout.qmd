@@ -1,0 +1,32 @@
+---
+title: "Activity: logistic regression"
+format: pdf
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Group members:**
+
+
+## Medical school admissions
+
+The estimated logistic regression model for the relationship between GPA and acceptance to medical school is
+
+$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA},$
+
+where $\widehat{\pi}$ is the estimated probability of acceptance.
+
+1. What is the estimated odds of acceptance for a student with a GPA of 4.0?
+
+\vspace{2cm}
+
+2. What is the estimated *probability* of acceptance for a student with a GPA of 4.0?
+
+\vspace{3cm}
+
+3. Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 4.0 to a student with a GPA of 3.0.
+
+\vspace{3cm}
+
+4. Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 3.8 to a student with a GPA of 2.8.

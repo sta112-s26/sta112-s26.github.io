@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to logistic regression</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Introduction to logistic regression
+]
+
+---
+
+
+### Warmup
+
+.large[
+Work on the warmup activity (handout).
+]
+
+---
+
+### Warmup
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$`
+
+.question[
+What is the estimated odds of acceptance for a student with a GPA of 4.0?
+]
+]
+
+---
+
+### Warmup
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$`
+
+.question[
+What is the estimated probability of acceptance for a student with a GPA of 4.0?
+]
+]
+
+---
+
+### Warmup
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$`
+
+.question[
+Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 4.0 to a student with a GPA of 3.0.
+]
+]
+
+---
+
+### Warmup
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$`
+
+.question[
+Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 4.0 to a student with a GPA of 3.0.
+]
+]
+
+.large[
+`\(\dfrac{\exp\{ -19.21 + 5.45 \cdot 4 \}}{\exp\{ -19.21 + 5.45 \cdot 3 \}} = 232.76\)`
+
+So the odds of acceptance are 232.76 times higher for a student with a GPA of 4.0, compared to a student with a GPA of 3.0
+]
+
+---
+
+### Warmup
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$`
+
+.question[
+Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 3.8 to a student with a GPA of 2.8.
+]
+]
+
+---
+
+### Warmup
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$`
+
+.question[
+Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 3.8 to a student with a GPA of 2.8.
+]
+]
+
+.large[
+`\(\dfrac{\exp\{ -19.21 + 5.45 \cdot 3.8 \}}{\exp\{ -19.21 + 5.45 \cdot 2.8 \}} = 232.76\)`
+
+So the odds of acceptance are 232.76 times higher for a student with a GPA of 3.8, compared to a student with a GPA of 2.8
+
+.question[
+This is the same odds ratio as comparing a 4.0 GPA to a 3.0 GPA!
+]
+]
+
+---
+
+### Warmup
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$`
+
+Odds ratio for increasing GPA by one point:
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = \widehat{\beta}_0 + \widehat{\beta}_1 x$$`
+
+Interpretation of `\(\widehat{\beta}_1\)` :
+
+* A one unit increase in `\(x\)` is associated with an increase of `\(\widehat{\beta}_1\)` in the log odds
+* A one unit increase in `\(x\)` is associated with an increase in the odds by a factor of `\(\exp\{\widehat{\beta}_1\}\)`
+
+.question[
+How do you think we interpret `\(\widehat{\beta}_0\)`?
+]
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+`$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = \widehat{\beta}_0 + \widehat{\beta}_1 x$$`
+
+Interpretation of `\(\widehat{\beta}_1\)` :
+
+* A one unit increase in `\(x\)` is associated with an increase of `\(\widehat{\beta}_1\)` in the log odds
+* A one unit increase in `\(x\)` is associated with an increase in the odds by a factor of `\(\exp\{\widehat{\beta}_1\}\)`
+
+Interpretation of `\(\widehat{\beta}_0\)` :
+
+* The estimated log odds when `\(x = 0\)` are `\(\widehat{\beta}_0\)`
+* The estimated odds when `\(x = 0\)` are `\(\exp\{\widehat{\beta}_0\}\)`
+]
+
+---
+
+### Shape of the fitted curve
+
+.large[
+
+.pull-left[
+`\(\widehat{\pi} = \dfrac{\exp\{\widehat{\beta}_0 +  x \}}{1 + \exp\{\widehat{\beta}_0 + x \}} \hspace{0.5cm}\)`
+
+`\(\widehat{\beta}_0 = -3, -1, 1\)`
+
+&lt;img src="lecture_32_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+`\(\widehat{\pi} = \dfrac{\exp\{-1 +  \widehat{\beta}_1 \ x \}}{1 + \exp\{-1 +  \widehat{\beta}_1 \ x \}} \hspace{0.5cm}\)`
+
+`\(\widehat{\beta}_1 = 0.5, 1, 2\)`
+
+&lt;img src="lecture_32_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+]
+]
+
+---
+
+### Fitting logistic regression in R
+
+.large[
+
+``` r
+library(Stat2Data)
+data("MedGPA")
+
+med_glm &lt;- glm(Acceptance ~ GPA, data = MedGPA,
+               family = binomial)
+```
+]
+
+.large[
+* `glm` stands for "Generalized Linear Model"
+* Use `family = binomial` for binary responses
+]
+
+---
+
+### Fitting logistic regression in R
+
+.large[
+
+``` r
+library(Stat2Data)
+data("MedGPA")
+
+med_glm &lt;- glm(Acceptance ~ GPA, data = MedGPA,
+               family = binomial)
+summary(med_glm)
+```
+
+```
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  -19.207      5.629  -3.412 0.000644 ***
+GPA            5.454      1.579   3.454 0.000553 ***
+```
+]
+
+.large[
+`\(\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}\)` 
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity on the course website. Submit your HTML on Canvas at the end of class.
+]
+
+---
+
+
+### Class activity
+
+.large[
+`\(\pi = P(Accepted = 1)\)`
+
+`\(\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}\)` 
+
+.question[
+What is the change in the odds of acceptance associated with an increase of 1 point on the MCAT?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\pi = P(Accepted = 1)\)`
+
+`\(\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}\)` 
+
+.question[
+What is the change in the odds of acceptance associated with an increase of 1 point on the MCAT?
+]
+]
+
+.large[
+**Answer:** An increase of 1 point on the MCAT is associated with an increase in the odds of acceptance by a factor of `\(\exp\{ 0.246 \} = 1.28\)`.
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\pi = P(Accepted = 1)\)`
+
+`\(\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}\)` 
+
+.question[
+What is the estimated probability that a student with an MCAT score of 40 is accepted?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\pi = P(Accepted = 1)\)`
+
+`\(\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}\)` 
+
+.question[
+What is the estimated probability that a student with an MCAT score of 40 is accepted?
+]
+]
+
+.large[
+**Answer:** `\(\widehat{\pi} = \dfrac{ \exp\{-8.712 + 0.246 \cdot 40 \} }{1 +  \exp\{-8.712 + 0.246 \cdot 40 \}} = 0.76\)`
+
+So we estimate that a student with an MCAT score of 40 has a 76% chance of being accepted to medical school.
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\pi = P(Accepted = 1)\)`
+
+`\(\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}\)` 
+
+.question[
+For approximately what MCAT score would a student have a roughly 50-50 chance of being accepted to medical school?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\pi = P(Accepted = 1)\)`
+
+`\(\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}\)` 
+
+.question[
+For approximately what MCAT score would a student have a roughly 50-50 chance of being accepted to medical school?
+]
+]
+
+.large[
+**Answer:** We need odds = 1, so `\(\dfrac{\widehat{\pi}}{1 - \widehat{\pi}} = \exp\{ -8.712 + 0.246 \ \text{MCAT} \} = 1\)`
+
+So `\(-8.712 + 0.246 \ \text{MCAT} = 0\)`, which means `\(\text{MCAT} = 8.712/0.246 = 35.4\)`
+]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

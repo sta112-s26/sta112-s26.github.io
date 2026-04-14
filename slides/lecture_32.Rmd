@@ -1,0 +1,366 @@
+---
+title: Introduction to logistic regression
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Warmup
+
+.large[
+Work on the warmup activity (handout).
+]
+
+---
+
+### Warmup
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+What is the estimated odds of acceptance for a student with a GPA of 4.0?
+]
+]
+
+---
+
+### Warmup
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+What is the estimated probability of acceptance for a student with a GPA of 4.0?
+]
+]
+
+---
+
+### Warmup
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 4.0 to a student with a GPA of 3.0.
+]
+]
+
+---
+
+### Warmup
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 4.0 to a student with a GPA of 3.0.
+]
+]
+
+.large[
+$\dfrac{\exp\{ -19.21 + 5.45 \cdot 4 \}}{\exp\{ -19.21 + 5.45 \cdot 3 \}} = 232.76$
+
+So the odds of acceptance are 232.76 times higher for a student with a GPA of 4.0, compared to a student with a GPA of 3.0
+]
+
+---
+
+### Warmup
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 3.8 to a student with a GPA of 2.8.
+]
+]
+
+---
+
+### Warmup
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+.question[
+Calculate the odds ratio comparing odds of acceptance for a student with a GPA of 3.8 to a student with a GPA of 2.8.
+]
+]
+
+.large[
+$\dfrac{\exp\{ -19.21 + 5.45 \cdot 3.8 \}}{\exp\{ -19.21 + 5.45 \cdot 2.8 \}} = 232.76$
+
+So the odds of acceptance are 232.76 times higher for a student with a GPA of 3.8, compared to a student with a GPA of 2.8
+
+.question[
+This is the same odds ratio as comparing a 4.0 GPA to a 3.0 GPA!
+]
+]
+
+---
+
+### Warmup
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$$
+
+Odds ratio for increasing GPA by one point:
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = \widehat{\beta}_0 + \widehat{\beta}_1 x$$
+
+Interpretation of $\widehat{\beta}_1$ :
+
+* A one unit increase in $x$ is associated with an increase of $\widehat{\beta}_1$ in the log odds
+* A one unit increase in $x$ is associated with an increase in the odds by a factor of $\exp\{\widehat{\beta}_1\}$
+
+.question[
+How do you think we interpret $\widehat{\beta}_0$?
+]
+]
+
+---
+
+### Interpreting coefficients
+
+.large[
+$$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = \widehat{\beta}_0 + \widehat{\beta}_1 x$$
+
+Interpretation of $\widehat{\beta}_1$ :
+
+* A one unit increase in $x$ is associated with an increase of $\widehat{\beta}_1$ in the log odds
+* A one unit increase in $x$ is associated with an increase in the odds by a factor of $\exp\{\widehat{\beta}_1\}$
+
+Interpretation of $\widehat{\beta}_0$ :
+
+* The estimated log odds when $x = 0$ are $\widehat{\beta}_0$
+* The estimated odds when $x = 0$ are $\exp\{\widehat{\beta}_0\}$
+]
+
+---
+
+### Shape of the fitted curve
+
+.large[
+
+.pull-left[
+$\widehat{\pi} = \dfrac{\exp\{\widehat{\beta}_0 +  x \}}{1 + \exp\{\widehat{\beta}_0 + x \}} \hspace{0.5cm}$
+
+$\widehat{\beta}_0 = -3, -1, 1$
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+library(tidyverse)
+
+expit <- function(p){
+  return(exp(p)/(1 + exp(p)))
+}
+
+data.frame(x = seq(-5, 6, length.out=100),
+           y1 = expit(-1 + seq(-5, 6, length.out=100)),
+           y2 = expit(-3 + seq(-5, 6, length.out=100)),
+           y3 = expit(1 + seq(-5, 6, length.out=100))) %>%
+  ggplot(aes(x = x, y = y1)) +
+  geom_line(lwd = 1.2) +
+  geom_line(aes(y = y2), lwd=1.7, lty = 2, color="blue") +
+  geom_line(aes(y = y3), lwd=1.7, lty = 3, color="red") +
+  theme_bw() +
+  labs(x = "x", y = "P(y = 1)") +
+  annotate("text", x = -2, y = 0.4, label="1", size=8) +
+  annotate("text", x = 0, y = 0.4, label="-1", size=9) +
+  annotate("text", x = 3.5, y = 0.4, label="-3", size=8) +
+  theme(text = element_text(size = 25))
+```
+]
+
+.pull-right[
+$\widehat{\pi} = \dfrac{\exp\{-1 +  \widehat{\beta}_1 \ x \}}{1 + \exp\{-1 +  \widehat{\beta}_1 \ x \}} \hspace{0.5cm}$
+
+$\widehat{\beta}_1 = 0.5, 1, 2$
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+
+data.frame(x = seq(-5, 6, length.out=100),
+           y1 = expit(-1 + 0.5*seq(-5, 6, length.out=100)),
+           y2 = expit(-1 + seq(-5, 6, length.out=100)),
+           y3 = expit(-1 + 2*seq(-5, 6, length.out=100))) %>%
+  ggplot(aes(x = x, y = y1)) +
+  geom_line(lwd = 1.2) +
+  geom_line(aes(y = y2), lwd=1.7, lty = 2, color="blue") +
+  geom_line(aes(y = y3), lwd=1.7, lty = 3, color="red") +
+  theme_bw() +
+  labs(x = "x", y = "P(y = 1)") +
+  annotate("text", x = 3, y = 0.75, label="0.5", size=8) +
+  annotate("text", x = 1.5, y = 0.75, label="1", size=9) +
+  annotate("text", x = 0.5, y = 0.75, label="2", size=8) +
+  theme(text = element_text(size = 25))
+```
+]
+]
+
+---
+
+### Fitting logistic regression in R
+
+.large[
+```{r message=F, warning=F}
+library(Stat2Data)
+data("MedGPA")
+
+med_glm <- glm(Acceptance ~ GPA, data = MedGPA,
+               family = binomial)
+```
+]
+
+.large[
+* `glm` stands for "Generalized Linear Model"
+* Use `family = binomial` for binary responses
+]
+
+---
+
+### Fitting logistic regression in R
+
+.large[
+```{r eval=F}
+library(Stat2Data)
+data("MedGPA")
+
+med_glm <- glm(Acceptance ~ GPA, data = MedGPA,
+               family = binomial)
+summary(med_glm)
+```
+
+```
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  -19.207      5.629  -3.412 0.000644 ***
+GPA            5.454      1.579   3.454 0.000553 ***
+```
+]
+
+.large[
+$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -19.21 + 5.45 \ \text{GPA}$ 
+]
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity on the course website. Submit your HTML on Canvas at the end of class.
+]
+
+---
+
+
+### Class activity
+
+.large[
+$\pi = P(Accepted = 1)$
+
+$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}$ 
+
+.question[
+What is the change in the odds of acceptance associated with an increase of 1 point on the MCAT?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$\pi = P(Accepted = 1)$
+
+$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}$ 
+
+.question[
+What is the change in the odds of acceptance associated with an increase of 1 point on the MCAT?
+]
+]
+
+.large[
+**Answer:** An increase of 1 point on the MCAT is associated with an increase in the odds of acceptance by a factor of $\exp\{ 0.246 \} = 1.28$.
+]
+
+---
+
+### Class activity
+
+.large[
+$\pi = P(Accepted = 1)$
+
+$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}$ 
+
+.question[
+What is the estimated probability that a student with an MCAT score of 40 is accepted?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$\pi = P(Accepted = 1)$
+
+$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}$ 
+
+.question[
+What is the estimated probability that a student with an MCAT score of 40 is accepted?
+]
+]
+
+.large[
+**Answer:** $\widehat{\pi} = \dfrac{ \exp\{-8.712 + 0.246 \cdot 40 \} }{1 +  \exp\{-8.712 + 0.246 \cdot 40 \}} = 0.76$
+
+So we estimate that a student with an MCAT score of 40 has a 76% chance of being accepted to medical school.
+]
+
+---
+
+### Class activity
+
+.large[
+$\pi = P(Accepted = 1)$
+
+$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}$ 
+
+.question[
+For approximately what MCAT score would a student have a roughly 50-50 chance of being accepted to medical school?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$\pi = P(Accepted = 1)$
+
+$\log \left( \dfrac{\widehat{\pi}}{1 - \widehat{\pi}} \right) = -8.712 + 0.246 \ \text{MCAT}$ 
+
+.question[
+For approximately what MCAT score would a student have a roughly 50-50 chance of being accepted to medical school?
+]
+]
+
+.large[
+**Answer:** We need odds = 1, so $\dfrac{\widehat{\pi}}{1 - \widehat{\pi}} = \exp\{ -8.712 + 0.246 \ \text{MCAT} \} = 1$
+
+So $-8.712 + 0.246 \ \text{MCAT} = 0$, which means $\text{MCAT} = 8.712/0.246 = 35.4$
+]
+

@@ -1,0 +1,40 @@
+---
+title: "Class activity"
+format: html
+editor: source
+---
+
+\vspace{-2.5cm}
+
+**Instructions:** 
+
+* Work individually or with a neighbor to answer the following questions 
+* To get started, download the [class activity template](https://sta112-s26.github.io/class_activities/ca_32_template.qmd) file
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+# Med school admissions data
+
+We will use the `MedGPA` data, which is included in the `Stat2Data` package for our textbook. This data looks at the relationship between GPA, MCAT score, and admission to medical school. We have already examined the relationship between GPA and admission. In this class activity you will look at the relationship between MCAT score and admission.
+
+To import the data, run the following:
+
+```r
+library(Stat2Data)
+data("MedGPA")
+```
+
+## Logistic regression
+
+Run the following code to fit a logistic regression model with MCAT score as the predictor and acceptance as the response:
+
+```r
+med_glm <- glm(Acceptance ~ MCAT, data = MedGPA, 
+               family = binomial)
+summary(med_glm)
+```
+
+1. What is the change in the odds of acceptance associated with an increase of 1 point on the MCAT?
+
+2. What is the estimated probability that a student with an MCAT score of 40 is accepted?
+
+3. For approximately what MCAT score would a student have a roughly 50-50 chance of being accepted to medical school?
