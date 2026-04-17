@@ -1,0 +1,47 @@
+---
+---
+---
+title: "Project Part 4"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+## Introduction
+
+
+## Data
+
+### Data summary
+
+### Univariate EDA
+
+### Multivariate EDA
+
+
+
+## Modeling
+
+### Model
+
+### Assumption diagnostics
+
+### Inference
+
+
+## Discussion
+
+
+## Sources
+
+
+## Appendix
+
+
+

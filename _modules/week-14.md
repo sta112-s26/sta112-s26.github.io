@@ -15,6 +15,9 @@ April 15
 
 : Reading for Friday's class
   : Textbook 11.1
+  
+: **Project Part 4 released**{: .label .label-green }
+  : [Project Part 4](https://sta112-s26.github.io/projects/project_part_4.html)
 
 April 17
 : Fitting logistic regression
