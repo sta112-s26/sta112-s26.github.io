@@ -21,6 +21,7 @@ April 15
 
 April 17
 : Fitting logistic regression
+  : [Slides](https://sta112-s26.github.io/slides/lecture_33.pdf), [activity 1](https://sta112-s26.github.io/class_activities/ca_33_handout.pdf), [activity 2](https://sta112-s26.github.io/class_activities/ca_33_handout_2.pdf)
 
 : Reading for Monday's class
   : Textbook 9.3
