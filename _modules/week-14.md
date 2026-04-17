@@ -25,3 +25,6 @@ April 17
 
 : Reading for Monday's class
   : Textbook 9.3
+  
+: **HW 6 released**{: .label .label-yellow }
+  : [HW 6](https://sta112-s26.github.io/homework/hw_6.html)

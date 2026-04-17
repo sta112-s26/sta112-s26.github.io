@@ -1,0 +1,24 @@
+---
+---
+---
+title: "Homework 6"
+author: "Your Name"
+format: 
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=F}
+library(tidyverse)
+library(Stat2Data)
+data("Kershaw")
+```
+
+
+### Question 1
+
+(Type your answer to question 1 here)
+
+
+(Add answers to the remaining questions below)

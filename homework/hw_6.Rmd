@@ -1,0 +1,92 @@
+---
+title: "Homework 6 (Optional)"
+output: 
+  rmdformats::robobook:
+    css: "homework.css"
+    highlight: pygments
+link-citations: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+**Due:** Friday, April 24, 11:59pm on Canvas
+
+
+**Instructions:** 
+
+* A template Quarto file will be provided, with set-up instructions below.
+* When you are done with the assignment, render the Quarto file containing all your code and responses. Submit the rendered HTML file on Canvas.
+* Remember to acknowledge any collaborators, and to cite outside sources
+
+**Important:** This assignment is *optional*. I will take your 5 highest hw grades in the class; so, if you choose to complete this assignment, it can potentially replace one of your other hw grades. This homework is also good practice for the logistic regression material as you study for the final exam.
+
+# Setup
+
+1. Download the Quarto template file for this assignment: [hw_06_template.qmd](https://sta112-s26.github.io/homework/hw_06_template.qmd). Save it to your computer, and change the file name to `hw_06_your_name.qmd`
+2. Open `hw_06_your_name.qmd` in RStudio. Change the `author` in YAML to your name.
+3. Fill in answers to the questions below. I recommend you save and render as you answer each question, to avoid losing any work and to catch any knitting issues early.
+4. When you are done, render and submit your HTML file on Canvas (Assignments -> Homework 6).
+
+### Data
+
+In this homework, you will look at a dataset of 3402 pitches thrown by MLB pitcher Clayton Kershaw in the 2013 season. The data is contained in the `Kershaw` data set, in the `Stat2Data` R package. We will focus on two specific variables for each pitch:
+
+* `Result`: a negative result (a ball or a hit), or a positive result (a strike or an out)
+* `EndSpeed`: the speed at which the ball crossed home plate (in mph)
+
+Our goal is to investigate the relationship between pitch speed and result. Are faster pitches more successful (i.e., more likely to lead to a strike or an out)?
+
+# Part I
+
+Your friend is interested in analyzing the relationship between Clayton Kershaw's pitching speed and the result of the pitch. They fit a regression model, and send you the following report:
+
+"There appears to be a positive relationship between the pitching speed and the outcome of the pitch (Figure 1). To summarize this relationship, we fit a simple linear regression with end speed as the predictor, and result as the response. The fitted line is shown in Figure 1, and the equation of the fitted line is $\widehat{\pi} = 0.157 + 0.0056 \ \text{EndSpeed}$, where $\pi = P(\text{Result} = 1)$."
+
+```{r echo=F, message=F, warning=F, fig.cap="Figure 1: Pitch result vs. end speed for Clayton Kershaw.", fig.align='center', fig.width=5, fig.height=3}
+library(tidyverse)
+library(Stat2Data)
+data("Kershaw")
+Kershaw %>%
+  mutate(Result = ifelse(Result == "Pos", 1, 0)) %>%
+  ggplot(aes(x = EndSpeed, y = Result)) +
+  geom_point() +
+  geom_smooth(se=F, method="lm") +
+  labs(x = "End speed (mph)", y = "Pitch result") +
+  theme_bw()
+```
+
+
+:::{.question}
+#### Question 1
+
+Your friend has made a serious error in fitting this regression model. Explain to your friend what they have done wrong, why it is wrong, and how they should do it differently.
+:::
+
+# Part II
+
+After reading your feedback from Part I, your friend decides to fit a logistic regression model instead. However, they are confused about logistic regression, and they ask you to help them.
+
+:::{.question}
+#### Question 2
+
+Fit a logistic regression model for the relationship between Clayton Kershaw's pitching speed and pitch result. Report the equation of the fitted model.
+:::
+
+:::{.question}
+#### Question 3
+
+What is the associated change in the odds of a successful pitch (i.e., a strike or out) when pitching speed increases by 1 mph?
+:::
+
+:::{.question}
+#### Question 4
+
+Calculate the estimated *probability* of a successful pitch when pitching speed is 95 mph.
+:::
+
+:::{.question}
+#### Question 5
+
+Are faster pitches more likely to be successful? Carry out a hypothesis test.
+:::
+
