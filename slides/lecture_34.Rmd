@@ -1,0 +1,459 @@
+---
+title: Fitting logistic regression models
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Logistics and reminders
+
+.large[
+* **Optional** HW 6 due on Friday (4/24)
+
+* Project Part 4 due Wednesday 4/29 (LDOC)
+
+* Project work time in class after we finish up logistic regression
+]
+
+---
+
+### Last time: Class activity
+
+.large[
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 3 | 2 | 3 | 1 | 1 |
+| Number of failures | 0 | 0 | 2 | 1 | 2 |
+
+What's the probability of the observed data, if $\beta_0 = 3$ and $\beta_1 = -0.5$?
+]
+
+---
+
+### Class activity
+
+.large[
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 3 | 2 | 3 | 1 | 1 |
+| Number of failures | 0 | 0 | 2 | 1 | 2 |
+
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| $\pi$ | $\dfrac{\exp\{3 - 0.5(3)\}}{1 + \exp\{3 - 0.5(3)\}} = 0.818$ | 0.731 | 0.622 | 0.5 | 0.378 |
+
+$L(\beta_0, \beta_1) = P(\text{data}) =$
+$$(0.818)^3(0.731)^2(0.622)^3(1 - 0.622)^2(0.5)(1 - 0.5) \\ \cdot (0.378)(1 - 0.378)^2$$
+$= 0.000368$
+]
+
+---
+
+### Class activity
+
+.large[
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 3 | 2 | 3 | 1 | 1 |
+| Number of failures | 0 | 0 | 2 | 1 | 2 |
+
+What's the probability of the observed data, if $\beta_0 = 4$ and $\beta_1 = -0.75$?
+]
+
+---
+
+### Class activity
+
+.large[
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 3 | 2 | 3 | 1 | 1 |
+| Number of failures | 0 | 0 | 2 | 1 | 2 |
+
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| $\pi$ | $\dfrac{\exp\{4 - 0.75(3)\}}{1 + \exp\{4 - 0.75(3)\}} = 0.852$ | 0.731 | 0.562 | 0.378 | 0.223 |
+
+$L(\beta_0, \beta_1) = P(\text{data}) =$
+$$(0.852)^3(0.731)^2(0.562)^3(1 - 0.562)^2(0.378)(1 - 0.378) \\ \cdot (0.223)(1 - 0.223)^2$$
+$= 0.000356$
+]
+
+---
+
+### Maximum likelihood for logistic regression
+
+.large[
+**Likelihood:** 
+* For estimates $\widehat{\beta}_0$ and $\widehat{\beta}_1$, $\widehat{\pi} = \dfrac{\exp\{\widehat{\beta}_0 + \widehat{\beta}_1 x\}}{1 + \exp\{\widehat{\beta}_0 + \widehat{\beta}_1 x\}}$
+* $L(\widehat{\beta}_0, \widehat{\beta}_1) = P(\text{data})$
+    
+**Maximize:** 
+* Choose $\widehat{\beta}_0$, $\widehat{\beta}_1$ to maximize $L(\widehat{\beta}_0, \widehat{\beta}_1)$
+    
+.question[
+In the class activity examples, we have only considered a few different possibilities for $\widehat{\beta}_0$ and $\widehat{\beta}_1$. In reality, we consider all real numbers as possible values.
+]
+]
+
+---
+
+### Fitting logistic regression
+
+.large[
+.pull-left[
+**Logistic regression with maximum likelihood**
+
+* **Model:** $\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 x$
+* **Measure of fit:** $L(\widehat{\beta}_0, \widehat{\beta}_1) =$ probability of observed data for estimates $\widehat{\beta}_0$, $\widehat{\beta}_1$
+* **Optimize:** choose $\widehat{\beta}_0$, $\widehat{\beta}_1$ to maximize $L(\widehat{\beta}_0, \widehat{\beta}_1)$
+]
+
+.pull-right[
+**Linear regression with least squares**
+
+<br/>
+
+* **Model:** $y = \beta_0 + \beta_1 x + \varepsilon$
+* **Measure of fit:** $SSE = \sum \limits_{i = 1}^n (y_i - \widehat{\beta}_0 - \widehat{\beta}_1 x_i)^2$
+* **Optimize:** choose $\widehat{\beta}_0$, $\widehat{\beta}_1$ to minimize SSE
+]
+]
+
+---
+
+### Regression assumptions
+
+.large[
+.question[
+What assumptions did we make for linear regression models?
+]
+]
+
+---
+
+### Regression assumptions
+
+.large[
+.question[
+What assumptions did we make for linear regression models?
+]
+]
+
+.large[
+* Shape
+* Constant variance
+* Normality
+* Independence
+* Randomness
+
+.question[
+Not all these assumptions translate to logistic regression.
+]
+]
+
+---
+
+### Assumptions: logistic vs. linear regression
+
+.large[
+.pull-left[
+**Logistic regression:**
+
+$\pi = P(y = 1)$ 
+
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 x$
+
+* shape
+* randomness
+* independence
+]
+
+.pull-right[
+**Linear regression:**
+
+$y = \beta_0 + \beta_1 x + \varepsilon$
+
+$\varepsilon \sim N(0, \sigma_\varepsilon^2)$
+
+* shape
+* randomness
+* independence
+* constant variance
+* normality
+
+]
+
+.question[
+The constant variance and normality assumptions apply specifically to the noise term $\varepsilon$
+]
+]
+
+---
+
+### Data
+
+.large[
+Relationship between the length of a putt, and whether it was made:
+
+* $x =$ length (feet)
+* $y =$ result (success = 1, failure = 0)
+
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 x$
+
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 84 | 88 | 61 | 61 | 44 |
+| Number of failures | 17 | 31 | 47 | 64 | 90 |
+| Total | 101 | 119 | 108 | 125 | 134 |
+]
+
+---
+
+### Assessing the shape assumption
+
+.large[
+.question[
+How did we assess the shape assumption for linear regression?
+]
+]
+
+---
+
+### Assessing the shape assumption
+
+.large[
+.question[
+How did we assess the shape assumption for linear regression?
+]
+]
+
+.large[
+With scatterplots and residual plots.
+
+.question[
+Can we use these diagnostics for logistic regression?
+]
+]
+
+---
+
+### Assessing the shape assumption
+
+.large[
+.question[
+How did we assess the shape assumption for linear regression?
+]
+]
+
+.large[
+With scatterplots and residual plots.
+
+.question[
+Can we use these diagnostics for logistic regression?
+]
+]
+
+.large[
+No: 
+* the response is binary
+* the shape assumption is that the *log odds* (not the response) are a linear function of the predictor(s)
+]
+
+---
+
+### Assessing the shape assumption
+
+.large[
+Scatterplots don't work for logistic regression:
+
+```{r echo=F, message=F, warning=F, fig.align='center', fig.width=7, fig.height=5}
+
+library(tidyverse)
+library(Stat2Data)
+data("Putts1")
+
+Putts1 %>%
+  ggplot(aes(x = Length, y = Made)) +
+  geom_point(size = 2) +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+]
+
+---
+
+### Shape
+
+.large[
+* Shape assumption is that the log-odds are (at least approximately) a linear function of $x$: $\log(odds) \approx \beta_0 + \beta_1 x$
+* We can assess the shape assumption by plotting the **empirical log-odds** (aka empirical logits)
+* Example: relationship between the length of a putt and whether it was made
+
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 84 | 88 | 61 | 61 | 44 |
+| Number of failures | 17 | 31 | 47 | 64 | 90 |
+| Total | 101 | 119 | 108 | 125 | 134 |
+]
+
+---
+
+### Empirical log-odds
+
+.large[
+**Step 1:** estimate the probability of success for each length of putt
+
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 84 | 88 | 61 | 61 | 44 |
+| Number of failures | 17 | 31 | 47 | 64 | 90 |
+| Total | 101 | 119 | 108 | 125 | 134 |
+| Probability of success $\widehat{p}$ | 0.832 | 0.739 | 0.565 | 0.488 | 0.328 |
+]
+
+---
+
+### Empirical log-odds
+
+.large[
+**Step 2:** convert empirical probabilities to empirical odds
+
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 84 | 88 | 61 | 61 | 44 |
+| Number of failures | 17 | 31 | 47 | 64 | 90 |
+| Total | 101 | 119 | 108 | 125 | 134 |
+| Probability of success $\widehat{p}$ | 0.832 | 0.739 | 0.565 | 0.488 | 0.328 |
+| Odds $\dfrac{\widehat{p}}{1 - \widehat{p}}$ | 4.941 | 2.839 | 1.298 | 0.953 | 0.489 |
+]
+
+---
+
+### Empirical log-odds
+
+.large[
+**Step 3:** calculate empirical log-odds
+
+| Length | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- |
+| Number of successes | 84 | 88 | 61 | 61 | 44 |
+| Number of failures | 17 | 31 | 47 | 64 | 90 |
+| Total | 101 | 119 | 108 | 125 | 134 |
+| Probability of success $\widehat{p}$ | 0.832 | 0.739 | 0.565 | 0.488 | 0.328 |
+| Odds $\dfrac{\widehat{p}}{1 - \widehat{p}}$ | 4.941 | 2.839 | 1.298 | 0.953 | 0.489 |
+| Log-odds $\log \left( \dfrac{\widehat{p}}{1 - \widehat{p}} \right)$ | 1.60 | 1.04 | 0.26 | -0.05 | -0.72 |
+]
+
+---
+
+### Empirical log-odds
+
+.large[
+**Step 4:** plot empirical log-odds against predictor
+
+```{r echo=F, message=F, fig.width=7, fig.height=5, fig.align='center'}
+data.frame(length = c(3, 4, 5, 6, 7),
+  log_odds = c(1.6, 1.04, 0.26, -0.05, -0.72)) %>% 
+  ggplot(aes(x = length, y = log_odds)) + 
+  geom_point(size=3) + 
+  geom_smooth(se=F, method="lm") +
+  labs(x = "Length (feet)",
+       y = "Empirical log-odds") +
+  theme_bw() +
+  theme(text = element_text(size = 25))
+```
+
+.question[
+The shape assumption is reasonable if the empirical log-odds plot looks roughly linear.
+]
+]
+
+---
+
+### Empirical log odds plots
+
+.large[
+Now let's try this with the med school admissions data:
+
+| GPA | 2.26 | 2.42 | 2.48 | 2.52 | 2.55 | 2.56 | ... |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Admit = 0 | 1 | 1 | 1 | 1 | 1 | 1 | ... |
+| Admit = 1 | 0 | 1 | 0 | 0 | 0 | 0 | ... |
+
+.question[
+What problem do I run into?
+]
+]
+
+---
+
+### Empirical log odds plots
+
+.large[
+Now let's try this with the med school admissions data:
+
+| GPA | 2.26 | 2.42 | 2.48 | 2.52 | 2.55 | 2.56 | ... |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Admit = 0 | 1 | 1 | 1 | 1 | 1 | 1 | ... |
+| Admit = 1 | 0 | 1 | 0 | 0 | 0 | 0 | ... |
+
+.question[
+What problem do I run into?
+]
+]
+
+.large[
+There are a small number of observations for each GPA, so we can't calculate empirical log odds for each GPA.
+
+**Solution:** Divide the data into *bins*
+]
+
+---
+
+### Empirical log odds plots
+
+.large[
+* Divide observations into bins of equal size, based on values of predictor $X$
+* Calculate empirical log odds in each bin
+* Plot empirical log odds
+
+```{r, echo=F, message=F, warning=F, fig.align='center', fig.width=6, fig.height=4}
+num_bins <- 8
+
+grad_app <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+
+logodds_table <- grad_app %>%
+  mutate(obs = admit,
+         bin = cut(gpa, 
+                   breaks = quantile(gpa, 
+                                     seq(0, 1,
+                                         length.out=(num_bins+1))),
+                   labels = F, include.lowest=T)) %>%
+  group_by(bin) %>%
+  summarize(mean_x = mean(gpa),
+            prop = mean(c(obs, 0.5)),
+            num_obs = n()) %>%
+  ungroup() %>%
+  mutate(logodds = log(prop/(1 - prop)))
+
+logodds_table %>%
+  ggplot(aes(x = mean_x,
+             y = logodds)) +
+  geom_point(size=2) +
+  geom_smooth(se=F, method="lm") +
+  theme_bw() +
+  labs(x = "GPA",
+       y = "Empirical log odds",
+       color = "",) +
+  theme(text = element_text(size=20))
+```
+]

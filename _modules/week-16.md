@@ -3,8 +3,8 @@ title: Wrap up
 ---
 
 April 27
-: Wrap up
+: Project work time
 
 April 29
-: Wrap-up (LDOC)
+: Project work time (LDOC)
 

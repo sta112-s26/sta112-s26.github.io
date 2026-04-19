@@ -1,0 +1,115 @@
+---
+title: "Class activity: logistic regression diagnostics"
+format: html
+editor: source
+---
+
+**Instructions:** 
+
+* Work individually or with a neighbor to answer the following questions 
+* To get started, download the [class activity template](https://sta112-s26.github.io/class_activities/ca_34_template.qmd) file
+* When you are finished, render the file as an HTML and submit the HTML to Canvas (let me know if you encounter any problems)
+
+# Titanic data
+
+The `titanic` data, discussed in class, contains information on 891 passengers from the Titanic disaster. For each passenger, we have information that includes:
+
+* `Survived`: whether the passenger survived (1) or not (0)
+* `Sex`: passenger sex (`male` or `female`)
+* `Age`: passenger age (in years)
+* `Fare`: how much the passenger paid for their ticket
+
+The `titanic` data can be loaded into `R` with the following:
+
+```{r, eval=F}
+titanic <- read.csv("https://sta112-s26.github.io/class_activities/Titanic.csv")
+```
+
+## Questions
+
+The code below will make an empirical logit plot with Fare as the explanatory variable, Survived as the binary response, and 20 bins:
+
+```{r, eval=F}
+library(tidyverse)
+logodds_plot <- function(data, reg_formula, group,
+                         num_bins = 5){
+  
+  var_names <- all.vars(reg_formula)
+
+  if(length(var_names) != 2){
+    stop("Only one variable can appear on the x-axis")
+  }
+
+  if(!is.numeric(data[[var_names[2]]])){
+    stop("The explanatory variable must be numeric")
+  }
+  
+  if(n_distinct(data[[var_names[1]]]) != 2){
+    stop("The response variable must be binary")
+  }
+  
+  data <- data |>
+    select(all_of(var_names), {{group}}) |>
+    drop_na()
+
+  dat <- model.frame(reg_formula, data)
+  
+
+  xname <- colnames(dat)[2]
+  yname <- colnames(dat)[1]
+  colnames(dat) <- c("y", "x")
+
+  if(any(is.infinite(dat$x))){
+    stop(paste("There are non-finite values in", xname))
+  }
+
+  if(!missing(group)){
+    dat <- dat |>
+      mutate({{group}} := as.factor(data |> pull({{group}})))
+  }
+
+  dat |>
+    arrange({{group}}, x) |>
+    group_by({{group}}) |>
+    mutate(bin = rep(1:num_bins,
+                     each=ceiling(n()/num_bins))[1:n()]) |>
+    group_by(bin, {{group}}) |>
+    summarize(x = mean(x),
+                prop = (sum(y) + 0.5)/(n() + 1),
+                num_obs = n(),
+                .groups = "drop") |>
+    mutate(logodds = log(prop/(1 - prop))) |>
+    ggplot(aes(x = x,
+               y = logodds,
+               color = {{group}})) +
+    geom_point() +
+    geom_smooth(se=F, method="lm", formula = y ~ x) +
+    theme_bw() +
+    labs(x = xname,
+         y = "Empirical log odds")
+}
+
+logodds_plot(titanic, Survived ~ Fare, 
+             num_bins = 20)
+```
+
+1. Run the code to produce the empirical logit plot. Does it look like there is a linear relationship between Fare and the log odds of survival? Experiment with the number of bins in the final line of the code to be sure.
+
+2. You can try different transformations of Fare in the empirical logit plot by changing the formula. For example, you could try `Survived ~ sqrt(Fare)`. Experiment with a few different transformations -- which ones seem reasonable?
+
+### Passenger age and sex
+
+3. Now make an empirical logit plot with `Age` as the explanatory variable, and `Survived` as the response. Does it look like there is a linear relationship between Age and the log odds of survival?
+
+Sometimes, we may want to account for another variable. In the code above, you can do that with the `group` argument. For example, 
+
+```{r, eval=F}
+logodds_plot(titanic, Survived ~ Age, group = Sex,
+             num_bins = 20)
+```
+
+
+4. Use the empirical logit plot to describe the relationship between Age, Sex, and the log odds of survival. What trends do you notice? Is this what you would expect?
+
+5. Fit a logistic regression model with `Survived` as the response and `Age` and `Sex` as the explanatory variables. Use your fitted model to predict the probability of survival for a female passenger who is 40 years old.
+
