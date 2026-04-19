@@ -49,7 +49,7 @@ logodds_plot <- function(data, reg_formula, group,
   }
   
   data <- data |>
-    select(all_of(var_names), {{group}}) |>
+    dplyr::select(all_of(var_names), {{group}}) |>
     drop_na()
 
   dat <- model.frame(reg_formula, data)
