@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Inference with logistic regression models</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="lab-slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Inference with logistic regression models
+]
+
+---
+
+
+### Recap: maximum likelihood estimation for logistic regression
+
+.large[
+**Likelihood:** 
+* For estimates `\(\widehat{\beta}_0\)` and `\(\widehat{\beta}_1\)`, `\(\widehat{\pi} = \dfrac{\exp\{\widehat{\beta}_0 + \widehat{\beta}_1 x\}}{1 + \exp\{\widehat{\beta}_0 + \widehat{\beta}_1 x\}}\)`
+* `\(L(\widehat{\beta}_0, \widehat{\beta}_1) = P(\text{data})\)`
+    
+**Maximize:** 
+* Choose `\(\widehat{\beta}_0\)`, `\(\widehat{\beta}_1\)` to maximize `\(L(\widehat{\beta}_0, \widehat{\beta}_1)\)`
+]
+
+---
+
+### Example: GPA and med school admission
+
+.large[
+`\(\pi = P(Accepted = 1)\)`
+
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)`
+
+We want to know if there is actually a relationship between GPA and med school admission.
+
+.question[
+How can I express this as null and alternative hypotheses about one or more model parameters?
+]
+]
+
+---
+
+### Example: GPA and med school admission
+
+.large[
+`\(\pi = P(Accepted = 1)\)`
+
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)`
+
+We want to know if there is actually a relationship between GPA and med school admission.
+
+.question[
+How can I express this as null and alternative hypotheses about one or more model parameters?
+]
+]
+
+.large[
+`\(H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 \neq 0\)`
+]
+
+---
+
+### Example: GPA and med school admission
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)`
+
+`\(H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 \neq 0\)`
+
+.question[
+*If this was a linear regression model*, how could I test these hypotheses?
+]
+]
+
+---
+
+### Example: GPA and med school admission
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)`
+
+`\(H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 \neq 0\)`
+
+.question[
+*If this was a linear regression model*, how could I test these hypotheses?
+]
+]
+
+.large[
+With a nested F test, or with a `\(t\)`-test.
+
+.question[
+But, this is logistic regression!
+]
+]
+
+---
+
+### Reminder: nested F test
+
+.large[
+Recall that the nested F test for comparing full and reduced models uses the test statistic
+
+`$$F = \dfrac{\frac{1}{\# \text{parameters tested}} (SSE_{reduced} - SSE_{full})}{\frac{1}{n-p} SSE_{full}}$$`
+
+**Motivation:**
+
+* We fit a model to minimize SSE
+* We want to compare the fit of the full and reduced models
+
+.question[
+Can I use this test statistic for logistic regression models?
+]
+]
+
+---
+
+### Reminder: nested F test
+
+.large[
+Recall that the nested F test for comparing full and reduced models uses the test statistic
+
+`$$F = \dfrac{\frac{1}{\# \text{parameters tested}} (SSE_{reduced} - SSE_{full})}{\frac{1}{n-p} SSE_{full}}$$`
+
+**Motivation:**
+
+* We fit a model to minimize SSE
+* We want to compare the fit of the full and reduced models
+
+.question[
+Can I use this test statistic for logistic regression models?
+]
+]
+
+.large[
+No -- logistic regression doesn't involve minimizing SSE. It involves maximizing likelihood!
+]
+
+---
+
+### Deviance
+
+.large[
+**Deviance:** If `\(L\)` is the likelihood, then deviance is given by `\(-2 \log L\)`
+
+* Maximizing likelihood is equivalent to minimizing deviance
+* Deviance is analogous to SSE from linear regression
+]
+
+.large[
+.question[
+We can use deviance to test hypotheses about model parameters.
+]
+]
+    
+---
+
+
+### Example: GPA and med school admission
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)`
+
+`\(H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 \neq 0\)`
+]
+
+
+
+.large[
+
+``` r
+med_glm &lt;- glm(Acceptance ~ GPA, data = MedGPA, 
+                family=binomial)
+summary(med_glm)
+```
+
+```
+    Null deviance: 75.791  on 54  degrees of freedom
+Residual deviance: 56.839  on 53  degrees of freedom
+```
+]
+
+---
+
+### Comparing deviances
+
+.large[
+```
+    Null deviance: 75.791  on 54  degrees of freedom
+Residual deviance: 56.839  on 53  degrees of freedom
+```
+
+75.791 = deviance for intercept-only model `\(\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0\)` 
+
+56.839 = deviance for full model `\(\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)`
+]
+
+.large[
+**drop-in-deviance:** deviance for reduced model - deviance for full model = 18.95
+]
+
+---
+
+### Comparing deviances
+
+.large[
+75.791 = deviance for intercept-only model `\(\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0\)` 
+
+56.839 = deviance for full model `\(\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)`
+
+**drop-in-deviance:** deviance for reduced model - deviance for full model = 18.95
+
+.question[
+Intuition: a larger drop in deviance is stronger evidence for a relationship between GPA and med school acceptance
+]
+]
+
+---
+
+### Comparing deviances
+
+.large[
+**drop-in-deviance:** `\(G=\)` deviance for reduced model - deviance for full model = 18.95
+
+Full model: `\(\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)` 
+
+Reduced model: `\(\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0\)`
+
+.question[
+Why is `\(G\)` always `\(\geq 0\)`?
+]
+]
+
+---
+
+### Comparing deviances
+
+.large[
+**drop-in-deviance:** `\(G=\)` deviance for reduced model - deviance for full model = 18.95
+
+Full model: `\(\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)` 
+
+Reduced model: `\(\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0\)`
+
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0\)`
+
+.question[
+How do I calculate a p-value?
+]
+]
+
+---
+
+### `\(\chi^2\)` distribution
+
+.large[
+Under `\(H_0\)`, `\(G \sim \chi^2_{\# \ \text{parameters tested}}\)`
+
+`\(\chi^2_k\)` distribution: parameterized by degrees of freedom `\(k\)`
+]
+
+.center[
+&lt;img src="Chi-square_pdf.png" width="600"&gt;
+]
+
+
+---
+
+### Computing a p-value
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)` 
+
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0\)`
+
+`\(G =\)` deviance for reduced model - deviance for full model = 18.95
+
+`\(G \sim \chi^2_{\# \ \text{parameters tested}}\)`
+
+.question[
+What are my degrees of freedom for the `\(\chi^2\)` distribution in this hypothesis test?
+]
+]
+
+
+---
+
+### Computing a p-value
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)` 
+
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0\)`
+
+`\(G =\)` deviance for reduced model - deviance for full model = 18.95 `\(\sim \chi^2_1\)`
+
+
+``` r
+pchisq(18.95, df = 1, lower.tail=FALSE)
+```
+
+```
+## [1] 1.341893e-05
+```
+]
+
+---
+
+### Likelihood ratio test for nested models
+
+.large[
+* Compare full and reduced models. Example:
+    * full model: `\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)`
+    * reduced model: `\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0\)`
+]
+
+---
+
+### Likelihood ratio test for nested models
+
+.large[
+* Compare full and reduced models
+* Calculate deviance ( `\(-2 \log L\)` ) for full and reduced models. Example:
+    * deviance for reduced model = 75.791
+    * deviance for full model = 56.839
+]
+
+---
+
+### Likelihood ratio test for nested models
+
+.large[
+* Compare full and reduced models
+* Calculate deviance ( `\(-2 \log L\)` ) for full and reduced models
+* Test statistic: `\(G =\)` deviance for reduced model - deviance for full model
+    * Example: `\(G = 75.791 - 56.839 = 18.95\)`
+]
+
+---
+
+### Likelihood ratio test for nested models
+
+.large[
+* Compare full and reduced models
+* Calculate deviance ( `\(-2 \log L\)` ) for full and reduced models
+* Test statistic: `\(G =\)` deviance for reduced model - deviance for full model
+    * Example: `\(G = 75.791 - 56.839 = 18.95\)`
+]
+
+.large[
+* p-value: `\(G \sim \chi^2_{\# \ \text{parameters tested}}\)`
+    * Example: `\(G \sim \chi^2_1\)`
+]
+
+---
+
+### Likelihood ratio test: strength and weakness
+
+.large[
+**Strength:** Can test multiple parameters at once. E.g.,
+`$$H_0: \beta_1 = \beta_2 = \beta_3 = 0$$`
+
+`$$H_A: \text{at least one of } \beta_1, \beta_2, \beta_3 \neq 0$$`
+**Weaknesses:** 
+
+* Cannot test one-sided alternative. E.g., can't test
+
+`$$H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 &gt; 0$$`
+* Cannot test for values other than 0. E.g., can't test
+
+`$$H_0: \beta_1 = 1 \hspace{0.5cm} H_A: \beta_1 \neq 1$$`
+]
+
+---
+
+### Alternative: Wald tests for single parameters
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)` 
+
+`\(H_0: \beta_1 = b \hspace{1cm} H_A: \beta_1 \neq b\)` 
+
+* or `\(H_A: \beta_1 &gt; b\)`, or `\(H_A: \beta_1 &lt; b\)`
+* `\(b\)` is any value of interest (e.g., 0)
+
+`\(z = \dfrac{\widehat{\beta}_1 - b}{SE_{\widehat{\beta}_1}} \sim N(0, 1)\)` (under `\(H_0\)` )
+]
+
+---
+
+### Example
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}\)` 
+
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0\)`
+
+
+``` r
+summary(med_glm)
+```
+
+```
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  -19.207      5.629  -3.412 0.000644 ***
+GPA            5.454      1.579   3.454 0.000553 ***
+```
+
+`\(z = \dfrac{5.454}{1.579} = 3.454 \hspace{0.5cm} \sim N(0, 1)\)`
+
+p-value = 0.000553
+]
+
+---
+
+### Wald tests vs. likelihood ratio tests
+
+.large[
+.pull-left[
+**Wald test**
+
+* like t-tests
+* test a single parameter
+* some example hypotheses:
+    * `\(H_0: \beta_1 = 0\)` vs. `\(H_A: \beta_1 \neq 0\)`
+    * `\(H_0: \beta_1 = 1\)` vs. `\(H_A: \beta_1 &gt; 1\)`
+]
+
+.pull-right[
+**Likelihood ratio test**
+
+* like nested F-tests
+* test one or more parameters 
+* some example hypotheses:
+    * `\(H_0: \beta_1 = 0\)` vs. `\(H_A: \beta_1 \neq 0\)`
+]
+
+p-values are different, because test statistics and distributions are different
+]
+
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity on the course website. Submit your rendered HTML on Canvas at the end of class.
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}\)`
+
+Is there any relationship between whether a pitch is successful and the speed at which it crosses home plate?
+
+.question[
+What are my null and alternative hypotheses?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}\)`
+
+Is there any relationship between whether a pitch is successful and the speed at which it crosses home plate?
+
+.question[
+What are my null and alternative hypotheses?
+]
+]
+
+.large[
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0\)`
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}\)`
+
+Are faster pitches are more likely to be successful?
+
+.question[
+What are my null and alternative hypotheses?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}\)`
+
+Are faster pitches are more likely to be successful?
+
+.question[
+What are my null and alternative hypotheses?
+]
+]
+
+.large[
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 &gt; 0\)`
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}\)`
+
+Are faster pitches are more likely to be successful?
+
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 &gt; 0\)`
+
+.question[
+Which test should I use?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+`\(\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}\)`
+
+Are faster pitches are more likely to be successful?
+
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 &gt; 0\)`
+
+.question[
+Which test should I use?
+]
+]
+
+.large[
+Use a Wald test, not a likelihood ratio test, because alternative is one-sided.
+]
+
+---
+
+### Class activity
+
+.large[
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 &gt; 0\)`
+
+
+``` r
+kershaw_glm &lt;- glm(Result ~ EndSpeed, data = Kershaw, 
+                   family=binomial)
+summary(kershaw_glm)
+```
+
+```
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -1.432279   0.488616  -2.931 0.003375 ** 
+EndSpeed     0.023360   0.006019   3.881 0.000104 ***
+```
+]
+
+---
+
+### Class activity
+
+.large[
+`\(H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 &gt; 0\)`
+
+```
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -1.432279   0.488616  -2.931 0.003375 ** 
+EndSpeed     0.023360   0.006019   3.881 0.000104 ***
+```
+]
+
+.large[
+`\(z = \dfrac{0.0234}{0.006} = 3.881\)`
+
+
+``` r
+pnorm(3.881, lower.tail=F)
+```
+
+```
+## [1] 5.201392e-05
+```
+]
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

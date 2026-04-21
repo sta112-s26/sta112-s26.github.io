@@ -8,6 +8,7 @@ April 20
 
 April 22
 : Logistic regression inference
+  : [Slides](https://sta112-s26.github.io/slides/lecture_35.pdf), [activity](https://sta112-s26.github.io/class_activities/ca_35.html)
 
 April 24
 : Logistic regression wrap-up, project work time

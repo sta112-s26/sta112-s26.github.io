@@ -1,0 +1,596 @@
+---
+title: Inference with logistic regression models
+output:
+  xaringan::moon_reader:
+    css: "lab-slides.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+### Recap: maximum likelihood estimation for logistic regression
+
+.large[
+**Likelihood:** 
+* For estimates $\widehat{\beta}_0$ and $\widehat{\beta}_1$, $\widehat{\pi} = \dfrac{\exp\{\widehat{\beta}_0 + \widehat{\beta}_1 x\}}{1 + \exp\{\widehat{\beta}_0 + \widehat{\beta}_1 x\}}$
+* $L(\widehat{\beta}_0, \widehat{\beta}_1) = P(\text{data})$
+    
+**Maximize:** 
+* Choose $\widehat{\beta}_0$, $\widehat{\beta}_1$ to maximize $L(\widehat{\beta}_0, \widehat{\beta}_1)$
+]
+
+---
+
+### Example: GPA and med school admission
+
+.large[
+$\pi = P(Accepted = 1)$
+
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$
+
+We want to know if there is actually a relationship between GPA and med school admission.
+
+.question[
+How can I express this as null and alternative hypotheses about one or more model parameters?
+]
+]
+
+---
+
+### Example: GPA and med school admission
+
+.large[
+$\pi = P(Accepted = 1)$
+
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$
+
+We want to know if there is actually a relationship between GPA and med school admission.
+
+.question[
+How can I express this as null and alternative hypotheses about one or more model parameters?
+]
+]
+
+.large[
+$H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 \neq 0$
+]
+
+---
+
+### Example: GPA and med school admission
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$
+
+$H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 \neq 0$
+
+.question[
+*If this was a linear regression model*, how could I test these hypotheses?
+]
+]
+
+---
+
+### Example: GPA and med school admission
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$
+
+$H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 \neq 0$
+
+.question[
+*If this was a linear regression model*, how could I test these hypotheses?
+]
+]
+
+.large[
+With a nested F test, or with a $t$-test.
+
+.question[
+But, this is logistic regression!
+]
+]
+
+---
+
+### Reminder: nested F test
+
+.large[
+Recall that the nested F test for comparing full and reduced models uses the test statistic
+
+$$F = \dfrac{\frac{1}{\# \text{parameters tested}} (SSE_{reduced} - SSE_{full})}{\frac{1}{n-p} SSE_{full}}$$
+
+**Motivation:**
+
+* We fit a model to minimize SSE
+* We want to compare the fit of the full and reduced models
+
+.question[
+Can I use this test statistic for logistic regression models?
+]
+]
+
+---
+
+### Reminder: nested F test
+
+.large[
+Recall that the nested F test for comparing full and reduced models uses the test statistic
+
+$$F = \dfrac{\frac{1}{\# \text{parameters tested}} (SSE_{reduced} - SSE_{full})}{\frac{1}{n-p} SSE_{full}}$$
+
+**Motivation:**
+
+* We fit a model to minimize SSE
+* We want to compare the fit of the full and reduced models
+
+.question[
+Can I use this test statistic for logistic regression models?
+]
+]
+
+.large[
+No -- logistic regression doesn't involve minimizing SSE. It involves maximizing likelihood!
+]
+
+---
+
+### Deviance
+
+.large[
+**Deviance:** If $L$ is the likelihood, then deviance is given by $-2 \log L$
+
+* Maximizing likelihood is equivalent to minimizing deviance
+* Deviance is analogous to SSE from linear regression
+]
+
+.large[
+.question[
+We can use deviance to test hypotheses about model parameters.
+]
+]
+    
+---
+
+
+### Example: GPA and med school admission
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$
+
+$H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 \neq 0$
+]
+
+```{r, include=F}
+library(tidyverse)
+library(knitr)
+library(Stat2Data)
+data("MedGPA")
+data("Kershaw")
+```
+
+.large[
+```{r, eval=F}
+med_glm <- glm(Acceptance ~ GPA, data = MedGPA, 
+                family=binomial)
+summary(med_glm)
+```
+
+```
+    Null deviance: 75.791  on 54  degrees of freedom
+Residual deviance: 56.839  on 53  degrees of freedom
+```
+]
+
+---
+
+### Comparing deviances
+
+.large[
+```
+    Null deviance: 75.791  on 54  degrees of freedom
+Residual deviance: 56.839  on 53  degrees of freedom
+```
+
+75.791 = deviance for intercept-only model $\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0$ 
+
+56.839 = deviance for full model $\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$
+]
+
+.large[
+**drop-in-deviance:** deviance for reduced model - deviance for full model = 18.95
+]
+
+---
+
+### Comparing deviances
+
+.large[
+75.791 = deviance for intercept-only model $\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0$ 
+
+56.839 = deviance for full model $\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$
+
+**drop-in-deviance:** deviance for reduced model - deviance for full model = 18.95
+
+.question[
+Intuition: a larger drop in deviance is stronger evidence for a relationship between GPA and med school acceptance
+]
+]
+
+---
+
+### Comparing deviances
+
+.large[
+**drop-in-deviance:** $G=$ deviance for reduced model - deviance for full model = 18.95
+
+Full model: $\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$ 
+
+Reduced model: $\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0$
+
+.question[
+Why is $G$ always $\geq 0$?
+]
+]
+
+---
+
+### Comparing deviances
+
+.large[
+**drop-in-deviance:** $G=$ deviance for reduced model - deviance for full model = 18.95
+
+Full model: $\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$ 
+
+Reduced model: $\hspace{0.5cm} \log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0$
+
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0$
+
+.question[
+How do I calculate a p-value?
+]
+]
+
+---
+
+### $\chi^2$ distribution
+
+.large[
+Under $H_0$, $G \sim \chi^2_{\# \ \text{parameters tested}}$
+
+$\chi^2_k$ distribution: parameterized by degrees of freedom $k$
+]
+
+.center[
+<img src="Chi-square_pdf.png" width="600">
+]
+
+
+---
+
+### Computing a p-value
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$ 
+
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0$
+
+$G =$ deviance for reduced model - deviance for full model = 18.95
+
+$G \sim \chi^2_{\# \ \text{parameters tested}}$
+
+.question[
+What are my degrees of freedom for the $\chi^2$ distribution in this hypothesis test?
+]
+]
+
+
+---
+
+### Computing a p-value
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$ 
+
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0$
+
+$G =$ deviance for reduced model - deviance for full model = 18.95 $\sim \chi^2_1$
+
+```{r}
+pchisq(18.95, df = 1, lower.tail=FALSE)
+```
+]
+
+---
+
+### Likelihood ratio test for nested models
+
+.large[
+* Compare full and reduced models. Example:
+    * full model: $\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$
+    * reduced model: $\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0$
+]
+
+---
+
+### Likelihood ratio test for nested models
+
+.large[
+* Compare full and reduced models
+* Calculate deviance ( $-2 \log L$ ) for full and reduced models. Example:
+    * deviance for reduced model = 75.791
+    * deviance for full model = 56.839
+]
+
+---
+
+### Likelihood ratio test for nested models
+
+.large[
+* Compare full and reduced models
+* Calculate deviance ( $-2 \log L$ ) for full and reduced models
+* Test statistic: $G =$ deviance for reduced model - deviance for full model
+    * Example: $G = 75.791 - 56.839 = 18.95$
+]
+
+---
+
+### Likelihood ratio test for nested models
+
+.large[
+* Compare full and reduced models
+* Calculate deviance ( $-2 \log L$ ) for full and reduced models
+* Test statistic: $G =$ deviance for reduced model - deviance for full model
+    * Example: $G = 75.791 - 56.839 = 18.95$
+]
+
+.large[
+* p-value: $G \sim \chi^2_{\# \ \text{parameters tested}}$
+    * Example: $G \sim \chi^2_1$
+]
+
+---
+
+### Likelihood ratio test: strength and weakness
+
+.large[
+**Strength:** Can test multiple parameters at once. E.g.,
+$$H_0: \beta_1 = \beta_2 = \beta_3 = 0$$
+
+$$H_A: \text{at least one of } \beta_1, \beta_2, \beta_3 \neq 0$$
+**Weaknesses:** 
+
+* Cannot test one-sided alternative. E.g., can't test
+
+$$H_0: \beta_1 = 0 \hspace{0.5cm} H_A: \beta_1 > 0$$
+* Cannot test for values other than 0. E.g., can't test
+
+$$H_0: \beta_1 = 1 \hspace{0.5cm} H_A: \beta_1 \neq 1$$
+]
+
+---
+
+### Alternative: Wald tests for single parameters
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$ 
+
+$H_0: \beta_1 = b \hspace{1cm} H_A: \beta_1 \neq b$ 
+
+* or $H_A: \beta_1 > b$, or $H_A: \beta_1 < b$
+* $b$ is any value of interest (e.g., 0)
+
+$z = \dfrac{\widehat{\beta}_1 - b}{SE_{\widehat{\beta}_1}} \sim N(0, 1)$ (under $H_0$ )
+]
+
+---
+
+### Example
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \text{GPA}$ 
+
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0$
+
+```{r, eval=F}
+summary(med_glm)
+```
+
+```
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  -19.207      5.629  -3.412 0.000644 ***
+GPA            5.454      1.579   3.454 0.000553 ***
+```
+
+$z = \dfrac{5.454}{1.579} = 3.454 \hspace{0.5cm} \sim N(0, 1)$
+
+p-value = 0.000553
+]
+
+---
+
+### Wald tests vs. likelihood ratio tests
+
+.large[
+.pull-left[
+**Wald test**
+
+* like t-tests
+* test a single parameter
+* some example hypotheses:
+    * $H_0: \beta_1 = 0$ vs. $H_A: \beta_1 \neq 0$
+    * $H_0: \beta_1 = 1$ vs. $H_A: \beta_1 > 1$
+]
+
+.pull-right[
+**Likelihood ratio test**
+
+* like nested F-tests
+* test one or more parameters 
+* some example hypotheses:
+    * $H_0: \beta_1 = 0$ vs. $H_A: \beta_1 \neq 0$
+]
+
+p-values are different, because test statistics and distributions are different
+]
+
+
+---
+
+### Class activity
+
+.large[
+Work on the class activity on the course website. Submit your rendered HTML on Canvas at the end of class.
+]
+
+---
+
+### Class activity
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}$
+
+Is there any relationship between whether a pitch is successful and the speed at which it crosses home plate?
+
+.question[
+What are my null and alternative hypotheses?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}$
+
+Is there any relationship between whether a pitch is successful and the speed at which it crosses home plate?
+
+.question[
+What are my null and alternative hypotheses?
+]
+]
+
+.large[
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 \neq 0$
+]
+
+---
+
+### Class activity
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}$
+
+Are faster pitches are more likely to be successful?
+
+.question[
+What are my null and alternative hypotheses?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}$
+
+Are faster pitches are more likely to be successful?
+
+.question[
+What are my null and alternative hypotheses?
+]
+]
+
+.large[
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 > 0$
+]
+
+---
+
+### Class activity
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}$
+
+Are faster pitches are more likely to be successful?
+
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 > 0$
+
+.question[
+Which test should I use?
+]
+]
+
+---
+
+### Class activity
+
+.large[
+$\log \left( \dfrac{\pi}{1 - \pi} \right) = \beta_0 + \beta_1 \ \text{speed}$
+
+Are faster pitches are more likely to be successful?
+
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 > 0$
+
+.question[
+Which test should I use?
+]
+]
+
+.large[
+Use a Wald test, not a likelihood ratio test, because alternative is one-sided.
+]
+
+---
+
+### Class activity
+
+.large[
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 > 0$
+
+```{r, eval=F}
+kershaw_glm <- glm(Result ~ EndSpeed, data = Kershaw, 
+                   family=binomial)
+summary(kershaw_glm)
+``` 
+
+```
+Coefficients:
+             Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -1.432279   0.488616  -2.931 0.003375 ** 
+EndSpeed     0.023360   0.006019   3.881 0.000104 ***
+```
+]
+
+---
+
+### Class activity
+
+.large[
+$H_0: \beta_1 = 0 \hspace{1cm} H_A: \beta_1 > 0$
+
+```
+Coefficients:
+             Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -1.432279   0.488616  -2.931 0.003375 ** 
+EndSpeed     0.023360   0.006019   3.881 0.000104 ***
+```
+]
+
+.large[
+$z = \dfrac{0.0234}{0.006} = 3.881$
+
+```{r}
+pnorm(3.881, lower.tail=F)
+```
+]
+
+
+
+
